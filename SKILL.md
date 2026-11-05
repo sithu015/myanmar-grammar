@@ -86,6 +86,7 @@ flowchart TD
 | လိုအပ်ချက် | သွားရောက်လေ့လာရမည့် အခန်း / ဖိုင် |
 | --- | --- |
 | ပုဒ်တစ်လုံးကို ဘာ tag ပေးရမလဲ၊ ခွဲရခက်သော ဝေါဟာရ | `scripts/decide.py` ပြီးမှ [Decide first](references/decide-first.md) |
+| ဝါစင်္ဂ ၅ မျိုး ဘာသာဗေဒ သုတေသနနှင့် NLP မော်ဒယ်များ ဆန်းစစ်ချက် | [ဝါစင်္ဂ ၅ မျိုး NLP သုတေသန အစီရင်ခံစာ](references/myanmar-grammar-5-pos-linguistic-nlp-report.md) |
 | အမြင်တူအက္ခရာ မှားရိုက်ထားခြင်း (`၀/ဝ`, `၇/ရ`, `၈/ဂ`, `၄/၎`, `စျ/ဈ`) | `scripts/confusable.py` ပြီးမှ [Lookalike keystrokes](references/confusables.md) |
 | agent က ယခင်က မှားဆက်/မှားခွဲခဲ့သော ပုဒ်များ | [Agent hard cases](references/agent-hard-cases.md) |
 | မောက်ချ (-ါ) သုံးရမည့် စည်းမျဉ်းကို သိလိုလျှင် | [Chapter 2](chapters/ch02-vowels-and-tones.md) |
@@ -114,6 +115,7 @@ flowchart TD
 - **[Downstream NLP Guide](references/downstream-nlp-guide.md)** - End-to-End NLP Pipeline (Stage 0-5)၊ NER၊ Dependency Parsing (`CoNLL-U`)၊ CQL/Word Sketch၊ NMT၊ RAG/LLM Chunking၊ G2P နှင့် Sentiment/Deontic IE စနစ်များ။
 - **[POS & UD Mapping Reference](references/pos-ud-mapping.md)** - MLC ဝါစင်္ဂ ၉ မျိုး၊ `myPOS` 15-tag နှင့် `UD v2` တို့၏ 3-Way Alignment Matrix နှင့် Context အလိုက် POS ခွဲခြားပုံ Decision Trees။
 - **[Segmentation & Lexicon Reference](references/segmentation-lexicon.md)** - Rule Precedence ၅ ဆင့်၊ `-ရေး` နှင့် `-သူ` စည်းမျဉ်းများ၊ Protected Lexicon စာရင်း၊ Boundary-Shift Trap ဇယားနှင့် Blast-Radius ကာကွယ်ရေး မူဘောင်။
+- **[ဝါစင်္ဂ (၅) မျိုး သဒ္ဒါနှင့် NLP သုတေသန အစီရင်ခံစာ](references/myanmar-grammar-5-pos-linguistic-nlp-report.md)** - အစဉ်အလာ မြန်မာသဒ္ဒါနှင့် ခေတ်သစ်ဘာသာဗေဒ၊ နာမ်၊ နာမ်စား၊ နာမဝိသေသန၊ ကြိယာ၊ ကြိယာဝိသေသန သဒ္ဒါမှတ်ကျောက်များ၊ sylbreak RE၊ myPOS v3 နှင့် XLM-RoBERTa-BiLSTM-CRF-Joint Syllable-Level Joint WS+POS မော်ဒယ်များနှင့် Dependency Parsing သုတေသန အပြည့်အစုံ။
 - **[Large-Corpus Chunking & Regex Guide](references/large-corpus-chunking-and-regex-pipeline.md)** - Corpus ဖိုင်ကြီးများအတွက် Two-Tier Chunking (`1,000` လိုင်း Batch နှင့် `50-100` လိုင်း Sub-Chunk)၊ $O(1)$ Memory Line-by-Line Streaming Engine နှင့် 6-Stage Token-Bounded Regex Cascade လမ်းညွှန်။
 - **[Corpus Chunk & Remediate Script](scripts/corpus_chunk_and_remediate.py)** - `chunk`, `merge`, `remediate` (`--mode ws|pos`, `--dry-run`, `--ledger`, `--record-only-log`) နှင့် Character-Conservation Rollback Guard ပါဝင်သော Python CLI ကိရိယာ။
 - **[Corpus Validator Script](scripts/validate_nlp_corpus.py)** - မူရင်းအက္ခရာ တည်တံ့မှု (`Character Conservation`)၊ Unicode NFC / Illegal Word-Initial Dependent Sign စစ်ဆေးမှု၊ 15-tag စစ်ဆေးမှု၊ 11 fixed-form နှင့် 10-row component / bracket reconstruction၊ intra-corpus consistency scan စစ်ဆေးပေးသော Python CLI ကိရိယာ။
