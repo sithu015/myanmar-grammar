@@ -38,6 +38,7 @@ Attach `-ရေး` **only** to the single token immediately preceding it:
 
 - **Productive `မှု`, `ခြင်း`, `ခွင့်` (Separate)**: Keep separate from preceding verbs or auxiliaries:
   - `ဆောင်ရွက် မှု`, `တင်သွင်း ခြင်း`, `သုံးစွဲ ခွင့်`, `ရောင်းချ ခဲ့ ခြင်း`, `ကျေအေး နိုင် ခွင့်`
+  - **Auxiliary `ခဲ့` + Nominalizer `မှု` (Strict Separation)**: အတိတ်ကာလပြ `ခဲ့/part` နှင့် နာမ်ပြု `မှု/part` တို့သည် သီးခြားပစ္စည်းများ ဖြစ်သဖြင့် `ခဲ့မှု/n` ဟု မပေါင်းရဘဲ `[Verb]/v ခဲ့/part မှု/part` ဟု အမြဲ သီးခြားစီ ခွဲထုတ်ရမည် (ဥပမာ `ဖျက်ဆီး/v ခဲ့/part မှု/part`, `ပေး/v ခဲ့/part မှု/part`, `ပေးပို့/v ခဲ့/part မှု/part`, `သတ်ဖြတ်/v ခဲ့/part မှု/part`)။
   - **Lexicalized Exceptions (Merged as 1 Token)**: `ပြစ်မှု`, `မှုခင်း`, `တရားမမှု`, `ရာဇဝတ်မှု`, `လူသတ်မှု`, `အပြုအမူ`, `ယဉ်ကျေးမှု`, `ပျော်ရွှင်မှု`, `မူပိုင်ခွင့်`, `အခွင့်အရေး`, `လုပ်ပိုင်ခွင့်`, `စီရင်ပိုင်ခွင့်`, `ပိုင်ဆိုင်ခွင့်`, `ကင်းလွတ်ခွင့်`.
 - **Suffix `-ချက်` (Attached to Verb, Split After Auxiliary)**:
   - Attached directly to verb stem: `ပြဋ္ဌာန်းချက်`, `ဆုံးဖြတ်ချက်`, `သတ်မှတ်ချက်`, `ညွှန်ကြားချက်`, `တင်ပြချက်`, `ထွက်ဆိုချက်`, `စီရင်ချက်`, `စွဲချက်`.
@@ -85,6 +86,8 @@ Attach `-ရေး` **only** to the single token immediately preceding it:
     - `စစ်ခေါင်းဆောင်/n မင်းအောင်လှိုင်/n`
 
 - **အခြား သဒ္ဒါနှင့် ပုဒ်ဖြတ် စံနှုန်းများ (Corpus Harmonization)**:
+  - **လအမည်နှင့် အမျိုးအစားပြနာမ် 'လ' ခွဲခြားခြင်း (Month + Category Noun Split)**: လအမည်နှင့် အမျိုးအစားပြနာမ် 'လ' (ဥပမာ - `ဇွန်/n လ/n`၊ `မေ/n လ/n`၊ `မတ်/n လ/n`၊ `ဇူလိုင်/n လ/n`၊ `အောက်တိုဘာ/n လ/n`) အား `[Month]/n` နှင့် `လ/n` ဟူ၍ **သီးခြား ခွဲထုတ်သည် (Split as 2 separate noun tokens)**။ ဤစံနှုန်းသည် `မြို့`၊ `ရွာ`၊ `ရပ်ကွက်`၊ `လမ်း`၊ `ပြည်နယ်`၊ `နိုင်ငံ` ကဲ့သို့သော အမျိုးအစားပြနာမ်များကို အမည်မှ ခွဲထုတ်သတ်မှတ်သည့် analytic morphology စံနှုန်းနှင့် ညီညွတ်စေရန် ဖြစ်သည်။ နေ့စွဲဖော်ပြချက်တွင် လအမည် သီးသန့်သုံးသောအခါ (ဥပမာ `ဇွန် ၁၄ ရက်`၊ `၁၀ ဇွန် ၂၀၂၆`) `ဇွန်/n` အဖြစ် သီးခြားရပ်တည်သည်။
+  - **အခိုင်အမာ ပေါင်းစပ်နာမ်နှင့် မွေးစားစကားလုံးများ (Lexicalized & Loan Compounds - Merged as 1 Token `/n`)**: `ပရိုမိုကုဒ်/n`, `ကူပွန်ကုဒ်/n`, `လျှော့ဈေး/n`, `လူစာရင်း/n` (squad roster / headcount), `အမည်စာရင်း/n` တို့သည် အခိုင်အမာ ပေါင်းစပ်ပြီးသော ဝေါဟာရများ ဖြစ်သဖြင့် မခွဲဘဲ တစ်ပုဒ်တည်း (`/n`) အဖြစ် သတ်မှတ်သည်။
   - **အမူအရာပြ ကြိယာဝိသေသန ခွဲထုတ်ခြင်း (Verbal Adverbial Split)**: `ဝိုင်းဝန်း/adv ခုတ်/v` (အဘိဓာန်ဝင် ပေါင်းစပ်ကြိယာ မဟုတ်ဘဲ မည်သည့်ကြိယာနှင့်မဆို လွတ်လပ်စွာ တွဲဖက်နိုင်သော အမူအရာပြ adverb + verb ဖြစ်၍ ခွဲထုတ်ရမည်)။
   - **ကြိယာနောက်လိုက် နာမ်စား "သူ" (Post-verbal Relativizer Pronoun)**: `[Verb] + သူ/pron` (ဥပမာ `ဆက်နွှယ်/v သူ/pron များ/part`၊ `သေဆုံး/v သူ/pron`)။
   - **သင်္ချာ + ရက် + ဆက် (Numeral-Measure Adverbial Construction)**: `[num] ရက်/n ဆက်/adv` (ဥပမာ `၂/num ရက်/n ဆက်/adv`)။
@@ -182,3 +185,71 @@ When generalizing a single human/owner segmentation or POS fix across a corpus, 
   - ❌ `အဖွဲ့အစည်း/n ပေါင်း/n ၁၀၀/num` (Do NOT split `ပေါင်း` as standalone `n`)
   - ❌ `နိုင်ငံ/n ပေါင်း/part ၃၉/num` (Do NOT split `ပေါင်း` as standalone `part`)
   - ❌ `တိုက်ပွဲ/n ပေါင်း/part ၁၀၀/num` (Do NOT split `ပေါင်း` as standalone `part`)
+
+## 7. Multiword Foreign Entity Policy & Conjunction Exception (NER)
+
+### 7.1 Multiword Foreign Country Exception
+- **Rule**: While native Myanmar entity spans generally exclude coordinating conjunctions (`နှင့်`, `သို့မဟုတ်`) and clitic particles (`များ`, `တို့`, `သည်`), officially designated multiword foreign country proper names that contain internal conjunctions are retained as single coherent multiword entity spans.
+- **Canonical Example**:
+  - `ထရီနီဒက် နှင့် တိုဘာဂို` [Trinidad and Tobago] -> `ထရီနီဒက်/B-GPE နှင့်/I-GPE တိုဘာဂို/I-GPE`
+- **Exemption Scope**: This exemption applies strictly to officially recognized sovereign country and territory names with fixed lexical conjunctions. It does NOT permit conjunction absorption for conjoined distinct entities (e.g., `အမေရိကန် နှင့် အီရန်` must be split across `နှင့်/O`).
+
+## 8. Legal Citation Subsection Markers (`sb`)
+
+- **Rule**: Alphabetic subsection markers enclosed in parentheses within legal statutory citations (e.g. `ပုဒ်မ ၅၁ ( ဂ ) ဖြင့်`) must be tagged with the dedicated subsection / sentence-beginning marker tag **`sb`**, matching standard section numbering conventions.
+- **Canonical Examples**:
+  - `( က )` -> `(/punc က/sb )/punc`
+  - `( ခ )` -> `(/punc ခ/sb )/punc`
+  - `( ဂ )` -> `(/punc ဂ/sb )/punc`
+- **Negative Invariants**:
+  - ❌ `ဂ/n` (Do NOT tag subsection letter as common noun)
+  - ❌ `ဂ/part` (Do NOT tag subsection letter as grammatical particle)
+
+## 9. Temporal Month Expressions (`[Month]/n လ/n`)
+
+- **Rule**: Month proper names followed by the category noun `လ` ("month") must strictly be segmented as two separate tokens: `[Month]/n လ/n`, consistent with place and administrative category nouns (`မြို့`, `ရွာ`, `ရပ်ကွက်`, `လမ်း`, `ပြည်နယ်`, `နိုင်ငံ`).
+- **Canonical Examples**:
+  - `ဇွန်/n လ/n` (never `ဇွန်လ/n`)
+  - `မေ/n လ/n` (never `မေလ/n`)
+  - `မတ်/n လ/n` (never `မတ်လ/n`)
+  - `ဇူလိုင်/n လ/n` (never `ဇူလိုင်လ/n`)
+
+## 10. Traditional Myanmar Calendar, Lunar Months, Lunar Phases & Observance Days (မြန်မာ့ရိုးရာ ပြက္ခဒိန်၊ လအဆင့်နှင့် ဥပုသ်နေ့များ)
+
+### 10.1 Era & Year Expressions (`ကောဇာ သက္ကရာဇ် [Year] ခုနှစ်`)
+- **Rule**: Distinct cultural and temporal era markers (`ကောဇာ`, `သက္ကရာဇ်`, `သာသနာ`, `မဟာ`) are segmented as individual noun tokens (`/n`) before numeric year values:
+  - `ကောဇာ/n သက္ကရာဇ်/n ၁၃၈၈/num ခုနှစ်/n` (NER: `ကောဇာ/B-DATE သက္ကရာဇ်/I-DATE ၁၃၈၈/I-DATE ခုနှစ်/I-DATE`)
+  - `သာသနာ/n သက္ကရာဇ်/n ၂၅၆၈/num ခုနှစ်/n`
+- **Negative Invariants**:
+  - ❌ `ကောဇာသက္ကရာဇ်/n` (Do NOT merge into 1 token; preserve modifier + head noun structure)
+  - ❌ `ခု/part နှစ်/n` (Do NOT split `ခုနှစ်` into 2 tokens)
+
+### 10.2 Twelve Myanmar Lunar Months (`၁၂ လရာသီ လအမည်များ`)
+- **Inventory**: `တန်ခူး`, `ကဆုန်`, `နယုန်`, `ဝါဆို`, `ဝါခေါင်`, `တော်သလင်း`, `သီတင်းကျွတ်`, `တန်ဆောင်မုန်း`, `နတ်တော်`, `ပြာသို`, `တပို့တွဲ`, `တပေါင်း`.
+- **Segmentation & Tagging Policy**:
+  - **Standalone Month**: `တန်ဆောင်မုန်း/n`, `နတ်တော်/n`
+  - **With Category Noun `လ`**: `တန်ဆောင်မုန်း/n လ/n`, `နတ်တော်/n လ/n` (follows Section 9 `[Month]/n လ/n` split)
+  - **Combined with Lunar Phase (`လဆန်း` / `လဆုတ်`)**:
+    - `တန်ဆောင်မုန်းလဆန်း` -> `တန်ဆောင်မုန်း/n လဆန်း/n`
+    - `တန်ဆောင်မုန်းလဆုတ်` -> `တန်ဆောင်မုန်း/n လဆုတ်/n`
+    - `နတ်တော်လဆန်း` -> `နတ်တော်/n လဆန်း/n`
+    - *(Note: `လ` belongs to the lunar phase noun `လဆန်း` / `လဆုတ်`, do NOT split as `တန်ဆောင်မုန်းလ ဆန်း`)*.
+
+### 10.3 Lunar Phases (`လဆန်း၊ လဆုတ်၊ လပြည့်၊ လပြည့်ကျော်၊ လကွယ်`)
+- **Rules**:
+  - `လဆန်း` (Waxing moon): `လဆန်း/n` -> `တန်ဆောင်မုန်း/n လဆန်း/n ၈/num ရက်/n`
+  - `လဆုတ်` (Waning moon): `လဆုတ်/n` -> `တန်ဆောင်မုန်း/n လဆုတ်/n ၁/num ရက်/n`
+  - `လပြည့်` (Full moon): `လပြည့်/n` -> `တန်ဆောင်မုန်း/n လပြည့်/n နေ့/n`
+  - `လပြည့်ကျော်` (Day after full moon / waning day): `လပြည့်ကျော်/n` -> `တန်ဆောင်မုန်း/n လပြည့်ကျော်/n ၁/num ရက်/n`
+  - `လကွယ်` (New moon): `လကွယ်/n` -> `နတ်တော်/n လကွယ်/n နေ့/n`
+- **Negative Invariants**:
+  - ❌ `လပြည့်/n ကျော်/part` (Do NOT split `လပြည့်ကျော်` into 2 tokens)
+  - ❌ `လ/n ဆန်း/v`, `လ/n ဆုတ်/v` (Do NOT analyze moon phases as verb phrases in temporal contexts)
+
+### 10.4 Observance Days & Sabbath (`အဖိတ်နေ့၊ ဥပုသ်နေ့`)
+- **Rules**:
+  - `အဖိတ်နေ့` (Eve of Sabbath): `အဖိတ်နေ့/n` (or `အဖိတ်/n နေ့/n`) -> NER: `B-DATE`
+  - `ဥပုသ်နေ့` (Sabbath Day / Uposatha): `ဥပုသ်နေ့/n` (or `ဥပုသ်/n နေ့/n`) -> NER: `B-DATE`
+- **Confusable / Typo Note**:
+  - User typing `ဥပုပ်` or `ဥပုပ်နေ့` is a common phonological confusable for `ဥပုသ်` / `ဥပုသ်နေ့` (Pali *Uposatha*). On corpus lines, observe `RECORD_ONLY_NOT_APPLIED`.
+

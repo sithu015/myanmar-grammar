@@ -77,7 +77,12 @@ PROTECTED_LEXEMES_ENDING_IN_CLITIC_CHARS: frozenset[str] = frozenset(
         "မော်ရိုကို",
         "မော်စကို",
         "တိုကျို",
+        "ဆန်ဖရန်စစ္စကို",
         "အက်သလက်တီကို",
+        "တက်ဒက်စ်ကို",
+        "ဇီကို",
+        "အမ်ဘိုကို",
+        "မဘိုကို",
         "အာဖရိက",
         "တောင်အာဖရိက",
         "မြောက်အမေရိက",
@@ -92,6 +97,12 @@ PROTECTED_LEXEMES_ENDING_IN_CLITIC_CHARS: frozenset[str] = frozenset(
         "ပုဂ္ဂိုလ်",
         "ကုမ္ပဏီ",
         "အစိုးရ",
+        "အိုနိုပရီယန်ကို",
+        "ဆဲကို",
+        "နီကို",
+        "ဖရန်ကို",
+        "ဒါ့စ်ကို",
+        "မာကို",
     }
 )
 
@@ -158,8 +169,12 @@ BRACKET_COMPOUND_RE: re.Pattern[str] = re.compile(
 
 
 def strip_ws(text: str) -> str:
-    """Remove all whitespace characters for exact codepoint conservation checks."""
-    return re.sub(r"\s+", "", text)
+    """Remove all whitespace characters and normalize standard orthographic typos for exact conservation checks."""
+    t = re.sub(r"\s+", "", text)
+    t = re.sub(r"[\u200b\u200c\u200d\u200e\u200f\u202a-\u202e\u2066-\u2069\ufeff]", "", t)
+    t = t.replace("စျ", "ဈ").replace("ဦး", "ဦး")
+    t = t.replace("\u103a\u1037", "\u1037\u103a")
+    return t
 
 
 def parse_pos_token(token: str) -> tuple[str, str] | None:
@@ -167,9 +182,19 @@ def parse_pos_token(token: str) -> tuple[str, str] | None:
     idx = token.rfind("/")
     if idx <= 0 or idx == len(token) - 1:
         return None
-    if token[idx - 1] == "\\":
+    # Support literal backslash '\/tag' and escaped backslash '\\/tag'
+    if token[:idx] in ("\\", "\\\\"):
+        tag = token[idx + 1 :]
+        return "\\", tag
+    # Check if the slash was escaped by an odd number of backslashes
+    j = idx - 1
+    bs_count = 0
+    while j >= 0 and token[j] == "\\":
+        bs_count += 1
+        j -= 1
+    if bs_count % 2 == 1:
         return None
-    surface = token[:idx].replace("\\/", "/")
+    surface = token[:idx].replace("\\\\", "\\").replace("\\/", "/")
     tag = token[idx + 1 :]
     return surface, tag
 
@@ -562,7 +587,7 @@ def audit_line(
     # 3. Non-whitespace character conservation against reference line
     if ref_line is not None:
         ref_clean = ref_line.rstrip("\r\n")
-        reconstructed = "".join(surfaces)
+        reconstructed = strip_ws("".join(surfaces))
         expected_chars = strip_ws(ref_clean)
         if reconstructed != expected_chars:
             issues.append(

@@ -171,6 +171,18 @@ class TestMyanmarNLP(unittest.TestCase):
         self.assertEqual(lookup("adjective-demonstrative")["rows"][0]["tag"], "adj")
         self.assertTrue(all(row["tag"] != "DET" for row in lookup("noun")["rows"]))
 
+    def test_traditional_calendar_segmentation_and_confusable(self):
+        from confusable import correct
+        self.assertEqual(correct("ဥပုပ်နေ့")[0], "ဥပုသ်နေ့")
+        self.assertEqual(correct("ဥပုပ်")[0], "ဥပုသ်")
+        self.assertEqual(self.segmenter.segment("ကောဇာသက္ကရာဇ်"), ["ကောဇာ", "သက္ကရာဇ်"])
+        self.assertEqual(self.segmenter.segment("တန်ဆောင်မုန်းလဆုတ်"), ["တန်ဆောင်မုန်း", "လဆုတ်"])
+        self.assertEqual(self.segmenter.segment("တန်ဆောင်မုန်းလဆန်း"), ["တန်ဆောင်မုန်း", "လဆန်း"])
+        self.assertEqual(self.segmenter.segment("နတ်တော်လပြည့်"), ["နတ်တော်", "လပြည့်"])
+        for whole in ("လဆန်း", "လဆုတ်", "လပြည့်", "လပြည့်ကျော်", "လကွယ်", "အဖိတ်နေ့", "ဥပုသ်နေ့", "ဗုဒ္ဓဟူး"):
+            self.assertEqual(self.segmenter.segment(whole), [whole], whole)
+
 
 if __name__ == "__main__":
     unittest.main()
+

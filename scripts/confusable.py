@@ -20,6 +20,8 @@ import sys
 COMPOSE = (
     ("\u1005\u103b", "\u1008", "JHA", "စ plus medial ya is the letter ဈ"),
     ("\u1025\u102e", "\u1026", "UU", "ဥ plus ီ is the letter ဦ"),
+    ("ဥပုပ်နေ့", "ဥပုသ်နေ့", "U_PO_NE", "ဥပုသ် (သ-သတ်) is the correct spelling for sabbath"),
+    ("ဥပုပ်", "ဥပုသ်", "U_PO", "ဥပုသ် (သ-သတ်) is the correct spelling"),
 )
 
 # Digit form, letter form.

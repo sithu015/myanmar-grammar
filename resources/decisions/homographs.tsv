@@ -397,6 +397,19 @@
 နည်းနည်း	after_word	adj	REDUP_ADJ	after a noun
 နည်းနည်း	reading	adv	REDUP_READ_ADV	a little
 နည်းနည်း	reading	adj	REDUP_READ_ADJ	attributive
+ကောဇာ	next:သက္ကရာဇ်	n	KAW_ZA_ERA	current era modifier noun
+သက္ကရာဇ်	prev:ကောဇာ	n	THAKKAYIT_ERA	era noun after ကောဇာ
+သက္ကရာဇ်	next_textnum	n	THAKKAYIT_NUM	era noun before year number
+သက္ကရာဇ်	always	n	THAKKAYIT_GEN	era noun
+လဆန်း	always	n	LA_HSAN_PHASE	waxing moon phase noun
+လဆုတ်	always	n	LA_HSOTE_PHASE	waning moon phase noun
+လပြည့်	always	n	LA_PYAE_PHASE	full moon phase noun
+လပြည့်ကျော်	always	n	LA_PYAE_KYAW_PHASE	waning day noun after full moon
+လကွယ်	always	n	LA_KWE_PHASE	new moon phase noun
+အဖိတ်နေ့	always	n	A_PHEIK_NE_DATE	eve of sabbath noun
+ဥပုသ်နေ့	always	n	U_PO_NE_DATE	sabbath day noun
+ဗုဒ္ဓဟူး	next:နေ့	n	BODDAHU_DAY	Wednesday before နေ့
+ဗုဒ္ဓဟူး	always	n	BODDAHU_STANDALONE	Wednesday noun
 
 
 

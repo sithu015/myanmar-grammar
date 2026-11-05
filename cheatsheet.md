@@ -181,7 +181,7 @@ Owner proposed reading သည် printed original ကို စစ်ပြီ�
 
 - Original ဖိုင်ကို ထိန်းပါ။ ခွင့်ပြုထားသော WS/POS correction တစ်ခုချင်းစီအတွက် source၊ line/span၊ before/after context နှင့် rule ကို ledger တင်ပါ။ Non-whitespace Unicode codepoints ကို တစ်လိုင်းချင်း တိတိကျကျ ထိန်းပါ။ Spelling modernization၊ Unicode normalization၊ character ထည့်/ဖျက်/အစားထိုး မလုပ်ရ။
 - Line count နှင့် line-ending sequence၊ POS/TSV token/tag/index alignment၊ allowed 15 tags၊ complete change ledger၊ correction span ပြင်ပ tag မပြောင်းမှု၊ compound group span/hash/reconstruction ကို စစ်ပါ။ Structural pass သည် linguistic/POS အားလုံး မှန်ကန်ကြောင်း certification မဟုတ်ပါ။
-- Latest source၊ derived output၊ older prepared snapshot နှင့် authoritative base ကို ခွဲမှတ်ပါ။ Older prepared output ကို latest base အဖြစ် မမြှင့်တင်ရ။ Skill ဖိုင်ကို ပြင်ခြင်းသည် corpus snapshot ကို မပြောင်းပါ။
+- Latest source၊ derived output၊ older prepared snapshot နှင့် authoritative Active Base ကို ခွဲမှတ်ပါ။ Older prepared output ကို latest/full Base အဖြစ် မမြှင့်တင်ရ။ Skill source ZIP update သည် installed skill deployment မဟုတ်ပါ။
 - ပိုင်ရှင်၏ နောက်ဆုံးရှင်းလင်းချက်အရ လက်ရှိ corpus စာကြောင်း မည်သည့်တစ်ခုကိုမျှ freeze လုပ်ရန် ညွှန်ကြားထားခြင်း မရှိပါ။ နောင် precise sentence/version/span ကို အတိအကျ အတည်ပြုညွှန်ကြားမှသာ ထိုသတ်မှတ်အပိုင်းကို freeze လုပ်ရမည်။ Archive ပို့လာခြင်း၊ structural checks pass ဖြစ်ခြင်း သို့မဟုတ် prepared correction ဖြစ်ခြင်းက freeze ခွင့်ပြုချက် မဟုတ်ပါ။
 
 ---

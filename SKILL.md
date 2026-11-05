@@ -26,7 +26,7 @@ Two standards live in this skill. They are not the same layer.
 - **POS Tagging & Framework Harmonization (သဒ္ဒါအညွှန်းတပ်ခြင်း)**: မြန်မာစာအဖွဲ့၏ ဝါစင်္ဂ ၉ မျိုး၊ Corpus အသုံးချ `myPOS` 15-tag စနစ် (`abb, adj, adv, conj, fw, int, n, num, part, ppm, pron, punc, sb, tn, v`) နှင့် Universal Dependencies (`UD v2`) တို့အကြား တိကျစွာ အညွှန်းတပ်ခြင်းနှင့် ချိတ်ဆက်ခြင်း။
 - **Morphological & Compound Analysis (ပုဒ်နှင့် ပေါင်းစပ်ပုဒ် ခွဲခြမ်းစိတ်ဖြာခြင်း)**: ပုဒ် ၄ မျိုး (ပုဒ်ရိုး၊ ပေါင်းစပ်ပုဒ်၊ ပစ္စည်းရောပုဒ်၊ ဝိဘတ်သွယ်ပုဒ်)၊ `[တ/တစ် + X + တ/တစ် + Y]` လေးဝဏ္ဏပုဒ်များနှင့် Reconstructable Bracket Compound Layer (`[w1/p1 | w2/p2]/p`) တည်ဆောက်ခြင်း။
 - **Downstream NLP Tasks**:
-  - **Named Entity Recognition (NER)**: `PER`, `ORG`, `LOC`, `GPE`, `DATE`, `TIME`, `MISC` နယ်နိမိတ်နှင့် ဝိဘတ်ခွဲခြားမှု။
+  - **Named Entity Recognition (NER / 15-Class BIO Standard)**: Standardized 15-Class NER (`GPE, LOC, ORG, PER, DATE, TIME, NUM, MONEY, TERM, EVENT, PRODUCT, FACILITY, NORP, DISEASE_PHENOMENON, MISC`) ဖြင့် BIO / IOB2 annotation ဆောင်ရွက်ခြင်း၊ နာမ်ဝိဘတ် (`ppm`) ကို Entity span အတွင်း မထည့်ဘဲ Clitic peeling ပြုလုပ်ခြင်းနှင့် ရာထူး/ဂုဏ်ပုဒ် (`ဗိုလ်ချုပ်, ဒေါက်တာ, သံအမတ်ကြီး`) များကို `O` အဖြစ် သီးခြားခွဲထုတ်ခြင်း။
   - **Dependency Parsing (`CoNLL-U` / `myUDTree`)**: SOV ဝါကျတည်ဆောက်ပုံ၊ နာမ်ဝိဘတ် (`case`)၊ အမှီဝါကျကဏ္ဍ ၃ မျိုး (`acl`, `advcl`, `ccomp`) နှင့် Treebank တည်ဆောက်မှု။
   - **Corpus Indexing, WPL `.vert` & CQL / Word Sketch**: Sketch Engine vertical ဖိုင်များ၊ CQL query များနှင့် GDEX ဝါကျရွေးချယ်မှု။
   - **Machine Translation (NMT), LLM/RAG Chunking, Speech (TTS/ASR/G2P) & Sentiment/Deontic IE**: BPE မတိုင်မီ ပုဒ်ဖြတ်ခြင်း၊ အသတ်/သရ မပျက်စေသော RAG chunking၊ စကားသံပြောင်းလဲမှု (Voicing Sandhi) နှင့် အငြင်းပြ/တာဝန်ပြ ဝါကျခွဲခြားမှု။

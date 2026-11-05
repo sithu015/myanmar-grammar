@@ -324,6 +324,27 @@ def remediate_single_line(
                 )
                 working = new_working
 
+        # Stage 3B: Title/Rank Splits on POS tokens
+        pos_title_split_rules = [
+            ("Stage3", "S3_POS_TITLE_BOGYOKE", re.compile(r"(?<!\S)ဗိုလ်ချုပ်အောင်ဆန်း/n(?!\S)"), "ဗိုလ်ချုပ်/n အောင်ဆန်း/n"),
+            ("Stage3", "S3_POS_TITLE_BOGYI", re.compile(r"(?<!\S)ဗိုလ်ကြီးဇင်ယော်/n(?!\S)"), "ဗိုလ်ကြီး/n ဇင်ယော်/n"),
+            ("Stage3", "S3_POS_TITLE_BOHMU", re.compile(r"(?<!\S)ဗိုလ်မှူးစောမုတ်သုန်/n(?!\S)"), "ဗိုလ်မှူး/n စောမုတ်သုန်/n"),
+            ("Stage3", "S3_POS_TITLE_SAWBWA", re.compile(r"(?<!\S)စော်ဘွားကြီးစဝ်စံထွန်း/n(?!\S)"), "စော်ဘွားကြီး/n စဝ်စံထွန်း/n"),
+        ]
+        for stage, rule_id, regex, repl in pos_title_split_rules:
+            new_working = regex.sub(repl, working)
+            if new_working != working:
+                changes.append(
+                    {
+                        "line_number": line_no,
+                        "stage": stage,
+                        "rule_id": rule_id,
+                        "before": working,
+                        "after": new_working,
+                    }
+                )
+                working = new_working
+
         # Stage 4: Universal splitting of fused '၍' on POS tokens
         raw_toks = working.split()
         ywe_toks: list[str] = []
