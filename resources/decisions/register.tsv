@@ -1,0 +1,37 @@
+# form	register	function	pair	tag	note
+# A pair is the other register's form for the same job. Never rewrite one into the other.
+တယ်	spoken	realis	သည်	part	after a verb
+သည်	written	realis	တယ်	part	after a verb; after a noun it is the subject marker instead
+မယ်	spoken	irrealis	မည်	part	after a verb
+မည်	written	irrealis	မယ်	part	after a verb at the clause end; not the question word
+တဲ့	spoken	relativizer	သော	part	after a clause
+သော	written	relativizer	တဲ့	part	after a clause
+သည့်	written	relativizer	တဲ့	part	after a clause
+မယ့်	spoken	irrealis-relativizer	မည့်	part	after a clause
+မည့်	written	irrealis-relativizer	မယ့်	part	after a clause
+ရဲ့	spoken	genitive	၏	ppm	after a noun; after a verb at the end it is realis
+၏	written	genitive	ရဲ့	ppm	after a noun; after a verb at the end it is realis
+နဲ့	spoken	coordinator	နှင့်	conj	between two words
+နှင့်	written	coordinator	နဲ့	conj	between two words
+နဲ့	spoken	instrumental	ဖြင့်	ppm	before a verb
+ဖြင့်	written	instrumental	နဲ့	ppm	before a verb
+မှာ	spoken	locative	တွင်	ppm	after a noun
+တွင်	written	locative	မှာ	ppm	after a noun
+၌	written	locative	မှာ	ppm	after a noun
+တွေ	spoken	plural	များ	part	after a noun
+များ	written	plural	တွေ	part	after a noun
+တို့	written	plural	တွေ	part	after a noun
+ဘူး	spoken	negative-final	မ	part	clause-final; the noun ဘူး is a gourd
+လော့	written	imperative	ပါ	part	after a verb; spoken uses ပါ or a bare verb
+လင့်	written	prohibitive	နဲ့	part	in မ plus verb plus လင့်
+နဲ့	spoken	prohibitive	လင့်	part	in မ plus verb plus နဲ့
+မို့	spoken	cause	ကြောင့်	ppm	after a host
+ကြောင့်	written	cause	မို့	ppm	after a host
+အား	written	dative	ကို	ppm	after a noun; spoken often uses ကို
+သို့	written	allative	ကို	ppm	after a noun; spoken often uses ကို or nothing
+ဖို့	spoken	benefactive	အတွက်	ppm	after a host
+အတွက်	written	benefactive	ဖို့	ppm	after a host
+ငါ	spoken	pronoun	ကျွန်တော်	pron	first person; ကျွန်မ is the feminine written form
+ကျွန်တော်	written	pronoun	ငါ	pron	polite first person
+ဒါ	spoken	demonstrative	ဤ	pron	stands alone; ဒီ before a noun is adj
+ဤ	written	demonstrative	ဒါ	pron	stands alone

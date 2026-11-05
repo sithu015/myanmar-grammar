@@ -1,0 +1,403 @@
+# surface	when	tag	rule	note
+# when: always | at_end | medial | reading | prev:X | next:X | prev_in:a|b | next_in:a|b | next_clf | prev_textnum | between_num | all:clause & clause
+# First matching row wins. `reading` never auto-matches; it is returned when nothing else matches.
+# Tags are myPOS 15 only.
+
+ကို	after_word	ppm	PPM_KO	object marker after a word; sentence-initial ကို may be a name prefix
+ကို	reading	ppm	KO_READ_PPM	object marker
+ကို	reading	n	KO_NAME	name prefix, do not close at the start of a name
+မှာ	next_in:ထား|လိုက်	v	HMA_ORDER	verb "to order"; needs the following verb
+မှာ	prev_in:ခုနှစ်|ရက်|လ|နေ့|အခါ|အချိန်|နှစ်|နာရီ	ppm	HMA_TIME	temporal postposition after a time word
+မှာ	after_word	ppm	PPM_HMA	locative or topic; no tag without a host on the left
+တွင်	prev_in:ခုနှစ်|ရက်|လ|နေ့|အခါ|အချိန်|နှစ်|နာရီ	ppm	TWIN_TIME	temporal postposition after a time word
+တွင်	after_word	ppm	PPM_TWIN	locative; no tag without a host on the left
+၌	prev_in:ခုနှစ်|ရက်|လ|နေ့|အခါ|အချိန်|နှစ်|နာရီ	ppm	HNI_TIME	temporal postposition after a time word
+၌	after_word	ppm	PPM_HNI	locative; no tag without a host on the left
+မှ	next_in:လာ|ထွက်|စ|ရောက်	ppm	HMA2_ABL	ablative before a motion verb
+မှ	after_word	ppm	PPM_HMA2	source marker; no tag without a host on the left
+သို့	after_word	ppm	PPM_THO	allative; no tag without a host on the left
+ဖြင့်	after_word	ppm	PPM_PHYINT	instrumental or cause; no tag without a host on the left
+၏	all:prev_verb & at_end	part	I_REALIS	literary realis after a verb, not the genitive
+၏	after_word	ppm	PPM_I	genitive after a noun
+ရဲ့	all:prev_verb & at_end	part	YE_REALIS	colloquial realis after a verb
+ရဲ့	after_word	ppm	PPM_YE	colloquial genitive after a noun
+အတွက်	after_word	ppm	PPM_ATWET	benefactive after a host
+သော	after_word	part	PART_THAW	relativizer after a verb or clause
+သည့်	after_word	part	PART_THI	relativizer after a verb or clause
+ပါ	next:ဝင်	v	PA_INCLUDE	verb in split ပါ ဝင်; ပါဝင် should stay one token
+ပါ	after_word	part	PART_PA	polite or emphasis after a host
+ကြ	prev_verb	part	PART_KYA	plural actor after a verb
+များ	next:ပြား	v	MYA_VERB	verb in များ ပြား
+များ	prev:မ	v	MYA_NEG_VERB	predicate under negation
+များ	all:initial & next_in:သည်|တယ်	v	MYA_PRED	predicate "be many" at the start of a clause
+များ	after_word	part	PART_MYA	plural after a noun
+တို့	after_word	part	PART_TO	plural or associative after a noun
+လိမ့်	prev_verb	part	PART_LEINT	future modal after a verb
+သင့်	prev:မ	v	THINT_VERB	predicate "to be appropriate"
+သင့်	next:လျော်	v	THINT_LYAW	split သင့် လျော်; prefer the one-token form
+သင့်	prev_verb	part	THINT_AUX	debitive after a verb
+သင့်	reading	part	THINT_READ_PART	auxiliary
+သင့်	reading	v	THINT_READ_VERB	lexical verb
+ဟု	after_word	part	QUOT_HU	quotative after a clause
+ဟူ၍	after_word	part	QUOT_HUYWE	quotative after a clause
+ဟူသော	after_word	part	QUOT_HUTHAW	quotative before a noun
+ဟူသည်	after_word	part	QUOT_HUTHI	quotative after a clause
+သော်	after_word	part	PART_THAW2	concessive particle after a host; not part of a lexical compound
+ကျွန်တော်	always	pron	PRON_KYANO	first person
+ကျွန်မ	always	pron	PRON_KYAMA	first person
+ကျွန်ုပ်	always	pron	PRON_KYANOP	first person
+၎င်း	always	pron	PRON_AYIT	third person
+အမလေး	always	int	INT_AMALAY	interjection
+ဪ	always	int	INT_AW	interjection
+ဟယ်	always	int	INT_HE	interjection
+
+တမျိုးတည်း	always	adj	FIX_01	owner exact form
+တဖက်သတ်	always	adv	FIX_02	owner exact form
+တဆက်တည်း	always	adv	FIX_03	owner exact form
+တဦးတည်းပိုင်	always	adj	FIX_04	owner exact form
+တချိန်တည်း	always	adv	FIX_05	owner exact form
+တပြိုင်နက်	always	adv	FIX_06	owner exact form
+တခါတရံ	always	adv	FIX_07	owner exact form
+အခါတမျိုးမျိုး	always	adv	FIX_08	owner exact form
+တချက်လွှတ်	always	adj	FIX_09	owner exact form
+တကျွန်းပို့ဒဏ်	always	n	FIX_10	owner exact form
+တသီးတခြား	always	adv	FIX_11	owner exact form
+
+သည်	prev:ဆို	part	THI_AFTER_SO	nominalizer in ဆို သည် မှာ
+သည်	at_end	part	THI_FINAL	clause-final realis after a verb
+သည်	next_in:ဟု|ဟူ၍|ဟူသော	part	THI_BEFORE_QUOT	realis before a quotative
+သည်	all:prev_verb & next_in:ကို|မှာ|၌|တွင်|မှ|အား|သို့|၏|ရဲ့|သော|သည့်|က	part	THI_BEFORE_CASE	nominalizer after a verb, before a case marker
+သည်	prev_verb	part	THI_AFTER_VERB	after a verb it is not the subject marker
+သည်	medial	ppm	THI_SUBJECT	subject marker after a noun phrase
+သည်	reading	adj	THI_DEMONSTRATIVE	rare pre-nominal "this"; do not use if a subject or verb frame already matched
+
+က	all:prev:( & next:)	sb	KA_BULLET	parenthetical subclause letter only
+က	prev:ပါ	conj	KA_IF	conditional after ပါ
+က	prev_verb	conj	KA_IF_VERB	"if" after a verb
+က	all:after_word & next_verb	ppm	KA_SUBJ	subject marker before a predicate
+က	reading	ppm	KA_PPM	subject or ablative after a noun
+က	reading	conj	KA_COND	"if" after a verb
+က	reading	n	KA_NOUN	lexical "saddle"
+က	reading	v	KA_VERB	lexical "dance"
+
+နှင့်	all:prev2:မ & prev_verb	part	HNIN_PROHIB	prohibitive in မ + verb + နှင့်
+နှင့်	all:prev_verb & next_in:ပြီ|ပါ|မယ်|မည်	part	HNIN_PRIOR	prior-action particle before ပြီ or ပါ
+နှင့်	all:prev_verb & at_end	part	HNIN_PRIOR_END	prior-action particle at the clause end
+နှင့်	next_in:အညီ|ပတ်သက်|ပတ်သက်၍|အတူ	ppm	HNIN_INSTR	instrumental or comitative frame
+နှင့်	next_verb	ppm	HNIN_WITH_VERB	instrumental before a predicate, as in ဓား နှင့် ခုတ်
+နှင့်	all:after_word & next_word	conj	HNIN_COORD	coordinates the word on the left with the word on the right
+နှင့်	reading	conj	HNIN_COORD_READ	between two noun phrases
+နှင့်	reading	ppm	HNIN_WITH	"with/by" before a predicate
+နဲ့	all:prev2:မ & prev_verb	part	NEH_PROHIB	colloquial prohibitive
+နဲ့	all:prev_verb & at_end	part	NEH_PROHIB_END	sentence-final prohibitive
+နဲ့	next_in:အညီ|ပတ်သက်|ပတ်သက်၍|အတူ	ppm	NEH_INSTR	colloquial instrumental frame
+နဲ့	next_verb	ppm	NEH_WITH_VERB	instrumental before a predicate
+နဲ့	all:after_word & next_word	conj	NEH_COORD	colloquial coordinator
+နဲ့	reading	conj	NEH_COORD_READ	between two noun phrases
+နဲ့	reading	part	NEH_PROHIB_READ	prohibitive, usually fused as မပြောနဲ့
+
+ရာ	prev_textnum	tn	YA_HUNDRED	hundred after a spelled number
+ရာ	next_in:တွင်|၌|မှ|ရောက်	part	YA_POSTVERB	post-verbal locator particle
+ရာ	prev_verb	part	YA_AFTER_VERB	after an action verb, including before a noun
+ရာ	reading	part	YA_PART	after an action verb
+ရာ	reading	n	YA_NOUN	place or thing inside နေရာ အရာ ရိုက်ရာ, already one token when lexicalized
+ရာ	reading	tn	YA_NUM	numeral hundred
+
+နှစ်	next_clf	tn	HNIT_TWO	"two" before a classifier
+နှစ်	next:ကြာ	n	HNIT_YEAR	"year" in a duration
+နှစ်	next:ခုနှစ်	n	HNIT_ERA	"year" before ခုနှစ် when not fused
+နှစ်	next_in:ရာ|ထောင်|သိန်း|သန်း|ဆယ်|လ|ရက်	tn	HNIT_BEFORE_UNIT	"two" before a unit or a power of ten
+နှစ်	reading	tn	HNIT_READ_TWO	the number two
+နှစ်	reading	n	HNIT_READ_YEAR	the noun year
+
+သုံး	next_clf	tn	THONE_THREE	"three" before a classifier
+သုံး	next_in:နှစ်|လ|ရက်|ရာ	tn	THONE_BEFORE_UNIT	"three" before a unit or hundred
+သုံး	prev:ငွေ	v	THONE_USE	"to use"
+သုံး	next:စွဲ	v	THONE_USE2	"to use" in သုံးစွဲ when split
+သုံး	reading	tn	THONE_READ_THREE	the number three
+သုံး	reading	v	THONE_READ_USE	the verb use
+
+မ	all:prev:- & prev2:ကျား & next:ဘာဝ	n	MA_GENDER	female in ကျား - မ ဘာဝ
+မ	next_neg	part	MA_NEG	negation only before a verb, auxiliary, or quality word
+မ	reading	n	MA_NOUN	name prefix or the gender noun
+မ	reading	part	MA_NEG_READ	negation
+
+ဒသမ	between_num	n	DASAMA_DECIMAL	decimal point between numbers
+ဒသမ	always	adj	DASAMA_ORDINAL	ordinal "tenth" everywhere else
+
+အား	next_in:စိုက်|ရှိ|ကောင်း|နည်း|ကြီး|ငယ်	n	AH_STRENGTH	lexical "strength"
+အား	after_word	ppm	AH_DATIVE	dative or accusative after a host; ဖိအား ဓာတ်အား အင်အား stay one token
+အား	reading	n	AH_NOUN	strength when there is no host on the left
+
+မည်	at_end	part	MYI_FINAL	clause-final future
+မည်	next_in:ဟု|ဟူ၍|။	part	MYI_BEFORE_QUOT	future particle before a quotative
+မည်	reading	part	MYI_READ	future or irrealis particle
+ဦး	prev_textnum	part	U_CLF	person classifier after a number; a name prefix stays glued to the name
+ယောက်	prev_textnum	part	YAUK_CLF	classifier after a number
+ခု	prev_textnum	part	KHU_CLF	classifier after a number
+ပါး	prev_textnum	part	PA_CLF	classifier after a number
+ကြိမ်	prev_textnum	part	KYEINT_CLF	classifier after a number
+ဦး	reading	part	U_CLF_READ	classifier, not a name prefix
+
+
+ခဲ့	prev:မ	v	KHE_MAIN	main verb after negation
+ပြီး	prev:မ	v	PYI_MAIN	main verb after negation
+လိုက်	prev:မ	v	LAIK_MAIN	main verb after negation
+နေ	prev:မ	v	NAY_MAIN	main verb after negation
+ပေး	prev:မ	v	PAY_MAIN	main verb after negation
+သွား	prev:မ	v	THWA_MAIN	main verb after negation
+လာ	prev:မ	v	LA_MAIN	main verb after negation
+ထား	prev:မ	v	HTA_MAIN	main verb after negation
+ခဲ့	reading	part	KHE_AUX	aspect after a verb
+ခဲ့	reading	v	KHE_VERB	lexical verb
+ပြီး	reading	part	PYI_AUX	aspect after a verb
+ပြီး	reading	conj	PYI_CONJ	only inside ပြီးလျှင် ပြီးနောက်, which should stay one token
+ပြီး	reading	v	PYI_VERB	to finish
+လိုက်	reading	part	LAIK_AUX	aspect
+လိုက်	reading	v	LAIK_VERB	lexical verb
+နေ	reading	part	NAY_AUX	continuous aspect
+နေ	reading	v	NAY_VERB	to stay
+ပေး	reading	part	PAY_AUX	benefactive auxiliary
+ပေး	reading	v	PAY_VERB	to give
+သွား	reading	part	THWA_AUX	directional auxiliary
+သွား	reading	v	THWA_VERB	to go
+လာ	reading	part	LA_AUX	directional auxiliary
+လာ	reading	v	LA_VERB	to come
+ထား	reading	part	HTA_AUX	resultative auxiliary
+ထား	reading	v	HTA_VERB	to keep
+
+တစ်စုံတစ်ရာ	next_in:ကို|က|သည်|၏|မှ|အား	pron	TASON_PRON	indefinite pronoun as the noun phrase
+တစုံတရာ	next_in:ကို|က|သည်|၏|မှ|အား	pron	TASON2_PRON	archaic spelling, same frame
+တစ်စုံတစ်ရာ	prev_in:အကြောင်း|ကိစ္စ|အမှု	adj	TASON_ADJ	modifies the noun on the left
+တစုံတရာ	prev_in:အကြောင်း|ကိစ္စ|အမှု	adj	TASON2_ADJ	archaic spelling
+တစ်စုံတစ်ရာ	next:သော	adj	TASON_ATTR	before သော
+တစုံတရာ	next:သော	adj	TASON2_ATTR	archaic spelling
+တစ်စုံတစ်ရာ	reading	pron	TASON_READ_PRON	entity reading
+တစ်စုံတစ်ရာ	reading	adj	TASON_READ_ADJ	modifier reading; never DET
+
+နှစ်ပေါင်းများစွာ	next_in:သည်|ကို|က|အား	n	PAUNG_TIME_N	head noun
+လပေါင်းများစွာ	next_in:သည်|ကို|က|အား	n	PAUNG_TIME_N2	head noun
+ရာစုနှစ်ပေါင်းများစွာ	next_in:သည်|ကို|က|အား	n	PAUNG_TIME_N3	head noun
+ရာပေါင်းများစွာ	next_in:သည်|ကို|က|အား	n	PAUNG_N	head noun
+ထောင်ပေါင်းများစွာ	next_in:သည်|ကို|က|အား	n	PAUNG_N2	head noun
+သန်းပေါင်းများစွာ	next_in:သည်|ကို|က|အား	n	PAUNG_N3	head noun
+ဒါဇင်ပေါင်းများစွာ	next_in:သည်|ကို|က|အား	n	PAUNG_N4	head noun
+ဘီလီယံပေါင်းများစွာ	next_in:သည်|ကို|က|အား	n	PAUNG_N5	head noun
+ရက်ပေါင်းများစွာ	next_in:သည်|ကို|က|အား	n	PAUNG_N6	head noun
+ရာပေါင်းများစွာ	next:သော	adj	PAUNG_ADJ	quantifies a following noun
+ထောင်ပေါင်းများစွာ	next:သော	adj	PAUNG_ADJ2	quantifies a following noun
+သန်းပေါင်းများစွာ	next:သော	adj	PAUNG_ADJ3	quantifies a following noun
+ရာပေါင်းများစွာ	reading	adj	PAUNG_READ_ADJ	quantifier
+ရာပေါင်းများစွာ	reading	n	PAUNG_READ_N	head noun
+ရာပေါင်းများစွာ	reading	adv	PAUNG_READ_ADV	time adverb, chiefly the year/month/century forms
+
+ချင်း	reading	n	CHIN_ETH	ethnicity
+ချင်း	reading	part	CHIN_IMMED	immediacy particle
+စစ်	reading	n	SIT_WAR	war or military
+စစ်	reading	v	SIT_EXAM	to examine; စစ်ဆေး should stay one token
+ဝါ	reading	n	WA_RANK	seniority
+ဝါ	reading	conj	WA_OR	disjunction
+ကား	reading	ppm	KAR_TOPIC	topic marker
+ကား	reading	n	KAR_VEHICLE	vehicle
+မူ	reading	n	MU_POLICY	policy
+မူ	reading	ppm	MU_CONTRAST	contrastive postposition
+အရ	prev_in:ဥပဒေ|နည်းဥပဒေ|အက်ဥပဒေ|ပုဒ်မ|ချက်	ppm	AYAR_PPM	"according to"
+အရ	reading	ppm	AYAR_READ_PPM	according to
+အရ	reading	n	AYAR_READ_N	revenue; do not glue အရ+သာ into အရသာ
+အနက်	prev:ဦးရေ	ppm	ANET_PARTITIVE	"among" after a count
+အနက်	reading	n	ANET_MEANING	meaning
+အနက်	reading	ppm	ANET_READ_PPM	partitive
+
+# News closed class from the 173k-sentence frequency profile
+ကြောင့်	after_word	ppm	PPM_KYAUNT	cause after a host
+ဖို့	prev_verb	part	PHO_HEAD	Okell special head after a listed verb: to V or for V-ing
+ဖို့	after_word	ppm	PPM_PHO	benefactive after a noun or other host
+ဖို့	reading	part	PHO_READ	special head when the verb is not in the list
+တဲ့	after_word	part	PART_TE	colloquial relativizer after a clause
+တယ်	after_word	part	PART_TEH	colloquial realis after a verb
+မယ်	after_word	part	PART_MEH	colloquial irrealis after a verb
+ပြီ	after_word	part	PART_PYI	perfective after a verb
+နှင့်တကွ	always	conj	HNINT_TAKWA	fixed conjunctive, one token
+အပါအဝင်	always	ppm	APAIN_WIN	inclusive postposition, one token
+နေ့စဉ်	always	adj	DAILY_ADJ	standalone; နေ့စဉ်မှတ်စု stays one noun
+နောက်ဆုံး	reading	adj	LAST_ADJ	before a noun; one adjudicated news line
+နောက်ဆုံး	reading	adv	LAST_ADV	before a verb, "finally"
+ဇလ	always	abb	ZALA_ABB	meteorological abbreviation next to မိုး
+မိုး	next:ဇလ	abb	MOE_ABB	meteorological pair မိုး/ဇလ
+စေ	prev_verb	part	SE_CAUS	causative after a verb; the one-token ဖြစ်စေ stays conj
+ခိုင်း	prev_verb	part	KHAIN_CAUS	order-causative after a verb
+တွေ	after_word	part	PART_TWE	spoken plural after a noun
+မယ့်	after_word	part	PART_MEI	spoken irrealis relativizer
+မည့်	after_word	part	PART_MYI	written irrealis relativizer
+လော့	prev_verb	part	PART_LAW	written imperative after a verb
+မည်	all:prev_verb & at_end	part	PART_MYI_FINAL	written irrealis after a verb; not a question word
+မို့	after_word	ppm	PPM_MO	spoken cause after a host
+ဘူး	prev_in:ပါ|လဲ|တာ	part	BU_AFTER_PART	spoken negative final
+ဘူး	all:prev_verb & at_end	part	BU_FINAL	spoken negative final after a verb
+ဘူး	reading	n	BU_NOUN	gourd or bottle
+ငါ	always	pron	PRON_NGA	spoken first person
+ကျုပ်	always	pron	PRON_KYOK	spoken first person
+ဒါ	always	pron	PRON_DA	spoken demonstrative standing alone
+ခင်ဗျား	always	pron	PRON_KHINMYA	spoken second person
+ဒီ	next_word	adj	DI_ADJ	spoken demonstrative before a noun
+ဒီ	reading	pron	DI_PRON	standalone demonstrative
+မိုး	reading	n	MOE_RAIN	rain
+မိုး	reading	abb	MOE_ABB_READ	abbreviation only beside ဇလ
+နာရီ	prev_textnum	n	NARI_HOUR	hour after a number, not a classifier particle
+ရ	prev:ဒဏ်ရာ	v	YA_SUFFER	verb in ဒဏ်ရာ ရ, not an auxiliary
+ရ	prev:မ	v	YA_MAIN	main verb under negation
+ရ	prev_verb	part	YA_AUX	obligative or result particle after a verb
+ရ	reading	v	YA_READ_VERB	lexical verb
+ရ	reading	part	YA_READ_PART	auxiliary
+နိုင်	prev_verb	part	NAING_MODAL	"can" after a verb
+နိုင်	reading	part	NAING_READ_PART	modal
+နိုင်	reading	v	NAING_WIN	to win
+နိုင်	reading	n	NAING_NAME	name prefix; do not glue an open name
+လ	prev_textnum	n	LA_MONTH	month noun after a number
+ရက်	prev_textnum	n	YET_DAY	day noun after a number
+ကြား	reading	ppm	KYA_BETWEEN	between
+ကြား	reading	v	KYA_HEAR	to hear
+ကာ	reading	conj	KA2_SEQ	sequential conjunction when it is its own token
+ကာ	reading	n	KA2_NOUN	do not cut ကာလ
+စွာ	after_word	part	SWA_ADV	makes a quality word into an adverb
+ပို	next_word	adv	PO_COMP	comparative before a quality word
+ပို	reading	adv	PO_READ	comparative
+ပထမ	always	adj	ORD_1	ordinal; not a noun tag
+ပဌမ	always	adj	ORD_1B	ordinal spelling variant
+ဒုတိယ	always	adj	ORD_2	ordinal
+တတိယ	always	adj	ORD_3	ordinal
+စတုတ္ထ	always	adj	ORD_4	ordinal
+ပဉ္စမ	always	adj	ORD_5	ordinal
+သူ	always	pron	PRON_THU	person, or the relativizer after a verb; same tag
+ဘယ်သူ	always	pron	PRON_WHO	interrogative pronoun; one token
+အဘယ်သူ	always	pron	PRON_WHO_LIT	literary who
+မည်သူ	always	pron	PRON_WHO_MYI	literary who
+အဲဒါ	always	pron	PRON_EDA	spoken that
+ဟိုဟာ	always	pron	PRON_HOHA	that thing
+ဤအရာ	always	pron	PRON_ITHIS	this thing
+ထိုအရာ	always	pron	PRON_THAT	that thing
+အဘယ်အရာ	always	pron	PRON_WHAT_LIT	what, standing as the noun
+ဘာ	next_in:လဲ|ကို|က|သည်|၏|ရဲ့	pron	BA_PRON	what, as the noun phrase
+ဘာ	at_end	pron	BA_END	what, standing alone
+ဘာ	next_word	adj	BA_ADJ	what, before a noun
+ဘာ	reading	pron	BA_READ	interrogative pronoun
+ဤ	next_word	adj	I_ADJ	this, before a noun
+ဤ	reading	pron	I_PRON	this, standing alone
+ထို	next_word	adj	HTO_ADJ	that, before a noun
+ထို	reading	pron	HTO_PRON	that, standing alone
+ဟို	next_word	adj	HO_ADJ	yonder, before a noun
+ဟို	reading	pron	HO_PRON	yonder, standing alone
+အဘယ်	next_word	adj	ABE_ADJ	which, before a noun
+အဘယ်	reading	pron	ABE_PRON	which, standing alone
+မည်သည့်	next_word	adj	MYISI_ADJ	which, before a noun
+သင်	all:next_in:သည်|တယ်|မည်|မယ် & next_end	v	THIN_TEACH	to teach, when the ending closes the clause
+သင်	next_in:သည်|က|ကို|၏|ရဲ့|တို့|မှာ|လဲ	pron	THIN_YOU	you, before a case marker or a question
+သင်	reading	v	THIN_READ_V	to teach
+သင်	reading	pron	THIN_READ_PRON	you
+ခြင်း	prev_verb	part	CHIN_NOM	nominalizer after a listed verb; the clause becomes a noun
+ခြင်း	reading	part	CHIN_READ	nominalizer
+ကောင်း	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+ကောင်း	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+ကောင်း	next_word	adj	QUAL_ATTR	inside the noun phrase
+ကောင်း	reading	v	QUAL_READ_V	predicate reading
+ကောင်း	reading	adj	QUAL_READ_ADJ	modifier reading
+ကြီး	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+ကြီး	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+ကြီး	next_word	adj	QUAL_ATTR	inside the noun phrase
+ကြီး	reading	v	QUAL_READ_V	predicate reading
+ကြီး	reading	adj	QUAL_READ_ADJ	modifier reading
+လှ	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+လှ	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+လှ	next_word	adj	QUAL_ATTR	inside the noun phrase
+လှ	reading	v	QUAL_READ_V	predicate reading
+လှ	reading	adj	QUAL_READ_ADJ	modifier reading
+ဖြူ	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+ဖြူ	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+ဖြူ	next_word	adj	QUAL_ATTR	inside the noun phrase
+ဖြူ	reading	v	QUAL_READ_V	predicate reading
+ဖြူ	reading	adj	QUAL_READ_ADJ	modifier reading
+ငယ်	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+ငယ်	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+ငယ်	next_word	adj	QUAL_ATTR	inside the noun phrase
+ငယ်	reading	v	QUAL_READ_V	predicate reading
+ငယ်	reading	adj	QUAL_READ_ADJ	modifier reading
+လှပ	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+လှပ	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+လှပ	next_word	adj	QUAL_ATTR	inside the noun phrase
+လှပ	reading	v	QUAL_READ_V	predicate reading
+လှပ	reading	adj	QUAL_READ_ADJ	modifier reading
+မြန်	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+မြန်	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+မြန်	next_word	adj	QUAL_ATTR	inside the noun phrase
+မြန်	reading	v	QUAL_READ_V	predicate reading
+မြန်	reading	adj	QUAL_READ_ADJ	modifier reading
+နှေး	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+နှေး	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+နှေး	next_word	adj	QUAL_ATTR	inside the noun phrase
+နှေး	reading	v	QUAL_READ_V	predicate reading
+နှေး	reading	adj	QUAL_READ_ADJ	modifier reading
+ပူ	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+ပူ	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+ပူ	next_word	adj	QUAL_ATTR	inside the noun phrase
+ပူ	reading	v	QUAL_READ_V	predicate reading
+ပူ	reading	adj	QUAL_READ_ADJ	modifier reading
+အေး	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+အေး	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+အေး	next_word	adj	QUAL_ATTR	inside the noun phrase
+အေး	reading	v	QUAL_READ_V	predicate reading
+အေး	reading	adj	QUAL_READ_ADJ	modifier reading
+ရှည်	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+ရှည်	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+ရှည်	next_word	adj	QUAL_ATTR	inside the noun phrase
+ရှည်	reading	v	QUAL_READ_V	predicate reading
+ရှည်	reading	adj	QUAL_READ_ADJ	modifier reading
+တို	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+တို	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+တို	next_word	adj	QUAL_ATTR	inside the noun phrase
+တို	reading	v	QUAL_READ_V	predicate reading
+တို	reading	adj	QUAL_READ_ADJ	modifier reading
+ခက်	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+ခက်	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+ခက်	next_word	adj	QUAL_ATTR	inside the noun phrase
+ခက်	reading	v	QUAL_READ_V	predicate reading
+ခက်	reading	adj	QUAL_READ_ADJ	modifier reading
+လွယ်	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+လွယ်	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+လွယ်	next_word	adj	QUAL_ATTR	inside the noun phrase
+လွယ်	reading	v	QUAL_READ_V	predicate reading
+လွယ်	reading	adj	QUAL_READ_ADJ	modifier reading
+ဟောင်း	next_in:သော|သည့်|တဲ့|မည့်|မယ့်|စွာ	adj	QUAL_REL	modifies a noun, or takes စွာ
+ဟောင်း	all:next_in:သည်|၏|တယ်|မယ်|မည်|ပြီ & next_end	v	QUAL_PRED	predicate only when the ending closes the clause
+ဟောင်း	next_word	adj	QUAL_ATTR	inside the noun phrase
+ဟောင်း	reading	v	QUAL_READ_V	predicate reading
+ဟောင်း	reading	adj	QUAL_READ_ADJ	modifier reading
+ဟာ	all:after_word & next_verb	ppm	HA_SUBJ	colloquial subject marker; Jenny and Wikipedia low register
+ဟာ	reading	pron	HA_DEM	that thing, standing alone
+ဟာ	reading	ppm	HA_PPM	subject marker when the next verb is not in the list
+ကောင်းကောင်း	next_verb	adv	REDUP_ADV	reduplicated property verb before a verb
+ကောင်းကောင်း	after_word	adj	REDUP_ADJ	reduplicated property verb after a noun
+ကောင်းကောင်း	reading	adv	REDUP_READ_ADV	adverbial reduplication
+ကောင်းကောင်း	reading	adj	REDUP_READ_ADJ	attributive reduplication
+ကြီးကြီး	next_verb	adv	REDUP_ADV	reduplicated property verb before a verb
+ကြီးကြီး	after_word	adj	REDUP_ADJ	reduplicated property verb after a noun
+ကြီးကြီး	reading	adv	REDUP_READ_ADV	adverbial reduplication
+ကြီးကြီး	reading	adj	REDUP_READ_ADJ	attributive reduplication
+မြန်မြန်	next_verb	adv	REDUP_ADV	reduplicated property verb before a verb
+မြန်မြန်	after_word	adj	REDUP_ADJ	reduplicated property verb after a noun
+မြန်မြန်	reading	adv	REDUP_READ_ADV	adverbial reduplication
+မြန်မြန်	reading	adj	REDUP_READ_ADJ	attributive reduplication
+ဖြည်းဖြည်း	next_verb	adv	REDUP_ADV	reduplicated property verb before a verb
+ဖြည်းဖြည်း	after_word	adj	REDUP_ADJ	reduplicated property verb after a noun
+ဖြည်းဖြည်း	reading	adv	REDUP_READ_ADV	adverbial reduplication
+ဖြည်းဖြည်း	reading	adj	REDUP_READ_ADJ	attributive reduplication
+အပေါ်	always	n	REL_N	relational noun, not a postposition; Jenny
+အောက်	always	n	REL_N	relational noun; the case marker follows it
+အထဲ	always	n	REL_N	relational noun, not a postposition
+နည်းနည်း	next_verb	adv	REDUP_ADV	myPOS adverb example; before a verb
+နည်းနည်း	after_word	adj	REDUP_ADJ	after a noun
+နည်းနည်း	reading	adv	REDUP_READ_ADV	a little
+နည်းနည်း	reading	adj	REDUP_READ_ADJ	attributive
+
+
+
+

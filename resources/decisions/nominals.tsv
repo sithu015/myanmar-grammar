@@ -1,0 +1,23 @@
+# class	function	tag	ud	nlp
+noun	names a person, animal, thing, place, time, or idea	n	NOUN	five subclasses share this one tag
+noun-proper	one specific referent	n	PROPN	myPOS stays n; NER may be PER, GPE, LOC, or ORG
+noun-common	the class, not one individual	n	NOUN	school, river, dog
+noun-collective	many treated as one	n	NOUN	army, team, audience; still n, not a plural tag
+noun-concrete	can be seen or touched	n	NOUN	not a separate tag
+noun-abstract	known only as an idea	n	NOUN	ပညာ, မေတ္တာ, လွတ်လပ်ရေး; အ- and ခြင်း build these
+noun-gender	male, female, neuter, or either	n	NOUN	not a tag; only ကျား - မ ဘာဝ closes မ as n
+noun-number	singular, or plural with များ တို့ တွေ	n	NOUN	the marker is part; do not stack များတို့
+pronoun	stands where a noun stood	pron	PRON	same argument slots as a noun: nsubj, obj, obl
+pronoun-personal	speaker, hearer, or other	pron	PRON	ကျွန်တော် ငါ သူ ၎င်း; မင်း stays open, it is also a name prefix
+pronoun-demonstrative	stands alone and points	pron	PRON	ဒါ ဤ ထို ဟို with no noun after them
+pronoun-interrogative	asks which noun	pron	PRON	ဘယ်သူ မည်သူ ဘာလဲ; one token, do not split
+pronoun-numeral	a quantity used as the noun	pron	PRON	တစ်စုံတစ်ရာ before a case marker
+adjective	modifies a noun or a pronoun	adj	ADJ	never DET in a myPOS file
+adjective-quality	color, size, value	adj	ADJ	နာမ်နောက် သို့မဟုတ် သော ရှေ့; predicate is v
+adjective-demonstrative	points at the following noun	adj	ADJ	ဤလူ ဒီစာအုပ် ထိုအကြောင်း; not pron
+adjective-numeral	a spelled or ordinal quantity beside a noun	tn	NUM	digits are num; ordinals ပထမ ဒုတိယ are adj
+adjective-interrogative	asks about the following noun	adj	ADJ	ဘာစာအုပ် မည်သည့်အရာ အဘယ်အကြောင်း
+adjective-degree	plain, ပို, or အ-ဆုံး	adj	ADJ	ပို is adv; စွာ makes an adverb; do not split အကြီးဆုံး
+nominalizer	turns a verb into a noun phrase	part	PART	ခြင်း after a verb is part; the clause is the noun, not a new tag
+property-verb	external analyses call a state word a verb, not an adjective	v	VERB	myPOS still uses adj in the attributive slot and v in the predicate slot
+

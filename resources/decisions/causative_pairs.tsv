@@ -1,0 +1,49 @@
+# simplex	causative	kind	simplex_gloss	causative_gloss
+# Both forms are myPOS v. This table does not change the tag.
+# kind: aspirate | devoice | suppletive
+# လိမ့် after another verb is the modal part, not this simplex verb.
+ကျ	ချ	aspirate	fall	drop
+ကျက်	ချက်	aspirate	be cooked	cook
+ကျေ	ချေ	aspirate	be ground	grind
+ကျိုး	ချိုး	aspirate	be broken	break
+ကျွတ်	ချွတ်	aspirate	come off	take off
+ကြွေ	ခြွေ	aspirate	fall off	pluck
+ကျဉ်း	ချဉ်း	aspirate	be narrow	make narrow
+ကြွင်း	ခြွင်း	aspirate	be left	leave out
+ကွာ	ခွာ	aspirate	part	peel off
+ကြောက်	ခြောက်	aspirate	fear	frighten
+စွတ်	ဆွတ်	aspirate	be damp	moisten
+စန့်	ဆန့်	aspirate	be stretched	stretch
+စုတ်	ဆုတ်	aspirate	be torn	tear
+ပွင့်	ဖွင့်	aspirate	be open	open
+ပေါက်	ဖောက်	aspirate	be pierced	pierce
+ပေါ်	ဖော်	aspirate	appear	reveal
+ပြေ	ဖြေ	aspirate	be undone	undo
+ပြည့်	ဖြည့်	aspirate	be full	fill
+ပျက်	ဖျက်	aspirate	be spoilt	spoil
+ပြတ်	ဖြတ်	aspirate	be cut	cut
+ပြုတ်	ဖြုတ်	aspirate	be detached	detach
+ပြန့်	ဖြန့်	aspirate	be spread	spread
+ပဲ့	ဖဲ့	aspirate	be chipped	chip off
+ပြို	ဖြို	aspirate	collapse	demolish
+မြုပ်	မြှုပ်	devoice	be submerged	bury
+မြင့်	မြှင့်	devoice	be high	raise
+မြောက်	မြှောက်	devoice	be raised	lift
+မျော	မျှော	devoice	float	set afloat
+နု	နှု	devoice	be soft	soften
+နိမ့်	နှိမ့်	devoice	be low	lower
+ညွတ်	ညှွတ်	devoice	be bent	bend
+ညီ	ညှိ	devoice	be even	make even
+လွတ်	လွှတ်	devoice	be free	set free
+လဲ	လှဲ	devoice	fall over	fell
+လန်	လှန်	devoice	turn	turn over
+လည်	လှည့်	devoice	revolve	turn
+လိမ့်	လှိမ့်	devoice	roll	roll something
+လွင့်	လွှင့်	devoice	be blown	blow away
+လျော့	လျှော့	devoice	be slack	reduce
+စား	ကျွေး	suppletive	eat	feed
+သောက်	တိုက်	suppletive	drink	give to drink
+အိပ်	သိပ်	suppletive	sleep	put to sleep
+မြင်	ပြ	suppletive	see	show
+ဝတ်	ဆင်	suppletive	wear	dress someone
+သေ	သတ်	suppletive	die	kill
