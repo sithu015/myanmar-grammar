@@ -40,6 +40,25 @@ Attach `-ရေး` **only** to the single token immediately preceding it:
   - `ဆောင်ရွက် မှု`, `တင်သွင်း ခြင်း`, `သုံးစွဲ ခွင့်`, `ရောင်းချ ခဲ့ ခြင်း`, `ကျေအေး နိုင် ခွင့်`
   - **Auxiliary `ခဲ့` + Nominalizer `မှု` (Strict Separation)**: အတိတ်ကာလပြ `ခဲ့/part` နှင့် နာမ်ပြု `မှု/part` တို့သည် သီးခြားပစ္စည်းများ ဖြစ်သဖြင့် `ခဲ့မှု/n` ဟု မပေါင်းရဘဲ `[Verb]/v ခဲ့/part မှု/part` ဟု အမြဲ သီးခြားစီ ခွဲထုတ်ရမည် (ဥပမာ `ဖျက်ဆီး/v ခဲ့/part မှု/part`, `ပေး/v ခဲ့/part မှု/part`, `ပေးပို့/v ခဲ့/part မှု/part`, `သတ်ဖြတ်/v ခဲ့/part မှု/part`)။
   - **Lexicalized Exceptions (Merged as 1 Token)**: `ပြစ်မှု`, `မှုခင်း`, `တရားမမှု`, `ရာဇဝတ်မှု`, `လူသတ်မှု`, `အပြုအမူ`, `ယဉ်ကျေးမှု`, `ပျော်ရွှင်မှု`, `မူပိုင်ခွင့်`, `အခွင့်အရေး`, `လုပ်ပိုင်ခွင့်`, `စီရင်ပိုင်ခွင့်`, `ပိုင်ဆိုင်ခွင့်`, `ကင်းလွတ်ခွင့်`.
+
+### 2.2.1 Context-Dependent Compounds & Boundary Disambiguation (Syllables ≤ 3)
+> [!IMPORTANT]
+> **Owner Directive (Context-Grounded Parsing vs. Blanket Regex Rule Fixes)**:  
+> Syllables ≤ 3 (အထူးသဖြင့် ၂ လုံး / ၃ လုံးတွဲ ဝေါဟာရများ) သည် ဝါကျတွင်း ကျရောက်သည့် စကားစပ် (Context) နှင့် သဒ္ဒါတာဝန် (Syntactic Role) ပေါ် မူတည်၍ ပုဒ်ဖြတ်ခြင်း ကွဲပြားသည်။ မည်သည့်အခါမျှ စကားစပ်မစစ်ဆေးဘဲ ကိန်းသေ Regex သို့မဟုတ် Global String Replacement ဖြင့် ပုံသေ မခွဲရ/မပေါင်းရ။
+> 
+> 1. **Lexicalized Compound Noun / Modifier (`Merged as 1 Token` / `n`)**:
+>    - ဝါကျတွင် နာမ်အထူးပြု သို့မဟုတ် အမည်နာမ/ခေါင်းစဉ်အဖြစ် ရပ်တည်နေသည့် အခါများတွင် ပေါင်းစပ်ထားမှသာ မူရင်းအဓိပ္ပာယ် မပျက်ယွင်းနိုင်ပါ။
+>    - ဥပမာ- `ဝင်ခွင့် စာမေးပွဲ` (Entrance exam), `တက္ကသိုလ် ဝင်ခွင့်` (University admission), `ကျောင်း ဝင်ခွင့်` (School admission), `ဝင်ခွင့် ကန့်သတ်ချက်` (Admission criteria) -> `ဝင်ခွင့်/n` အဖြစ် ပေါင်းစပ်ရမည် (စကားလုံး တစ်ဆက်တည်း မထားပါက အဓိပ္ပာယ် ပျက်ယွင်းသွားမည်)။
+>    - ဥပမာ- `ရပိုင်ခွင့် ဥပဒေ` (Entitlement law), `လုပ်ပိုင်ခွင့် အာဏာ` (Jurisdictional authority), `နေထိုင်ခွင့် လက်မှတ်` (Residence permit) -> `ရပိုင်ခွင့်/n`, `လုပ်ပိုင်ခွင့်/n`, `နေထိုင်ခွင့်/n`။
+> 
+> 2. **Active Verb Phrase + Modal/Nominalizer Complement (`Split` / `v + part`)**:
+>    - ဝါကျတွင် မဏ္ဍိုင်ကြိယာ (Matrix Predicate) သို့မဟုတ် ကိရိယာအဖြစ် တိုက်ရိုက်လုပ်ဆောင်ပြီး ခွင့်ပြုချက်/တားမြစ်ချက် ပစ္စည်းအဖြစ် ရပ်တည်နေသည့်အခါများတွင် သီးခြားစီ ခွဲထုတ်ရမည်။
+>    - ဥပမာ- `ဤ လမ်း သို့ ဝင် ခွင့် မ ပြု` (Do not permit entry to this road) -> `ဝင်/v ခွင့်/part မ/part ပြု/v` (ဝင်ရောက် ခွင့် မပြု ဟူသော ကြိယာအဓိပ္ပာယ် ဖြစ်၍ ခွဲခြားရမည်)။
+>    - ဥပမာ- `အစည်းအဝေး သို့ ဝင် ခွင့် ရ သည်` -> `ဝင်/v ခွင့်/part ရ/v သည်/part`။
+> 
+> 3. **Contextual Safeguard for Automated Rules**:
+>    - Owner ညွှန်ကြားချက်များသည် သက်ဆိုင်ရာ corpus / legal context များအပေါ် အခြေခံထားသော contextual rulings များဖြစ်သဖြင့် အခြား sequence များတွင် ကိန်းသေ rule fix မသုံးရပါ။
+>    - ပုဒ်မဖြတ်မီ ဘယ်/ညာ စကားစပ် (Left/Right Collocation) နှင့် POS Tag (Noun phrase vs Verb phrase) ကို အမြဲ စိစစ်ပြီးမှသာ ဆုံးဖြတ်ရမည်။
 - **Suffix `-ချက်` (Attached to Verb, Split After Auxiliary)**:
   - Attached directly to verb stem: `ပြဋ္ဌာန်းချက်`, `ဆုံးဖြတ်ချက်`, `သတ်မှတ်ချက်`, `ညွှန်ကြားချက်`, `တင်ပြချက်`, `ထွက်ဆိုချက်`, `စီရင်ချက်`, `စွဲချက်`.
   - Split when an auxiliary intervenes: `သတ်မှတ် ထား ချက်`, `ဖော်ပြ ပါ ချက်`.
