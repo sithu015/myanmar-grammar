@@ -182,6 +182,37 @@ class TestMyanmarNLP(unittest.TestCase):
         for whole in ("လဆန်း", "လဆုတ်", "လပြည့်", "လပြည့်ကျော်", "လကွယ်", "အဖိတ်နေ့", "ဥပုသ်နေ့", "ဗုဒ္ဓဟူး"):
             self.assertEqual(self.segmenter.segment(whole), [whole], whole)
 
+    def test_mypos_hd_projection_and_validator_gates(self):
+        from project_mypos_hd import collapse_to_mypos15, project_sentence_to_mypos_hd
+        from validate_nlp_corpus import audit_line
+
+        pairs = [
+            ("ဦးစ", "n"),
+            ("သည်", "ppm"),
+            ("တကယ်", "adv"),
+            ("ပဲ", "part"),
+            ("။", "punc"),
+            ("မ", "part"),
+            ("သွား", "v"),
+            ("ပဲ", "part"),
+            ("။", "punc"),
+        ]
+        projected = project_sentence_to_mypos_hd(pairs, proper_nouns={"ဦးစ"})
+        self.assertEqual(projected[0]["mypos_hd"], "n:prop")
+        self.assertEqual(projected[1]["mypos_hd"], "ppm:subj")
+        self.assertEqual(projected[3]["mypos_hd"], "part:foc")
+        self.assertEqual(projected[5]["mypos_hd"], "part:neg")
+        self.assertEqual(projected[7]["mypos_hd"], "part:neg")
+        self.assertEqual(collapse_to_mypos15("num:latn"), "num")
+        self.assertEqual(collapse_to_mypos15("ppm:fin"), "ppm")
+
+        bad = "မိမိ/pron ၏/punc ၄၄၀/num ဦး/n 8/fw ဦး/n ကျော်ဇော/n"
+        types = {x["type"] for x in audit_line(bad, 1, mode="pos")}
+        self.assertIn("burmese_letter_tagged_punc", types)
+        self.assertIn("num_classifier_tagged_n", types)
+        self.assertIn("ascii_digit_tagged_fw", types)
+        self.assertIn("split_name_prefix_violation", types)
+
 
 if __name__ == "__main__":
     unittest.main()

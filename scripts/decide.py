@@ -35,7 +35,7 @@ ASPECT_VERBS = {
     "ထား", "ရှိ", "ဝင်", "ပြု", "လိုက်နာ", "ပြောဆို", "ကြား", "ရွေး", "ချယ်", "ခုတ်",
     "ဆောက်", "ကျ", "ချ", "ကျက်", "ချက်", "ပွင့်", "ဖွင့်", "ပျက်", "ဖျက်",
     "လွတ်", "လွှတ်", "မြင့်", "မြှင့်", "စား", "ကျွေး", "သေ", "သတ်", "စေ", "ခိုင်း",
-    "ဟုတ်",
+    "တည်ထောင်", "တည်ဆောက်", "ကြိုးစား", "ပြဋ္ဌာန်း", "ထိန်းသိမ်း", "ဟုတ်",
 }
 NEGATABLE = ASPECT_VERBS | {
     "ဟုတ်", "ကောင်း", "မှား", "မှန်", "သင့်", "ရ", "နိုင်", "စေ", "ပြီး", "နေ",
@@ -318,6 +318,10 @@ def self_test() -> None:
     _expect("အိမ် ကောင်းကောင်း", 1, "adj")
     _expect("အပေါ် တွင်", 0, "n")
     _expect("နည်းနည်း စား", 0, "adv")
+    _expect("တည်ထောင် ရန်", 1, "conj")
+    _expect("ခန့်မှန်းချက် ထက် ပိုမို", 1, "ppm")
+    _expect("ယင်း ဥပဒေ", 0, "adj")
+    _expect("ယင်း သည်", 0, "pron")
     table = load_table()
     for tokens, index in (("မ သီရိ", 0), ("ကို မင်း", 0), ("နောက်ဆုံး ရောက်", 0), ("တွင်", 0), ("ရေ ဘူး", 1)):
         got = decide_tokens(tokens.split(), table)[index]
@@ -340,6 +344,7 @@ def main() -> None:
     parser.add_argument("--tokens", help="Whitespace-tokenized line")
     parser.add_argument("--text", help="Raw Burmese; segmented before tagging")
     parser.add_argument("--word", help="Show the catalog readings for one surface")
+    parser.add_argument("--hd", action="store_true", help="Also emit myPOS-HD / UPOS projection for closed tags")
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     table = load_table()
@@ -359,7 +364,21 @@ def main() -> None:
     else:
         parser.error("give --tokens, --text, --word, or --self-test")
         return
-    print(json.dumps({"tokens": tokens, "decisions": decide_tokens(tokens, table)}, ensure_ascii=False, indent=2))
+    decisions = decide_tokens(tokens, table)
+    payload: dict[str, object] = {"tokens": tokens, "decisions": decisions}
+    if args.hd:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        from project_mypos_hd import project_sentence_to_mypos_hd
+
+        base_pairs = [(str(d["w"]), str(d["tag"] or "open")) for d in decisions]
+        hd_rows = project_sentence_to_mypos_hd(base_pairs)
+        for d, row in zip(decisions, hd_rows):
+            if d["tag"] is None:
+                row["mypos15"] = "open"
+                row["mypos_hd"] = "open"
+                row["mypos_core"] = "open"
+        payload["mypos_hd"] = hd_rows
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

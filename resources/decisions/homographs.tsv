@@ -412,6 +412,23 @@
 ဗုဒ္ဓဟူး	next:နေ့	n	BODDAHU_DAY	Wednesday before နေ့
 ဗုဒ္ဓဟူး	always	n	BODDAHU_STANDALONE	Wednesday noun
 
+# Cross-corpus disambiguation additions (News 70k + Legal 70k + Shan Yoma + myPOS+ALT)
+ရန်	prev_verb	conj	YAN_PURP_CONJ	purposive clause subordinator after a verb (Unified News/Legal/myPOS; part in Shan Yoma)
+ရန်	reading	conj	YAN_READ_CONJ	purposive "in order to"
+ရန်	reading	n	YAN_READ_NOUN	noun meaning enmity/danger (e.g., ရန် ငြိုး)
+ထက်	all:after_word & next_in:ပို|ပိုမို|သာ|လျော့|နည်း|များ	ppm	HTET_COMP	comparative postposition after NP (never conj in modern profile)
+ထက်	reading	ppm	HTET_READ_PPM	comparative postposition "than"
+ထက်	reading	n	HTET_READ_NOUN	upper/top spatial noun
+ယင်း	next_in:သည်|က|ကို|မှာ|တွင်|၌|မှ|သို့|အား|၏|တို့|များ	pron	YIN_PRON	anaphoric pronoun before case/plural
+ယင်း	next_word	adj	YIN_DET	adnominal demonstrative determiner before a noun (adj:det in HD)
+ယင်း	reading	pron	YIN_READ_PRON	anaphoric pronoun
+ယင်း	reading	adj	YIN_READ_ADJ	adnominal determiner
+ပဲ	all:prev2:မ & prev_verb	part	PEH_NEG	negative polarity after မ + V -> part:neg in HD
+ပဲ	reading	part	PEH_FOC	affirmative focus/restriction particle ("only/just" -> part:foc in HD)
+ချေ	all:prev2:မ & prev_verb	part	CHAY_NEG	negative polarity after မ + V -> part:neg in HD
+ချေ	reading	part	CHAY_SFP_AUX	literary affirmative/euphonic particle -> part:sfp or part:aux in HD
+
+
 
 
 

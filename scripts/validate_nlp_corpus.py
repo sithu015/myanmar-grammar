@@ -22,6 +22,14 @@ import unicodedata
 from pathlib import Path
 from typing import Any
 
+try:
+    from project_mypos_hd import ALLOWED_HD_TAGS, collapse_to_mypos15
+except ImportError:
+    _scripts_dir = str(Path(__file__).resolve().parent)
+    if _scripts_dir not in sys.path:
+        sys.path.insert(0, _scripts_dir)
+    from project_mypos_hd import ALLOWED_HD_TAGS, collapse_to_mypos15
+
 # 15 allowed lowercase myPOS / Legal70k tags
 ALLOWED_15_TAGS: frozenset[str] = frozenset(
     {
@@ -339,7 +347,7 @@ def audit_line(
     parsed_pairs: list[tuple[str, str]] = []
 
     for tok_idx, tok in enumerate(tokens, start=1):
-        if mode in ("pos", "bracket"):
+        if mode in ("pos", "bracket", "hd"):
             parsed = parse_pos_token(tok)
             if not parsed:
                 issues.append(
@@ -352,9 +360,21 @@ def audit_line(
                 )
                 surf = tok
                 tag = ""
+                base_tag = ""
             else:
                 surf, tag = parsed
-                if tag not in ALLOWED_15_TAGS:
+                base_tag = collapse_to_mypos15(tag) if mode == "hd" else tag
+                if mode == "hd":
+                    if tag not in ALLOWED_HD_TAGS:
+                        issues.append(
+                            {
+                                "line": line_no,
+                                "token_index": tok_idx,
+                                "type": "invalid_hd_pos_tag",
+                                "message": f"HD tag '{tag}' on '{surf}' is outside canonical myPOS-HD schema.",
+                            }
+                        )
+                elif tag not in ALLOWED_15_TAGS:
                     issues.append(
                         {
                             "line": line_no,
@@ -363,7 +383,7 @@ def audit_line(
                             "message": f"Tag '{tag}' on '{surf}' is outside the 15-tag vocabulary.",
                         }
                     )
-                if tag == "fw" and re.search(r"[\u1000-\u109F]", surf):
+                if base_tag == "fw" and re.search(r"[\u1000-\u109F]", surf):
                     issues.append(
                         {
                             "line": line_no,
@@ -372,9 +392,27 @@ def audit_line(
                             "message": f"Burmese script token '{surf}' must not be tagged as 'fw'.",
                         }
                     )
+                if base_tag == "fw" and re.fullmatch(r"[0-9]+([.,:/-][0-9]+)*", surf):
+                    issues.append(
+                        {
+                            "line": line_no,
+                            "token_index": tok_idx,
+                            "type": "ascii_digit_tagged_fw",
+                            "message": f"ASCII numeric token '{surf}' should be tagged 'num' (or 'num:latn' in HD), not 'fw'.",
+                        }
+                    )
+                if base_tag == "punc" and re.search(r"[\u1000-\u102A\u1040-\u1049\u104C-\u104F]", surf):
+                    issues.append(
+                        {
+                            "line": line_no,
+                            "token_index": tok_idx,
+                            "type": "burmese_letter_tagged_punc",
+                            "message": f"Burmese word/digit '{surf}' must not be tagged as 'punc'.",
+                        }
+                    )
                 if surf in OWNER_FIXED_TAG_SURFACES:
                     expected_tag = OWNER_FIXED_TAG_SURFACES[surf]
-                    if tag != expected_tag:
+                    if base_tag != expected_tag:
                         issues.append(
                             {
                                 "line": line_no,
@@ -401,7 +439,7 @@ def audit_line(
                             ),
                         }
                     )
-            parsed_pairs.append((surf, tag))
+            parsed_pairs.append((surf, base_tag if mode == "hd" else tag))
         else:
             surf = tok
             if surf in OWNER_COMPONENT_STANDARDS:
@@ -499,9 +537,13 @@ def audit_line(
                         }
                     )
 
-    # Contextual POS pattern checks (ဆိုသည်မှာ, post-verbal ရာ, quotative ဟု/ဟူ၍/ဟူသော/ဟူသည်)
-    if mode in ("pos", "bracket") and parsed_pairs:
+    # Contextual POS pattern checks (ဆိုသည်မှာ, post-verbal ရာ, quotative ဟု/ဟူ၍/ဟူသော/ဟူသည်, num+ဦး/n, split prefixes)
+    if mode in ("pos", "bracket", "hd") and parsed_pairs:
         n_pairs = len(parsed_pairs)
+        COMMON_PREFIX_NOUN_FOLLOWERS = frozenset({
+            "ရေ", "လာ", "နှမ", "တော်", "ကြီး", "လေး", "စွာ", "ဆောင်", "စီး", "တည်",
+            "ပိုင်", "ထုပ်", "နှောက်", "ခေါင်း", "ချို", "ဦး", "မြေ", "စကား",
+        })
         for i, (surf, tag) in enumerate(parsed_pairs):
             prv_w, prv_t = parsed_pairs[i - 1] if i > 0 else ("", "")
             nxt_w, nxt_t = parsed_pairs[i + 1] if i + 1 < n_pairs else ("", "")
@@ -545,10 +587,20 @@ def audit_line(
                         "message": f"Quotative particle '{surf}' must be 'part', got '{tag}'.",
                     }
                 )
+            if surf in ("ဦး", "ယောက်", "ပါး", "ကြိမ်") and tag == "n" and prv_t in ("num", "tn"):
+                issues.append(
+                    {
+                        "line": line_no,
+                        "token_index": i + 1,
+                        "type": "num_classifier_tagged_n",
+                        "message": f"Classifier '{surf}' after numeral '{prv_w}/{prv_t}' must be 'part' (not 'n').",
+                    }
+                )
 
             # Check for prohibited split personal name prefix (Name prefixes must NOT be split from the name)
             KNOWN_NAME_PREFIXES = ("ဦး", "ဒေါ်", "စဝ်", "စော", "နော်", "ဆလိုင်း")
             KNOWN_NAMES_WITH_PREFIX = ("မင်းအောင်လှိုင်", "အောင်ဆန်းစုကြည်", "ကျော်မိုးထွန်း", "စံထွန်း", "မုတ်သုန်")
+            STRICT_TITLE_PREFIXES = ("ဦး", "ဒေါ်", "မောင်", "စဝ်", "စော", "နော်", "စလိုင်း", "ဆလိုင်း", "ဒူဝါ")
             if surf in KNOWN_NAME_PREFIXES and nxt_w in KNOWN_NAMES_WITH_PREFIX:
                 if prv_t not in ("num", "tn") and prv_w not in ("တစ်", "နှစ်", "သုံး", "လေး", "ငါး", "အချို့", "အနည်းဆုံး", "အများဆုံး", "စုစုပေါင်း"):
                     issues.append(
@@ -562,6 +614,27 @@ def audit_line(
                             ),
                         }
                     )
+            elif (
+                surf in STRICT_TITLE_PREFIXES
+                and tag == "n"
+                and nxt_t == "n"
+                and prv_t not in ("num", "tn")
+                and len(nxt_w) >= 3
+                and re.match(r"^[\u1000-\u102A][\u1000-\u109F]+$", nxt_w)
+                and nxt_w not in COMMON_PREFIX_NOUN_FOLLOWERS
+                and nxt_w not in TITLES_AND_RANKS
+            ):
+                issues.append(
+                    {
+                        "line": line_no,
+                        "token_index": i + 1,
+                        "type": "split_name_prefix_violation",
+                        "message": (
+                            f"Personal name prefix '{surf}/n' split from '{nxt_w}/n'; "
+                            f"unify into '{surf}{nxt_w}/n'."
+                        ),
+                    }
+                )
 
             # Check for prohibited split of -ပေါင်းများစွာ (Indefinite multiplier compounds must be 1 token)
             if surf.endswith("ပေါင်း") and (nxt_w == "များစွာ" or (nxt_w == "များ" and i + 2 < n_pairs and parsed_pairs[i + 2][0] == "စွာ")):
@@ -795,6 +868,19 @@ def run_self_test() -> int:
     assert "split_paung_myarswar_violation" in issue_types, "Missed split_paung_myarswar_violation"
     assert "split_noun_paung_numeral_violation" in issue_types, "Missed split_noun_paung_numeral_violation"
 
+    # Test 3b: Legal70k/News/HD QA gates (၏/punc, ၄၄၀/num ဦး/n, 8/fw, ဦး/n ကျော်ဇော/n, valid & invalid HD mode)
+    bad_g = "မိမိ/pron ၏/punc ၄၄၀/num ဦး/n 8/fw ဦး/n ကျော်ဇော/n"
+    g_types = {i["type"] for i in audit_line(bad_g, 4, mode="pos")}
+    assert "burmese_letter_tagged_punc" in g_types, "Missed burmese_letter_tagged_punc"
+    assert "num_classifier_tagged_n" in g_types, "Missed num_classifier_tagged_n"
+    assert "ascii_digit_tagged_fw" in g_types, "Missed ascii_digit_tagged_fw"
+    assert "split_name_prefix_violation" in g_types, "Missed general split_name_prefix_violation"
+
+    hd_ok = audit_line("ဦးစ/n:prop သည်/ppm:subj ကောင်း/v:stat သည်/part:sfp ။/punc", 5, mode="hd")
+    assert not hd_ok, f"Expected 0 issues on valid HD line, got: {hd_ok}"
+    hd_bad = audit_line("ဦးစ/n:badsub သည်/ppm", 6, mode="hd")
+    assert any(i["type"] == "invalid_hd_pos_tag" for i in hd_bad), "Missed invalid_hd_pos_tag"
+
     # Test 4: NER TSV validation (valid and defective sequences)
     valid_ner_tsv = [
         "line_number\ttoken_id\ttoken\tpos\tner_bio",
@@ -831,7 +917,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Validate Myanmar WS/POS/Bracket/NER NLP files.")
     parser.add_argument("--input", type=Path, help="Input file to validate")
     parser.add_argument("--reference", type=Path, help="Optional raw/reference file for character conservation check")
-    parser.add_argument("--mode", choices=["ws", "pos", "bracket", "consistency", "ner"], default="ws", help="Validation mode (consistency=token scan, ner=BIO NER TSV audit)")
+    parser.add_argument("--mode", choices=["ws", "pos", "bracket", "hd", "consistency", "ner"], default="ws", help="Validation mode (hd=myPOS-HD hierarchical validation, consistency=token scan, ner=BIO NER TSV audit)")
     parser.add_argument("--json", action="store_true", help="Emit JSON report")
     parser.add_argument("--self-test", action="store_true", help="Run built-in unit self-tests")
     args = parser.parse_args()

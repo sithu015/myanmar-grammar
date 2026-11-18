@@ -20,13 +20,13 @@ This reference defines the exact cross-framework mapping and contextual disambig
 | **`ppm`** | ဝိဘတ် (နာမ်ဝိဘတ် ၇ မျိုး နှင့် ကြိယာဝိဘတ်) (Ch 15) | `ADP` | `case` (when attached to nominal head), `mark` | `သည်/ppm`, `က/ppm`, `ကို/ppm`, `အား/ppm`, `တွင်/ppm`, `၌/ppm`, `မှ/ppm`, `သို့/ppm`, `ဖြင့်/ppm`, `၏/ppm` |
 | **`part`** | ပစ္စည်း (နာမ်ပစ္စည်း၊ ကြိယာပစ္စည်း၊ မျိုးပြပစ္စည်း၊ အငြင်းပြ `မ`) (Ch 16) | `PART` (or `AUX` for modal/aspect auxiliaries in UD) | `aux`, `mark`, `advmod` (negation `မ`), `clf`, `case` | `များ/part`, `တို့/part`, `မ/part`, `ခဲ့/part`, `နိုင်/part`, `စေ/part`, `သော/part`, `သည့်/part`, `မှု/part`, `ခြင်း/part`, `ဦး/part` |
 | **`conj`** | သမ္ဗန္ဓ (ပုဒ်ချင်းဆက်၊ ဝါကျဆက်) (Ch 16) | `CCONJ` (coordinating) / `SCONJ` (subordinating in UD) | `cc`, `mark` | `နှင့်/conj`, `သို့မဟုတ်/conj`, `သော်လည်း/conj`, `သောကြောင့်/conj`, `သဖြင့်/conj`, `၍/conj`, `ဖြစ်စေ/conj` |
-| **`num`** | ကိန်းဂဏန်းအက္ခရာ (သင်္ချာနာမ်/နာမဝိသေသန - ဂဏန်းသင်္ကေတ) (Ch 11, 12) | `NUM` | `nummod` | `၁/num`, `၂/num`, `၁၀၀/num`, `၁,၀၀၀/num`, `၁၉၆၆/num` |
+| **`num`** | ကိန်းဂဏန်းအက္ခရာ (သင်္ချာနာမ်/နာမဝိသေသန - ဂဏန်းသင်္ကေတ) (Ch 11, 12) | `NUM` | `nummod` | `၁/num`, `၂/num`, `၁၀၀/num`, `၁,၀၀၀/num`, `၁၉၆၆/num`, `100/num` (modern ASCII digits; see §2.3) |
 | **`tn`** | စာလုံးဖြင့်ရေးသော ကိန်းဂဏန်း (Textual Number) (Ch 11, 12) | `NUM` | `nummod` | `တစ်/tn`, `နှစ်/tn`, `သုံး/tn`, `ငါးဆယ်/tn`, `တစ်ထောင်/tn`, `နှစ်သိန်း/tn` |
-| **`int`** | အာမေဍိတ် (Ch 17) | `X` (`INTJ` in standard UD) | `discourse` | `အမလေး/int`, `ဪ/int`, `ဟယ်/int` |
-| **`punc`** | ပုဒ်ဖြတ်ပုဒ်ရပ်သင်္ကေတ (Ch 20) | `PUNCT` | `punct` | `၊/punc`, `။/punc`, `(/punc`, `)/punc`, `“/punc`, `”/punc` |
-| **`abb`** | အတိုကောက် စကားလုံး (Abbreviation) | `X` (`NOUN`/`PROPN` in UD) | `nsubj`, `obl`, `compound`, `appos` | `အထက/abb`, `လ.ဝ/abb`, `ကုလ/abb`, `ပုဒ်မခွဲ/n` (full words are `n`, only true abbreviations are `abb`) |
-| **`fw`** | နိုင်ငံခြားစကားလုံး (Foreign Word / Script) | `X` (`PROPN`/`SYM` in UD) | `flat:foreign`, `appos`, `compound` | `Myanmar/fw`, `BBC/fw`, `Google/fw`, `1/fw`, `2/fw` (ASCII digits in fw convention) |
-| **`sb`** | သင်္ကေတ (Symbol) | `X` (`SYM` in UD) | `dep`, `cc`, `punct` | `%/sb`, `$/sb`, `+/sb`, `=/sb`, `#/sb`, `&/sb`, `@/sb` |
+| **`int`** | အာမေဍိတ် (Ch 17) | `INTJ` | `discourse` | `အမလေး/int`, `ဪ/int`, `ဟယ်/int` |
+| **`punc`** | ပုဒ်ဖြတ်ပုဒ်ရပ်သင်္ကေတ (Ch 20) | `PUNCT` | `punct` | `၊/punc`, `။/punc`, `(/punc`, `)/punc`, `“/punc`, `”/punc` *(never tag `၏`/`၍` as `punc`)* |
+| **`abb`** | အတိုကောက် စကားလုံး (Abbreviation) | `NOUN` / `PROPN` (`Abbr=Yes`) | `nsubj`, `obl`, `compound`, `appos` | `အထက/abb`, `လ.ဝ/abb`, `ကုလ/abb`, `ပုဒ်မခွဲ/n` (full words are `n`, only true abbreviations are `abb`) |
+| **`fw`** | နိုင်ငံခြားစကားလုံး (Foreign Word / Script) | `X` (`Foreign=Yes`) | `flat:foreign`, `appos`, `compound` | `Myanmar/fw`, `BBC/fw`, `Google/fw` *(legacy `1/fw` maps to `NUM` / `num:latn`; Myanmar-script loanwords like `ဒိုင်ယာရီ`, `စင်တီဂရိတ်` stay `n`)* |
+| **`sb`** | သင်္ကေတ (Symbol) | `SYM` | `dep`, `cc`, `punct` | `%/sb`, `$/sb`, `+/sb`, `=/sb`, `#/sb`, `&/sb`, `@/sb`, `(/punc က/sb )/punc` |
 
 ## 2. Framework Alignment & Structural Harmonization Rules
 
@@ -34,22 +34,37 @@ This reference defines the exact cross-framework mapping and contextual disambig
 
 In Burmese morphosyntax, descriptive/quality roots (`လွယ်ကူ`, `ခက်ခဲ`, `လှပ`, `ရဲရင့်`, `ကြီးမား`, `ကောင်းမွန်`) can take verbal endings directly (`လွယ်ကူ သည်`) or adjectival relativizers (`လွယ်ကူ သော`).
 
-- **In `myPOS` (`mya-pos-v1` Doc_016)**: Predicative/verbal occurrences and morphosyntactic stative verbs are tagged `v` (e.g., `လွယ်ကူ/v သည်/ppm`), whereas pre-nominal modifier roots or dedicated adjectival forms are tagged `adj`.
+- **In `myPOS` (`mya-pos-v1` Doc_016)**: Predicative/verbal occurrences and morphosyntactic stative verbs are tagged `v` (e.g., `လွယ်ကူ/v သည်/part` in `unified_modern`, or `သည်/ppm` in `legacy_mypos_alt`), whereas pre-nominal modifier roots or dedicated adjectival forms are tagged `adj`.
 - **In `myUDTree` (`UD v2`)**: Quality words are mapped semantically to `ADJ`.
-- **Cross-Project Rule**: Do not blindly re-tag an entire corpus from `v` to `adj` or vice versa; use the alignment mapping `myPOS:v[stative] <-> UD:ADJ[quality]` when converting between formats.
+- **Cross-Project Rule**: Do not blindly re-tag an entire corpus from `v` to `adj` or vice versa; use the `myPOS-HD` tag `v:stat` (`myPOS:v[stative] <-> UD:ADJ`) when projecting to UD v2.
 
 ### 2.2 Numeral Tag Split (`num` vs. `tn`)
 
-- **`num`**: Myanmar script digits (`၀-၉`, e.g., `၁/num`, `၂၅/num`, `၁,၀၀၀/num`).
+- **`num`**: Digits (`၀-၉`, plus modern ASCII numerals `[0-9]+`, e.g., `၁/num`, `၂၅/num`, `၁,၀၀၀/num`, `2026/num`). Legacy `myPOS`/`News` records that still carry `[0-9]+/fw` project to `num:latn` (`UD: NUM`, base-15 `num`).
 - **`tn`**: Numerals spelled out in Myanmar letters (`တစ်/tn`, `နှစ်/tn`, `သုံး/tn`, `ဆယ်/tn`, `တစ်ရာ/tn`, `တစ်ထောင်/tn`, `တစ်သိန်း/tn`).
 - **Disambiguation Trap**:
   - `နှစ်`: Tagged `tn` when meaning "two" (`နှစ်/tn ဦး/part`, `နှစ်/tn ကြိမ်/part`), but tagged `n` when meaning "year" (`၁၉၆၆/num ခုနှစ်/n`, `သုံး/tn နှစ်/n ကြာ/v`).
-  - `သုံး`: Tagged `tn` when meaning "three" (`သုံး/tn ခု/part`), but tagged `v` when meaning "to use/spend" (`သုံး/v စွဲ/v`, `ငွေ/n သုံး/v သည်/ppm`).
-  - `ဦး`: 
-    - သင်္ချာ/ဂဏန်းနောက်မှ လူမျိုးပြပစ္စည်း (Person classifier after numerals, e.g., `တစ်/tn ဦး/part`, `၃/num ဦး/part`) ဖြစ်ပါက `part` အဖြစ် tag လုပ်သည်။ ဘယ်သောအခါမျှ `tn` ဟု မ tag ရ။
-    - လူအမည်ရှေ့ဆက် (Personal name prefix, e.g., `ဦးမင်းအောင်လှိုင်/n`, `ဦးကျော်မိုးထွန်း/n`) ဖြစ်ပါက အမည်မှ မခွဲထုတ်ဘဲ တစ်ဆက်တည်း ပေါင်းစည်း၍ နာမ် (`/n`) အဖြစ် သတ်မှတ်သည်။ (သီးခြား `ဦး/part` ဟု မခွဲရ)။
-    - ထို့အတူ တိုင်းရင်းသားနှင့် အခြားအမည်ရှေ့ဆက်များ (`ဒေါ်အောင်ဆန်းစုကြည်/n`, `ကိုမင်းကိုနိုင်/n`, `မသီရိစိုး/n`, `စဝ်စံထွန်း/n`, `စောဘဦးကြီး/n`, `နော်စီဖိုးရာစိန်/n`) ကိုလည်း အမည်နှင့် တစ်ဆက်တည်း ပေါင်းစည်းထားသော သမ္မာနာမ် (`/n`) အဖြစ် သတ်မှတ်သည်။
-    - သို့သော် ရာထူး၊ အဆင့်အတန်းနှင့် ဘွဲ့ထူးဂုဏ်ပုဒ်များ (`သံအမတ်ကြီး/n`, `ဗိုလ်ချုပ်ကြီး/n`, `စော်ဘွားကြီး/n`, `ဒေါက်တာ/n`, `သမ္မတ/n`) ကိုမူ သီးခြား နာမ်ပုဒ် (`/n`) အဖြစ် ခွဲထုတ်ရမည်။ (ဥပမာ- `မိုင်းပွန်/n စော်ဘွားကြီး/n စဝ်စံထွန်း/n`, `သံအမတ်ကြီး/n ဦးကျော်မိုးထွန်း/n`)။
+  - `သုံး`: Tagged `tn` when meaning "three" (`သုံး/tn ခု/part`), but tagged `v` when meaning "to use/spend" (`သုံး/v စွဲ/v`, `ငွေ/n သုံး/v သည်/part`).
+  - `ဦး`:
+    - သင်္ချာ/ဂဏန်းနောက်မှ လူမျိုးပြပစ္စည်း (Person classifier after numerals, e.g., `တစ်/tn ဦး/part`, `၃/num ဦး/part`, `၄၄၀/num ဦး/part`) ဖြစ်ပါက **အမြဲ `part` (`part:clf`)** အဖြစ် tag လုပ်သည်။ ဘယ်သောအခါမျှ `tn` သို့မဟုတ် `n` ဟု မ tag ရ။
+    - လူအမည်ရှေ့ဆက် (`ဦး`, `ဒေါ်`, `ကို`, `မ`, `မောင်`, `စဝ်`, `စော`, `နော်`, `စလိုင်း`, `ဆလိုင်း`, `မိုင်း`, `ဒူဝါ`, `နိုင်`, `မန်း`, `ရှင်`, `င`) ဖြစ်ပါက အမည်မှ **ဘယ်သောအခါမျှ မခွဲထုတ်ဘဲ** တစ်ဆက်တည်း ပေါင်းစည်း၍ သမ္မာနာမ် (`/n` -> `n:prop`) အဖြစ် သတ်မှတ်သည် (`ဦးမင်းအောင်လှိုင်/n`, `ဦးစ/n`, `ဦးကျော်ဇော/n`, `ဒေါ်ပြည့်ပြည့်ထွန်း/n`, `ငဘွယ်/n`, `ရှင်ရွှေပုံ/n`)။
+    - နိုင်ငံခြားအမည်များအတွင်း ပါဝင်သော `ကို` (`ဒိုမီနစ်/n လီဗာကိုဗစ်ချ်/n` — Serbian/Croatian `-vić`, Latin `Ko-`) ကို ရှေ့ဆက် `ကို` ဟု မှားမဖြတ်ရ (`လီဗာ ကို ဗစ်ချ်` မဖြစ်စေရ)။
+    - ရာထူး၊ အဆင့်အတန်းနှင့် ဘွဲ့ထူးဂုဏ်ပုဒ်များ (`သံအမတ်ကြီး/n`, `ဗိုလ်ချုပ်ကြီး/n`, `စော်ဘွားကြီး/n`, `ဒေါက်တာ/n`, `သမ္မတ/n`) နှင့် ဌာန/သမိုင်းတွင် ဂုဏ်ထူးအမည် (`လှေသင်းအတွင်းဝန်/n`, `မဟာဒါန်တိုက်ဝန်/n`, `မြဝတီမင်းကြီး/n`, `ကင်းဝန်မင်းကြီး/n`) တို့ကို `1 Token /n` အဖြစ် ထားပြီး ကိုယ်ပိုင်အမည်မှ ခွဲထုတ်ရမည် (`မြဝတီမင်းကြီး/n ဦးစ/n`, `မိုင်းပွန်/n စော်ဘွားကြီး/n စဝ်စံထွန်း/n`)။
+
+### 2.3 Registered 15-Tag Corpus Profiles (`unified_modern` vs `legacy_mypos_alt`)
+
+Cross-corpus audits across 9.64M tokens (`mypos+myalt+mymedicon`, `News 70k`, `Legal 70k`, `Shan Yoma v2.15`) confirm two systematic conventions inside Base-15:
+
+| Grammatical Construct | `unified_modern` (`News 70k`, `Shan Yoma`, `Legal L3k+`) | `legacy_mypos_alt` (`mypos+myalt+mymedicon`, `Legal L1–2k`) | `myPOS-HD` & `UD v2` Projection (Unified) |
+|---|---|---|---|
+| Clause-final verbal `သည် / တယ် / မည် / မယ် / ၏` | `part` | `ppm` (MLC `ကြိယာဝိဘတ်` `pos_copula_ppm`) | `part:sfp` / `ppm:fin` -> `PART (Mood=Ind)` |
+| Clause-chaining `V + ပြီး + V/N` | `part` (aspect/seq) | `conj` (per `Doc_010` gate) | `part:aux` (final) / `conj:sub` (chaining) |
+| Comparative `NP + ထက်` | `ppm` | `conj` (or `ppm` in newer sets) | `ppm:obl` -> `ADP` |
+| Purposive `[V] + ရန် / အောင်` | `conj` (`News`/`Legal`) / `part` (`Shan Yoma`) | `conj` | `conj:purp` -> `SCONJ` |
+| Temporal/Conditional `သော်` | `part` (`News`/`Legal`) / `conj` (`Shan Yoma`) | `conj` | `conj:sub` -> `SCONJ` |
+| Demonstrative `ဤ / ထို / ယင်း / ၎င်း + Noun` | `adj` before `N`, `pron` before `ppm`/`punc` | Mixed `adj`/`pron` | `adj:det` -> `DET` (adnominal) / `pron:dem` -> `PRON` |
+
+> **Never confuse Base-15 profile variance with structural defects**: Tagging Myanmar letters `၏`/`၍` as `/punc`, tagging `[num/tn] ဦး` as `/n`, tagging `တပါး`/`တစ်ပါး` by spelling alone without context, or splitting person-name prefixes (`ဦး/n ကျော်ဇော/n`) are hard defects in ALL profiles.
 
 ## 3. High-Frequency Contextual POS Disambiguation Decision Trees
 
@@ -71,3 +86,22 @@ Never assign a single static dictionary tag to polyfunctional Burmese tokens. Ev
 | **`မ`** | `part`, `n`, `adj` | 1. Pre-verbal negation (`မ သွား`, `အတည် မ ပြု`) -> separate token `မ/part`<br>2. Female gender noun in `ကျား/n -/punc မ/n ဘာဝ/n` -> `n`<br>3. Civil/main compound (`တရားမ/adj`, `ခန်းမ/n`, `ပင်မ/adj`, `သွေးကြောမကြီး/n`) -> keep merged | `တရား/n မ/part ဝင်/v သော/part` (`မ/part`)<br>`ကျား/n -/punc မ/n ဘာဝ/n` (`မ/n`) |
 | **`ဒသမ` & Ordinals** | `adj`, `n` | 1. Ordinals (`ပထမ, ပဌမ, ဒုတိယ, တတိယ, စတုတ္ထ ... ဒသမ` meaning "10th") -> `adj`<br>2. Decimal point between numerals (`သုည/tn ဒသမ/n တစ်/tn ရာခိုင်နှုန်း/n`) -> `n` | `ဒုတိယ/adj အကြိမ်/n` (`adj`)<br>`သုည/tn ဒသမ/n တစ်/tn` (`n`) |
 | **`အား`** | `ppm`, `n` | 1. Dative/accusative case marker after animate/recipient NP -> separate `အား/ppm`<br>2. Lexical noun meaning "strength/force/power" (`အင်အား`, `ဖိအား`, `ဓာတ်အား`, `လုပ်အား`, `အား စိုက်`) -> `n` | `တရားခံ/n အား/ppm စစ်ဆေး/v သည်/part`<br>`အန္တရာယ်/n ကင်း/v ဖိအား/n ထိန်း/v အဆို့ရှင်/n` |
+| **`ရန်` / `အောင်`** | `conj`, `part`, `n` | 1. Purposive clause subordinator directly after a verb (`တည်ထောင်/v ရန်/conj`, `ငုံမိ/v အောင်/conj`) -> `conj` (`unified_modern`/`News`/`Legal`) or `part` (`Shan Yoma`); projects uniformly to `conj:purp` (`SCONJ`) in `myPOS-HD`<br>2. Noun meaning "enmity/danger" (`ရန်/n ငြိုး/n`) -> `n` | `ဖွံ့ဖြိုး/v စေ/part ရန်/conj ဆောင်ရွက်/v` |
+| **`ထက်`** | `ppm`, `conj`, `n` | 1. Comparative postposition after NP (`ခန့်မှန်းချက်/n ထက်/ppm ပို/adv`, `သူတပါး/n ထက်/ppm`) -> `ppm` (legacy `myPOS` sometimes uses `conj`)<br>2. Spatial/rank noun "upper/top" -> `n` | `ယခု/adj အခြေအနေ/n ထက်/ppm ပိုမို/adv` |
+| **`ဤ` / `ထို` / `ယင်း` / `၎င်း` / `ဒီ`** | `adj`, `pron`, `conj` | 1. Directly modifying a following noun (`ဤ/adj ဥပဒေ/n`, `ထို/adj မဂ္ဂဇင်း/n`, `ယင်း/adj နေရာ/n`) -> **`adj`** (`adj:det` -> UD `DET`)<br>2. Standing as NP head before `ppm`, plural `တို့/များ`, or `punc` (`ယင်း/pron တို့/part ကို/ppm`, `၎င်း/pron သည်/ppm`) -> **`pron`** (`pron:dem`)<br>3. Coordinated list separator `၎င်း ၊` -> `conj` (`News`/`Legal` legacy often force `pron` globally, so project via right-context check) | `ဤ/adj ဖွဲ့စည်းအုပ်ချုပ်ပုံ/n ကို/ppm`<br>vs. `ဤ/pron သည်/ppm` |
+| **`ပဲ` / `ချေ`** | `part` | 1. Within the current clause (after last `punc`/`conj`), if negated by pre-verbal `မ/part` -> `part:neg` (`Polarity=Neg`, e.g., `မ/part သွား/v ပဲ/part`)<br>2. Without `မ/part`, colloquial `ပဲ` -> `part:foc` (emphasis/only: `တကယ်/adv ပဲ/part`); literary `ချေ` -> `part:aux` / `part:sfp` (`ဆို/v ချေ/part ၏/part`) | `မ/part ပြန်/v တော့/part ပဲ/part` (`part:neg`)<br>vs. `ကောင်း/v တာ/part ပဲ/part` (`part:foc`) |
+| **`ဘွဲ့ခံ` / `ဘွဲ့ရ`** | `adj`, `v` | 1. Pre-nominal title epithet (`မဟာဇေယျသင်္ခယာ/n ဘွဲ့ခံ/adj လှေသင်းအတွင်းဝန်/n`) -> `adj`<br>2. Finite predicate (`... ဘွဲ့/n ခံ/v သည်/part`) -> split/verbal | `ဇေယသင်္ခယာ/n ဘွဲ့ရ/adj မြဝတီမင်းကြီး/n ဦးစ/n` |
+
+## 4. `myPOS-HD (v4.1)` Hierarchical Dual-Layer Specification (Additive & Lossless)
+
+Base-15 corpus streams (`ws.txt`, `pos.txt`, TSV `pos`) remain strictly constrained to the 15 lowercase tags (`ALLOWED_15_TAGS`). To unlock fine-grained distinctions for NER, UD v2 Treebanks, and Legal IE **with zero breaking changes**, `scripts/project_mypos_hd.py` projects Base-15 into hierarchical `base:sub` notation (`pos_hd`), an expanded flat tier (`pos_core`), and UD v2 (`upos` + `feats`):
+
+- **100% Lossless Base-15 Recovery**: `collapse_to_mypos15(hd_tag)` = `"num"` if `hd_tag == "num:latn"` else `hd_tag.split(":")[0]`.
+- **Canonical `base:sub` Sub-Tags**:
+  - **Nominals**: `n` (common), `n:prop` (1-token personal names with prefix, royal titles, topoyms -> `PROPN`), `n:gen` (attested creaky-tone genitive whitelist `မြန်မာ့, နိုင်ငံ့, ပြည်သူ့, အရှင့်, ပညာ့, ဘုရာ့, ဘုရင့်, မင့်...` — **never** lexical `-့` words like `မြို့, နေ့, ဘွဲ့, အဖွဲ့`), `n:rel` (spatial/relational nouns `အတွင်း, အပေါ်, အောက်, အကြား, အနက်, ထံ`).
+  - **Pronouns & Predicates**: `pron`, `pron:dem`, `pron:gen` (`သူ့, ငါ့, ကျွန်တော့်, ကိုယ့်, မည်သူ့` — never invalid `-း + -့` spellings), `v`, `v:stat` (stative quality predicates -> UD `ADJ`).
+  - **Modifiers & Determiners**: `adj`, `adj:det` (`ဤ, ထို, ယင်း, အဆိုပါ, ဒီ, မည်သည့်` -> `DET`), `adj:ord` (Pali ordinals `ပထမ..ဝီသတိမ`).
+  - **Postpositions (`ppm`)**: `ppm:subj` (`သည်, က, မှာ, ဟာ`), `ppm:obj` (`ကို, အား`), `ppm:obl` (`တွင်, ၌, မှ, သို့, ဖြင့်, ကြောင့်, အတွက်, အရ, ထက်, နှင့်`), `ppm:gen` (`၏, ရဲ့`), `ppm:fin` (`legacy_mypos_alt` clause-final verbal `သည်, တယ်, မည်, မယ်, ၏` -> UD `PART[Mood=Ind]`).
+  - **Particles (`part`)**: `part:neg` (only `မ` or clause-bounded `မ ... ဘူး/ဘဲ/ပဲ/နဲ့/ချေ/လင့်`), `part:aux` (`နိုင်, ရ, စေ, ခဲ့, နေ, ထား, ပြီး, ပေး, သွား, လာ, လိုက်, တော်မူ, ဘိ, လေ`), `part:clf` (after `num`/`tn` — `ဦး, ယောက်, ခု, ကြိမ်, ပါး, ချောင်း...`), `part:ord` (`မြောက်` strictly after `ORD_PRECEDING_SET`), `part:nom` (`ခြင်း, မှု, ခွင့်, ရာ, ချက်`, `သည်` before `ppm`), `part:rel` (`သော, သည့်, မည့်, တဲ့, မယ့်` — kept distinct from `nom`!), `part:sfp` (`သည်, မည်, ၏, ပြီ, တယ်, မယ်, ပါ, လေ, ချေ, တည်း, သတည်း, အံ့`), `part:quot` (`ဟု, ဟူ၍, ဟူသော, ဟူသည်`), `part:pl` (`များ, တို့` -> `Number=Plur`), `part:approx` (`ခန့်, လောက်, နီးပါး, ကျော်` — **no** `Number=Plur`), `part:quant` (`တိုင်း, စီ, လုံး`), `part:foc` (`သာ, လည်း, ပင်, မျှ, တော့, ကား, မူ`, affirmative `ပဲ`).
+  - **Conjunctions, Numerals & Symbols**: `conj:coord`, `conj:sub`, `conj:purp` (`ရန်, အောင်`), `conj:disc` (`ထို့ကြောင့်, သို့သော်, သို့ရာတွင်`), `num`, `num:latn` (`[0-9]+` -> `NUM`), `tn`, `abb` (`NOUN`/`PROPN`, `Abbr=Yes`), `fw` (`X`, `Foreign=Yes`), `int` (`INTJ`), `punc` (`PUNCT`), `sb`, `sb:enum` (`( က )`).
+

@@ -27,6 +27,8 @@ function verify_tests() {
     echo "==> Running NLP unit test suite..."
     python3 "$SKILL_CONFIG_DIR/scripts/test_nlp_tools.py"
     python3 "$SKILL_CONFIG_DIR/scripts/decide.py" --self-test
+    python3 "$SKILL_CONFIG_DIR/scripts/project_mypos_hd.py" --self-test
+    python3 "$SKILL_CONFIG_DIR/scripts/validate_nlp_corpus.py" --self-test
     python3 "$SKILL_CONFIG_DIR/scripts/nominal.py" --self-test
     echo "==> All test suites passed cleanly."
 }
