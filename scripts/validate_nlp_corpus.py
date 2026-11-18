@@ -103,6 +103,14 @@ PROTECTED_LEXEMES_ENDING_IN_CLITIC_CHARS: frozenset[str] = frozenset(
         "ဖရန်ကို",
         "ဒါ့စ်ကို",
         "မာကို",
+        "တောင်အမေရိက",
+        "ပွာတိုရီကို",
+        "စစ္စကို",
+        "ဖရန်စစ္စကို",
+        "အမေရီကို",
+        "ပက်ထရန်ကို",
+        "တကာချန်ကို",
+        "ယူနက်စကို",
     }
 )
 
@@ -478,7 +486,7 @@ def audit_line(
                     }
                 )
             if surf == "ပေါင်း" and prv_s and nxt_s and re.search(r"[\d၀-၉]", nxt_s):
-                if prv_s not in ("စုစု", "ဓာတ်", "တပ်"):
+                if re.search(r"[\u1000-\u102A]", prv_s) and prv_s not in ("စုစု", "ဓာတ်", "တပ်") and not re.search(r"^[A-Za-z\)\],.]+$", prv_s):
                     issues.append(
                         {
                             "line": line_no,
@@ -571,7 +579,7 @@ def audit_line(
 
             # Check for prohibited split of [Noun] + ပေါင်း + Numeral
             if surf == "ပေါင်း" and prv_w and nxt_w and (nxt_t in ("num", "tn") or re.search(r"[\d၀-၉]", nxt_w)):
-                if prv_t in ("n", "fw") and prv_w not in ("စုစု", "ဓာတ်", "တပ်"):
+                if prv_t == "n" and re.search(r"[\u1000-\u102A]", prv_w) and prv_w not in ("စုစု", "ဓာတ်", "တပ်") and not re.search(r"^[A-Za-z\)\],.]+$", prv_w):
                     issues.append(
                         {
                             "line": line_no,

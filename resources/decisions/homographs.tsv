@@ -262,6 +262,7 @@
 စွာ	after_word	part	SWA_ADV	makes a quality word into an adverb
 ပို	next_word	adv	PO_COMP	comparative before a quality word
 ပို	reading	adv	PO_READ	comparative
+ပထမဆုံး	always	adj	ORD_0	superlative ordinal; not a noun or adverb tag
 ပထမ	always	adj	ORD_1	ordinal; not a noun tag
 ပဌမ	always	adj	ORD_1B	ordinal spelling variant
 ဒုတိယ	always	adj	ORD_2	ordinal

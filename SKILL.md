@@ -106,6 +106,9 @@ flowchart TD
 | စကားပြောနှင့် စာအရေးအသား တွဲဖက်အသုံး | `scripts/register.py` ပြီးမှ [စကားပြောနှင့် စာအရေး](references/spoken-written.md) |
 | နာမ်၊ နာမ်စား၊ နာမဝိသေသနနှင့် NLP နေရာ | `scripts/nominal.py` ပြီးမှ [နာမ်သုံးမျိုး](references/nominals.md) |
 | ပစ္စည်းနှင့် ဝိဘတ် ခွဲခြားဆန်းစစ်မှု၊ Diagnostic Criteria နှင့် NLP Benchmarks | [Particles & Postpositions Guide](references/particles-and-postpositions-guide.md) |
+| မြန်မာစာ၏ ဓလေ့ထုံးစံအစဉ်အလာ၊ အနက်တူတွဲလုံးများ၊ Bilingual Glossing (`နိမိတ် ဩဘာ`၊ `ဇမ္ဗူဒီပါ လက်ယာ တောင်ကျွန်း`) | [Segmentation & Lexicon Ref Section 11](references/segmentation-lexicon.md#11-classical-myanmar-rhetorical-traditions--synonymous-pairing--bilingual-glossing) |
+| မင်းခမ်းသုံး `-တော်` ပုဒ်များ၊ `ရွှေ` အထူးပြုပုဒ်နှင့် `သော/သော်` ခွဲခြားမှု | [Segmentation & Lexicon Ref Section 12-13](references/segmentation-lexicon.md#12-royal--sacred-honorific-system--တော်-rules) |
+| ဗေဒင်၊ နက္ခတ်၊ `ဓာတ်ရကိန်း` နှင့် အက္ခရာဂြိုဟ်သက် ပေါင်းစပ်ပုဒ်များ | [Segmentation & Lexicon Ref Section 14](references/segmentation-lexicon.md#14-astrological-elemental-and-cultural-compounds) |
 
 ## 🛠 ထောက်ပံ့ရေး ဖိုင်များနှင့် NLP ကိရိယာများ (Supporting References & Tools)
 

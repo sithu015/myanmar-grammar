@@ -16,14 +16,32 @@ Taken from OV Brain Memory adjudication, not from a new theory. Dates are the me
 | `အသုံးပြုသူ` | `အသုံးပြု သူ` | agentive `သူ` is its own token. Gold was split 765 to 0 |
 | `နေထိုင်သူ` | `နေထိုင် သူ` | same, 1008 to 0 |
 | `နေထိုင်အသုံးပြုသူ` | `နေထိုင် အသုံးပြု သူ` | do not stop after a partial glue |
+| `ရွှေဘုန်းတော်` | `ရွှေ ဘုန်းတော်` | `ရွှေ` is an attributive epithet modifying the royal noun `ဘုန်းတော်` |
+| `သတ္တမအကြိမ်` | `သတ္တမ အကြိမ်` | ordinal adjective `သတ္တမ/adj` + frequency noun `အကြိမ်/n` (must split, parallel to `ပထမ အကြိမ်`) |
+| `မြန်မာမင်း` | `မြန်မာ မင်း` | proper GPE/NORP noun `မြန်မာ/n` + king noun `မင်း/n` (matches `မြန်မာ နိုင်ငံတော်` & `မြန်မာ မင်းသား`) |
+| `တနင်္လာဂြိုဟ်သက်` | `တနင်္လာ ဂြိုဟ်သက်` | planet/day noun `တနင်္လာ/n` + astrological head noun `ဂြိုဟ်သက်/n` |
+| `အရှင့်သားတော်` / `အရှင့်သား တော်` | `အရှင့် သားတော်` | possessive noun `အရှင့်/n` ("His Majesty's") + fused royal kinship `သားတော်/n` (matches `အရှင့် ဘိုးတော်`) |
+| `တပါးသူဌေး` | `တပါး သူဌေး` | alterity modifier `တပါး/adj` ("another") + `သူဌေး/n` (never split `တ ပါး` and never substring-match `တပါးသူ`) |
+| `ထီးဆောင်းနန်း` | `ထီးဆောင်း နန်း` | sovereign-rule modifier `ထီးဆောင်း/adj` + noun `နန်း/n` (never tag `ထီးဆောင်း/v`) |
+| `လျင်သော` | `လျင် သော` | verb `လျင်/v` + relativizer particle `သော/part` |
+| `ရှုသော်` | `ရှု သော်` | verb `ရှု/v` + subordinating conjunction `သော်/conj` |
+| `ဆောင်ပါသော်` | `ဆောင် ပါ သော်` | verb `ဆောင်/v` + polite particle `ပါ/part` + conjunction `သော်/conj` |
+| `ဟူသောအက္ခရာ` | `ဟူသော အက္ခရာ` | relativizer particle `ဟူသော/part` + noun `အက္ခရာ/n` |
+| `နိမိတ်ဩဘာ` | `နိမိတ် ဩဘာ` | synonymous rhetorical pair: noun `နိမိတ်/n` + noun `ဩဘာ/n` |
+| `မြှောက်စားချီးမြှင့်` | `မြှောက်စား ချီးမြှင့်` | synonymous verb pair: verb `မြှောက်စား/v` + verb `ချီးမြှင့်/v` |
+| `ချီးမြှင့်မြှောက်စား` | `ချီးမြှင့် မြှောက်စား` | synonymous verb pair: verb `ချီးမြှင့်/v` + verb `မြှောက်စား/v` |
+| `ထိခိုက်နာကျင်` | `ထိခိုက် နာကျင်` | synonymous verb pair: verb `ထိခိုက်/v` + verb `နာကျင်/v` |
+| `တစ်ပါးအခြား` | `တစ်ပါး အခြား` | synonymous indefinite pair: adjective `တစ်ပါး/adj` + adjective `အခြား/adj` |
+| `သကျနန်းရိုးသတိုး` | `သကျ နန်းရိုး သတိုး` | dynastic glossing: noun `သကျ/n` + noun `နန်းရိုး/n` + noun `သတိုး/n` |
+| `ဇမ္ဗူဒီပါလက်ယာတောင်ကျွန်း` | `ဇမ္ဗူဒီပါ လက်ယာ တောင်ကျွန်း` | three-fold bilingual glossing: noun `ဇမ္ဗူဒီပါ/n` + modifier `လက်ယာ/adj` + noun `တောင်ကျွန်း/n` |
 
 `ကျောင်းသား` is not this pattern. Do not split every word that ends in `သူ`.
 
 ## Do not split
 
-These were confirmed dictionary headwords on 2026-10-19 or fixed forms on 2026-11-02: `ခရီးသွား`, `သွားလာ`, `တိုက်နယ်`, `ဝင်ငွေ`, `ထွက်ချက်`, `ယစ်မျိုးခွန်`, `အကျိုးငွေ`, `စီရင်ဆုံးဖြတ်`, `ဦးစီးဌာနမှူး`, `တိုင်းဒေသကြီး`, `နှင့်တကွ`, `အပါအဝင်`, `နေ့စဉ်မှတ်စု`, `နွေဦးတော်လှန်ရေး`.
+These were confirmed dictionary headwords on 2026-10-19 or fixed forms on 2026-11-02/2026-11-18: `ခရီးသွား`, `သွားလာ`, `တိုက်နယ်`, `ဝင်ငွေ`, `ထွက်ချက်`, `ယစ်မျိုးခွန်`, `အကျိုးငွေ`, `စီရင်ဆုံးဖြတ်`, `ဦးစီးဌာနမှူး`, `တိုင်းဒေသကြီး`, `နှင့်တကွ`, `အပါအဝင်`, `နေ့စဉ်မှတ်စု`, `နွေဦးတော်လှန်ရေး`, `ဓာတ်ရကိန်း`, `ဘွဲ့မည်`, `ထီးဆောင်းမင်း` *(MLC dictionary headword; or `ထီးဆောင်း/adj မင်း/n` analytically)*, `ထီးနန်းရှင်`, `မင်းဆရာ`, `သူဆင်းရဲ`, `သကျ`, `နန်းရိုး`, `ရှာပုံတော်`, `ဇမ္ဗူဒီပါ`, `ယုံယုံကြည်ကြည်`, `တပါးသူ`, `တစ်ပါးသူ`, `သူတပါး`, `သူတစ်ပါး`, `တပါး` / `တစ်ပါး` *(when meaning "other / except", e.g., `တပါး သူဌေး`, `အခြား တစ်ပါး သော`, `မှ တစ်ပါး` — NEVER confuse with literal count `တဦး`, `တခု`, `တကောင်`)*, `သားတော်`, `မြေးတော်`, `ဘိုးတော်`, `ဘီတော်`, `အနွယ်တော်`, `အဆက်အနွယ်တော်`, `အမည်တော်`, `နံတော်`, `စည်းစိမ်တော်`, `သက်တော်`, `မြို့တော်`, `နိုင်ငံတော်`.
 
-`ဦးစီးဌာနမှူး` stays one token even though `ဦးစီးဌာန` splits. `ခရီးသွား` stays one token even though `ပေါ်ပေါက် လာ` splits.
+`ဦးစီးဌာနမှူး` stays one token even though `ဦးစီးဌာန` splits. `ခရီးသွား` stays one token even though `ပေါ်ပေါက် လာ` splits. Royal honorific `-တော်` stays fused to kinship/attributes (`သားတော်`, `ဘိုးတော်`, `ဘီတော်`, `အနွယ်တော်`, `အမည်တော်`, `စည်းစိမ်တော်`, `သက်တော်`), while possessive `အရှင့်` (`အရှင့်/n သားတော်/n`) and pre-nominal epithet `ရွှေ` (`ရွှေ/adj ဘုန်းတော်/n`) stay separate. Astrological formula `ဓာတ်ရကိန်း` stays fused as one compound noun `/n`, while `[Day/Planet] ဂြိုဟ်သက်` splits (`တနင်္လာ/n ဂြိုဟ်သက်/n`). Ordinals (`သတ္တမ/adj အကြိမ်/n`) and proper modifiers (`မြန်မာ/n မင်း/n`) always split. Broken Pali stem `သကျ` (Śākya) must be rejoined.
 
 ## Tags agents got wrong
 
@@ -38,6 +56,16 @@ These were confirmed dictionary headwords on 2026-10-19 or fixed forms on 2026-1
 | `နောက်ဆုံး` | `adj` | |
 | `မိုး ဇလ` | `abb abb` | weather-office pair. `မိုး` alone can be the noun rain |
 | `၇ နာရီ` | `နာရီ/n` | time noun, not a classifier particle |
+| `သော်` after verb | `conj` | subordinating temporal/conditional conjunction (`ရှု/v သော်/conj`, `ဆောင်/v ပါ/part သော်/conj`) |
+| `သော` after verb | `part` | attributive relativizer particle (`လျင်/v သော/part`) |
+| `ဟူသော` before noun | `part` | relativizer particle (`ဟူသော/part အက္ခရာ/n`) |
+| `ရွှေ` before `ဘုန်းတော်` | `adj` | attributive epithet modifier (`ရွှေ/adj ဘုန်းတော်/n`) |
+| `ထီးဆောင်း` before `နန်း` / `မင်း` | `adj` | sovereign-rule modifier (`ထီးဆောင်း/adj နန်း/n`; never `ထီးဆောင်း/v`) |
+| `တပါး` / `တစ်ပါး` meaning "other" | `adj` / `ppm` | `တပါး/adj သူဌေး/n`, `အခြား/adj တစ်ပါး/adj သော/part`, `မှ/ppm တစ်ပါး/ppm` (NOT `တ/tn ပါး/part`!) |
+| `တပါးသူ` / `တစ်ပါးသူ` | `n` | fused lexicalized noun ("another person / others"; never split `တ ပါး သူ`) |
+| `သူတပါး` / `သူတစ်ပါး` | `n` | fused MLC headword ("another person / others", `သူတပါး/n ထက်/ppm`; never split `သူ/pron တ/tn ပါး/part`) |
+| `ဓာတ်ရကိန်း` | `n` | fused astrological configuration compound noun |
+| `သတ္တမ` | `adj` | ordinal number adjective (`သတ္တမ/adj အကြိမ်/n`) |
 | `ကြား` | review | `ppm` "between" or `v` "hear" |
 | `ကြောင့်` `ဖို့` | `ppm` | news closed class |
 | `တဲ့` `တယ်` `မယ်` `ပြီ` | `part` | news closed class |
