@@ -36,6 +36,7 @@ Taken from OV Brain Memory adjudication, not from a new theory. Dates are the me
 | `ဇမ္ဗူဒီပါလက်ယာတောင်ကျွန်း` | `ဇမ္ဗူဒီပါ လက်ယာ တောင်ကျွန်း` | three-fold bilingual glossing: noun `ဇမ္ဗူဒီပါ/n` + modifier `လက်ယာ/adj` + noun `တောင်ကျွန်း/n` |
 | `မဟာဒါန်တိုက်ဝန်နေမျိုးဇေယကျော်ထင်` | `မဟာဒါန်တိုက်ဝန် နေမျိုးဇေယကျော်ထင်` | office rank `မဟာဒါန်တိုက်ဝန်/n` ("Minister of Mahādān Taik") + conferred royal title `နေမျိုးဇေယကျော်ထင်/n` |
 | `သမက်တော်သြယာဓမ္မရာဇာ` | `သမက်တော် သြယာ ဓမ္မရာဇာ` | fused kinship `သမက်တော်/n` + Thai rank `သြယာ/n` (*Okya*) + name/title `ဓမ္မရာဇာ/n` (preserve archaic `သြ` codepoints) |
+| `ဗုဒ္ဓကန့်လန့်ကာ` | `ဗုဒ္ဓ ကန့်လန့်ကာ` | book/essay title: proper noun `ဗုဒ္ဓ/n` + curtain noun `ကန့်လန့်ကာ/n` (parallel to `ဗုဒ္ဓ ဘာသာ`) |
 
 `ကျောင်းသား` is not this pattern. Do not split every word that ends in `သူ`.
 
