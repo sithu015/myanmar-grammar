@@ -398,23 +398,33 @@ def audit_line(
 
         # Check for title/rank unsplit from personal names (Title must be split: e.g. ဗိုလ်ချုပ် အောင်ဆန်း, ဗိုလ်ကြီး ဇင်ယော်)
         KNOWN_NAMES_AFTER_TITLE = ("အောင်ဆန်း", "ဇင်ယော်", "စောမုတ်သုန်", "စဝ်စံထွန်း", "တေဇာဆန်း")
-        for title in TITLES_AND_RANKS:
-            if surf.startswith(title) and len(surf) > len(title):
-                rem = surf[len(title):]
-                rem_base_cons = len(re.findall(r"[\u1000-\u102A\u103F]", rem))
-                if rem in KNOWN_NAMES_AFTER_TITLE or (rem_base_cons >= 2 and re.match(r"^[\u1000-\u102A][\u1000-\u109F]+$", rem)):
-                    issues.append(
-                        {
-                            "line": line_no,
-                            "token_index": tok_idx,
-                            "type": "unsplit_title_name",
-                            "message": (
-                                f"Title/Rank '{title}' must be split from personal name '{rem}' "
-                                f"into '{title}/{'n' if mode in ('pos', 'bracket', 'hd') else ''} {rem}/{'n' if mode in ('pos', 'bracket', 'hd') else ''}'."
-                            ),
-                        }
-                    )
-                    break
+        NON_NAME_REMAINDERS = {
+            "ချုပ်", "မှူး", "ကြီး", "တော်", "မင်း", "ဌာန", "ရုံး", "အဖွဲ့", "ကော်မတီ",
+            "ဘုရား", "ဘုရားကြီး", "တထောင်", "အစိုးရ", "စာရေး", "စာရေးကြီး",
+            "လောင်း", "ရွာ", "မြို့", "တောင်", "ကျွန်း",
+        }
+        if surf not in TITLES_AND_RANKS:
+            for title in TITLES_AND_RANKS:
+                if surf.startswith(title) and len(surf) > len(title):
+                    rem = surf[len(title):]
+                    if rem in NON_NAME_REMAINDERS or (title + rem) in TITLES_AND_RANKS:
+                        continue
+                    if any(rem.startswith(p) for p in ("ဌာန", "ရုံး", "အဖွဲ့", "ကော်မတီ", "ကျောင်း")):
+                        continue
+                    rem_base_cons = len(re.findall(r"[\u1000-\u102A\u103F]", rem))
+                    if rem in KNOWN_NAMES_AFTER_TITLE or (rem.startswith(STRICT_TITLE_PREFIXES) and rem_base_cons >= 2):
+                        issues.append(
+                            {
+                                "line": line_no,
+                                "token_index": tok_idx,
+                                "type": "unsplit_title_name",
+                                "message": (
+                                    f"Title/Rank '{title}' must be split from personal name '{rem}' "
+                                    f"into '{title}/{'n' if mode in ('pos', 'bracket', 'hd') else ''} {rem}/{'n' if mode in ('pos', 'bracket', 'hd') else ''}'."
+                                ),
+                            }
+                        )
+                        break
 
         surfaces.append(surf)
 
