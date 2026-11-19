@@ -997,9 +997,20 @@ def main() -> int:
 
     all_issues: list[dict[str, Any]] = []
     audit_mode = args.mode  # ws / pos / bracket
+    is_jsonl = args.input.suffix == ".jsonl" or (bool(input_lines) and input_lines[0].startswith('{"'))
     for idx, line in enumerate(input_lines, start=1):
-        ref_l = ref_lines[idx - 1] if ref_lines is not None else None
-        all_issues.extend(audit_line(line, idx, mode=audit_mode, ref_line=ref_l))
+        if is_jsonl:
+            try:
+                rec = json.loads(line)
+                target_line = rec.get("pos_annotated" if audit_mode == "pos" else "segmented", line)
+                ref_l = rec.get("sentence", None)
+            except Exception:
+                target_line = line
+                ref_l = None
+        else:
+            target_line = line
+            ref_l = ref_lines[idx - 1] if ref_lines is not None else None
+        all_issues.extend(audit_line(target_line, idx, mode=audit_mode, ref_line=ref_l))
 
     report = {
         "file": str(args.input),
