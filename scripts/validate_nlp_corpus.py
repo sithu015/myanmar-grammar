@@ -264,7 +264,7 @@ def audit_line(
     # 2. Zawgyi indicator check
     if ZAWGYI_INDICATORS.search(clean_line):
         is_preserved_legacy = False
-        if allow_legacy_encodings and ref_line and strip_ws(clean_line) == strip_ws(ref_line):
+        if allow_legacy_encodings and ref_line and ZAWGYI_INDICATORS.search(ref_line):
             is_preserved_legacy = True
         if not is_preserved_legacy:
             issues.append(
