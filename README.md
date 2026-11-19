@@ -46,7 +46,17 @@ Canonical Base-15 tagset ကို မထိခိုက်စေဘဲ Universa
 3. **Archaic vs Modern Corpus Expectations**:
    - ရှေးဟောင်းပေမူ၊ ကုန်းဘောင်ခေတ်အမိန့်တော်ပြန်တမ်းများရှိ သတ်ပုံ (`တပါးသူ`, `ရွှေမင်ကြောင်း`) ကို ခေတ်သစ်စံနှုန်းများဖြင့် ဇွတ်အတင်း မပြင်ဆင်စေရန် Profile Decoupling (`legacy_mypos_alt` သို့မဟုတ် historical config) ဖြင့် ထိန်းသိမ်းသည်။
 
-## 6. Verification & Self-Test
+## 6. Domain Lexicon (`resources/lexicon/domain_legal.txt`)
+
+`scripts/mine_domain_lexicon.py` သည် gold POS corpus ၏ မဂဏန်းလိုင်း (odd lines) မှ ≥5 ကြိမ် ပါသော token များကို ရှာ၍ supplementary lexicon ပြုလုပ်သည် (trap forms၊ `agent-hard-cases.md` "Do not glue"၊ indefinite reduplication ကို ဖယ်ထုတ်)။ `legal70k` နှင့် `news_unified` profile တွင်သာ default load လုပ်သည် (`domain_legal.txt` 4,408 / `domain_news.txt` 5,071 လုံး)။ Held-out စုံလိုင်း 3,000 တွင် boundary F1 — legal 0.635 → 0.921၊ news (Drive: `news_gold_lines_0001_70000_pos.txt`) 0.488 → 0.826။ Legal စာသားသည် boilerplate ထပ်တတ်သဖြင့် ဤအမှတ်သည် အထက်ပိုင်း ခန့်မှန်းချက်ဖြစ်နိုင်သည်။ ပြန်ထုတ်ရန်: `python3 scripts/mine_domain_lexicon.py --gold <gold_pos.txt> --profile news_unified --out resources/lexicon/domain_news.txt --evaluate`
+
+`news_unified` ရဲ့ gold-mined lexicon တွင် `domain_myposalt.txt` (myPOS v3 + ALT၊ 4,047) နှင့် `domain_medical.txt` (MyMedicon၊ 1,210) ကိုလည်း `general` / `legacy_mypos_alt` profile တွင် load လုပ်သည် (Drive: `mypos-myalt-mymedicon.compound.txt`၊ 77,894 လိုင်း၊ `--sid-prefix SNT.MYMEDICON` / `--exclude-sid-prefix SNT.MYMEDICON`၊ `[a/n|b/n]/n` ကို component အဖြစ် flatten)။ Held-out F1: medical 0.575 → 0.708၊ myPOS+ALT 0.674 → 0.802။ `--min-freq` 3/2 သုံးရင် F1 ကျသဖြင့် 5 ကို ထားသည်။
+
+`news_unified`: News gold တွင် `အပေါ်/အောက်` သည် ppm ~70% / n ~30% ဖြစ်သဖြင့် ဤ profile တွင် `always n` မသုံးဘဲ review (ppm, n နှစ်မျိုး) သို့ ပြောင်းထားသည်။ `#`/`$` သည် gold တွင် punc/sb ~50:50 ကွဲနေသဖြင့် owner ဆုံးဖြတ်ချက် မရမီ မပြောင်းသေးပါ။
+
+## 7. Verification & Self-Test
+
+`make test` သည် self-test အားလုံး + `scripts/test_e2e_pipeline.py` (segment → decide → myPOS-HD → chunk/merge E2E) + unit tests ကို တစ်ခါတည်း run သည်။ `make hooks` ဖြင့် git pre-commit hook ထည့်သွင်းပြီး၊ `.github/workflows/test.yml` က CI တွင် `make test` ကို run သည်။
 
 ```bash
 python3 -B scripts/test_nlp_tools.py -v

@@ -133,8 +133,14 @@ flowchart TD
 - **[Keep-whole lexicon](resources/lexicon/owner_keep_whole.txt)** - Documented one-token vocabulary the segmenter rejoins. Trap concatenations are intentionally absent.
 - **[Fetch corpus script](scripts/fetch_corpus_v1_1_from_gdrive.py)** - Optional. Run only when the user explicitly asks to download the news-corpus release. Needs the `gdrive` CLI. The Extreme SSD path in that file is the author's machine, not a default you should look for.
 - **[Compound Builder Script](scripts/compound_builder.py)** - TTKeyboard Trie Node များမှ ပေါင်းစပ်စကားလုံးများ ပြန်လည်ထုတ်လုပ်သော Script။
+- **[Domain Lexicon Mining Engine](scripts/mine_domain_lexicon.py)** - Gold POS Corpus (မဂဏန်းလိုင်းများ) မှ အထောက်အထားအခြေပြု (`min_freq >= 5`) ဝေါဟာရ ထုတ်ယူခြင်း၊ Minority-Glued Clitic များကို ရှင်းထုတ်သော Dominance Ratio Filtering ($c / (c + s_{cnt}) \ge \theta$) နှင့် စုံဂဏန်းလိုင်းများပေါ်တွင် Boundary F1 စစ်ဆေးအကဲဖြတ်သည့် ကိရိယာ။
+- **[End-to-End Pipeline Test](scripts/test_e2e_pipeline.py)** - Raw Segmentation -> `decide.py` 15-tag gate -> `myPOS-HD v4.1` projection/collapse across 4 profiles -> Chunk/Merge roundtrip identity စစ်ဆေးသော ပြည့်စုံသည့် E2E integration test suite။
 - **[Test NLP Tools Script](scripts/test_nlp_tools.py)** - Syllable breaker, Kinzi, Pint-sint, Compound words, Token spans, Confusable span conservation နှင့် Profile-scoped Decide/Validate/Remediate စည်းမျဉ်းများအတွက် Unit & Regression Test Suite (ထို့ပြင် standalone `--self-test` script ၉ ခု — `confusable.py`, `decide.py`, `project_mypos_hd.py`, `nominal.py`, `register.py`, `verb_pair.py`, `validate_nlp_corpus.py`, `corpus_chunk_and_remediate.py`, `legal70k_audit.py` — ဖြင့် အပြည့်အဝ စစ်ဆေးနိုင်သည်)။
-- **[Lexicon Resources](resources/lexicon/)** - `my_MM_lexicon.txt` (၁၃,၄၂၁ entries)၊ `my_MM_comprehensive_lexicon.txt` (၈,၈၂၉ cleaned entries) နှင့် `owner_keep_whole.txt` (၃၇၈ unique entries) ပါဝင်သော အဘိဓာန် ဝေါဟာရဘဏ်။
+- **[Lexicon Resources](resources/lexicon/)** - `my_MM_lexicon.txt` (၁၃,၄၂၁ entries)၊ `my_MM_comprehensive_lexicon.txt` (၈,၈၂၉ cleaned entries)၊ `owner_keep_whole.txt` (၃၇၈ unique entries) နှင့် Profile အလိုက် သီးခြားချိတ်ဆက်ထားသော Gold-Mined Domain Lexicons ၄ မျိုး:
+  - `domain_legal.txt` (၄,၃၃၇ words, F1 0.9211)
+  - `domain_news.txt` (၄,၉၃၄ words, F1 0.8288)
+  - `domain_medical.txt` (၁,၀၀၁ words, F1 0.8131)
+  - `domain_myposalt.txt` (၃,၇၅၈ words, F1 0.8353)။
 
 ## 🔄 Core, Large-Corpus & Downstream NLP လုပ်ငန်းစဉ် အဆင့်ဆင့်
 

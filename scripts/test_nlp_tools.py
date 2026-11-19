@@ -417,6 +417,29 @@ class TestM1M2Hardening(unittest.TestCase):
         with self.assertRaises(ValueError):
             normalize_profile("UNKNOWN")
 
+    def test_clitic_and_pronoun_segmentation_across_profiles(self):
+        """Ensure high-frequency clitics and pronouns are not over-merged into single tokens."""
+        cases = [
+            ("ကျွန်တော်တို့", ["ကျွန်တော်", "တို့"]),
+            ("၎င်းတို့", ["၎င်း", "တို့"]),
+            ("ခင်ဗျားကို", ["ခင်ဗျား", "ကို"]),
+            ("တစ်ခု", ["တစ်", "ခု"]),
+            ("တွေကို", ["တွေ", "ကို"]),
+        ]
+        for name, seg in [
+            ("general", self.ws_general),
+            ("legal70k", self.ws_legal),
+            ("news_unified", self.ws_news),
+            ("legacy_mypos_alt", self.ws_legacy),
+        ]:
+            for surface, expected in cases:
+                res = seg.segment(surface)
+                self.assertEqual(
+                    res,
+                    expected,
+                    f"Profile '{name}' failed to split clitic '{surface}': got {res}, expected {expected}",
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

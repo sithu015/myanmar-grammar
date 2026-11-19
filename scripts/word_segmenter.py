@@ -381,6 +381,15 @@ class TrieNode:
         self.word: str = ""
 
 
+# Gold-mined domain supplements per profile (scripts/mine_domain_lexicon.py).
+_DOMAIN_LEXICONS: Dict[str, Tuple[str, ...]] = {
+    "legal70k": ("domain_legal.txt",),
+    "news_unified": ("domain_news.txt",),
+    "legacy_mypos_alt": ("domain_myposalt.txt", "domain_medical.txt"),
+    "general": ("domain_myposalt.txt", "domain_medical.txt"),
+}
+
+
 class WordSegmenter:
     def __init__(
         self,
@@ -396,6 +405,7 @@ class WordSegmenter:
         self.syllable_breaker = SyllableBreaker()
         self.word_count = 0
 
+        lexicon_path_was_default = lexicon_path is None
         if lexicon_path is None:
             base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             candidates = [
@@ -411,6 +421,18 @@ class WordSegmenter:
 
         if lexicon_path and os.path.exists(lexicon_path):
             self.load_lexicon(lexicon_path)
+        # Domain supplement (mined from gold by scripts/mine_domain_lexicon.py).
+        # Only loaded when the default lexicon was used and the profile matches.
+        dom_names = _DOMAIN_LEXICONS.get(self.profile, ())
+        if lexicon_path_was_default:
+            lex_dir = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                "resources", "lexicon",
+            )
+            for dom_name in dom_names:
+                dom = os.path.join(lex_dir, dom_name)
+                if os.path.exists(dom):
+                    self.load_lexicon(dom)
         for word in _KEEP_WHOLE:
             self.add_word(word, 10**9)
         self._extra_keep_whole: Tuple[str, ...] = ()
@@ -422,7 +444,10 @@ class WordSegmenter:
     def add_word(self, word: str, freq: int = 1):
         """Insert a word and its frequency into the trie."""
         word = word.strip()
-        if not word:
+        if not word or word.startswith("#"):
+            return
+        # Guard against corrupted words starting with dependent vowels/diacritics/virama/asat
+        if "\u102b" <= word[0] <= "\u103e":
             return
         node = self.root
         for char in word:
@@ -438,10 +463,15 @@ class WordSegmenter:
         """Load tab-separated (word, freq) lexicon."""
         with open(path, "r", encoding="utf-8") as f:
             for line in f:
-                parts = line.strip().split("\t")
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                parts = line.split("\t")
                 if not parts or not parts[0]:
                     continue
-                word = parts[0]
+                word = parts[0].strip()
+                if not word or ("\u102b" <= word[0] <= "\u103e"):
+                    continue
                 freq = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 1
                 self.add_word(word, freq)
 

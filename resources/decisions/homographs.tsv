@@ -412,8 +412,12 @@
 ဖြည်းဖြည်း	after_word	adj	REDUP_ADJ	reduplicated property verb after a noun
 ဖြည်းဖြည်း	reading	adv	REDUP_READ_ADV	adverbial reduplication
 ဖြည်းဖြည်း	reading	adj	REDUP_READ_ADJ	attributive reduplication
-အပေါ်	always	n	REL_N	relational noun, not a postposition; Jenny
-အောက်	always	n	REL_N	relational noun; the case marker follows it
+အပေါ်	always	n	REL_N	relational noun, not a postposition; Jenny	!news_unified
+အပေါ်	reading	ppm	NEWS_UPO_PPM	postposition reading (news gold: ppm 70% of tokens)	news_unified
+အပေါ်	reading	n	NEWS_UPO_N	relational noun reading (news gold: n 30% of tokens)	news_unified
+အောက်	always	n	REL_N	relational noun; the case marker follows it	!news_unified
+အောက်	reading	ppm	NEWS_AOK_PPM	postposition reading (news gold: ppm 70% of tokens)	news_unified
+အောက်	reading	n	NEWS_AOK_N	relational noun reading (news gold: n 30% of tokens)	news_unified
 အထဲ	always	n	REL_N	relational noun, not a postposition
 နည်းနည်း	next_verb	adv	REDUP_ADV	myPOS adverb example; before a verb
 နည်းနည်း	after_word	adj	REDUP_ADJ	after a noun
