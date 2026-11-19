@@ -1,7 +1,7 @@
-# surface	when	tag	rule	note
-# when: always | at_end | medial | reading | prev:X | next:X | prev_in:a|b | next_in:a|b | next_clf | prev_textnum | between_num | all:clause & clause
+# surface	when	tag	rule	note	[profiles]
+# when: always | at_end | medial | reading | prev:X | next:X | prev_in:a|b | next_in:a|b | next_clf | prev_textnum | next_textnum | between_num | !clause | all:clause & clause
 # First matching row wins. `reading` never auto-matches; it is returned when nothing else matches.
-# Tags are myPOS 15 only.
+# Tags are myPOS 15 only. Optional 6th column `profiles` defaults to `*`.
 
 ကို	after_word	ppm	PPM_KO	object marker after a word; sentence-initial ကို may be a name prefix
 ကို	reading	ppm	KO_READ_PPM	object marker
@@ -17,7 +17,8 @@
 မှ	after_word	ppm	PPM_HMA2	source marker; no tag without a host on the left
 သို့	after_word	ppm	PPM_THO	allative; no tag without a host on the left
 ဖြင့်	after_word	ppm	PPM_PHYINT	instrumental or cause; no tag without a host on the left
-၏	all:prev_verb & at_end	part	I_REALIS	literary realis after a verb, not the genitive
+၏	all:prev_verb & at_end	ppm	I_REALIS_LEGACY	literary realis after a verb (legacy myPOS+ALT ppm)	legacy_mypos_alt
+၏	all:prev_verb & at_end	part	I_REALIS	literary realis after a verb, not the genitive	!legacy_mypos_alt
 ၏	after_word	ppm	PPM_I	genitive after a noun
 ရဲ့	all:prev_verb & at_end	part	YE_REALIS	colloquial realis after a verb
 ရဲ့	after_word	ppm	PPM_YE	colloquial genitive after a noun
@@ -35,14 +36,19 @@
 လိမ့်	prev_verb	part	PART_LEINT	future modal after a verb
 သင့်	prev:မ	v	THINT_VERB	predicate "to be appropriate"
 သင့်	next:လျော်	v	THINT_LYAW	split သင့် လျော်; prefer the one-token form
-သင့်	prev_verb	part	THINT_AUX	debitive after a verb
-သင့်	reading	part	THINT_READ_PART	auxiliary
+သင့်	prev_verb	part	THINT_AUX	debitive after a verb	general,legal70k,legacy_mypos_alt
+သင့်	prev_verb	v	THINT_MODAL_V	modal verb after a verb (News SOP v3.2)	news_unified
+သင့်	reading	part	THINT_READ_PART	auxiliary	general,legal70k,legacy_mypos_alt
 သင့်	reading	v	THINT_READ_VERB	lexical verb
+သင့်	reading	pron	THINT_READ_PRON	2sg pronoun ("your/you")
 ဟု	after_word	part	QUOT_HU	quotative after a clause
 ဟူ၍	after_word	part	QUOT_HUYWE	quotative after a clause
 ဟူသော	after_word	part	QUOT_HUTHAW	quotative before a noun
 ဟူသည်	after_word	part	QUOT_HUTHI	quotative after a clause
-သော်	after_word	part	PART_THAW2	concessive particle after a host; not part of a lexical compound
+သော်	after_word	conj	CONJ_THAW	concessive/conditional subordinator after a clause	general,legacy_mypos_alt
+သော်	reading	part	PART_THAW_READ	concessive particle reading in legal/news profiles	general,legacy_mypos_alt
+သော်	after_word	part	PART_THAW2	concessive particle after a host; not part of a lexical compound	legal70k,news_unified
+သော်	reading	conj	CONJ_THAW_READ	subordinator reading in UD/Shan Yoma/general	legal70k,news_unified
 ကျွန်တော်	always	pron	PRON_KYANO	first person
 ကျွန်မ	always	pron	PRON_KYAMA	first person
 ကျွန်ုပ်	always	pron	PRON_KYANOP	first person
@@ -64,11 +70,16 @@
 တသီးတခြား	always	adv	FIX_11	owner exact form
 
 သည်	prev:ဆို	part	THI_AFTER_SO	nominalizer in ဆို သည် မှာ
-သည်	at_end	part	THI_FINAL	clause-final realis after a verb
-သည်	next_in:ဟု|ဟူ၍|ဟူသော	part	THI_BEFORE_QUOT	realis before a quotative
-သည်	all:prev_verb & next_in:ကို|မှာ|၌|တွင်|မှ|အား|သို့|၏|ရဲ့|သော|သည့်|က	part	THI_BEFORE_CASE	nominalizer after a verb, before a case marker
-သည်	prev_verb	part	THI_AFTER_VERB	after a verb it is not the subject marker
-သည်	medial	ppm	THI_SUBJECT	subject marker after a noun phrase
+သည်	at_end	ppm	THI_FINAL_LEGACY	clause-final realis after a verb (legacy myPOS+ALT ppm)	legacy_mypos_alt
+သည်	at_end	part	THI_FINAL	clause-final realis after a verb	!legacy_mypos_alt
+သည်	next_in:ဟု|ဟူ၍|ဟူသော	ppm	THI_BEFORE_QUOT_LEGACY	realis before a quotative (legacy myPOS+ALT ppm)	legacy_mypos_alt
+သည်	next_in:ဟု|ဟူ၍|ဟူသော	part	THI_BEFORE_QUOT	realis before a quotative	!legacy_mypos_alt
+သည်	all:prev_verb & next_in:ကို|မှာ|၌|တွင်|မှ|အား|သို့|၏|ရဲ့|သော|သည့်|က	ppm	THI_BEFORE_CASE_LEGACY	realis/nominalizer after a verb (legacy myPOS+ALT ppm)	legacy_mypos_alt
+သည်	all:prev_verb & next_in:ကို|မှာ|၌|တွင်|မှ|အား|သို့|၏|ရဲ့|သော|သည့်|က	part	THI_BEFORE_CASE	nominalizer after a verb, before a case marker	!legacy_mypos_alt
+သည်	prev_verb	ppm	THI_AFTER_VERB_LEGACY	after a verb (legacy myPOS+ALT ppm)	legacy_mypos_alt
+သည်	prev_verb	part	THI_AFTER_VERB	after a verb it is not the subject marker	!legacy_mypos_alt
+သည်	all:medial & prev_nominal & next_in:မှာ	ppm	THI_SUBJECT_NOM	subject/topic marker after a nominal before မှာ
+သည်	all:medial & !next_in:ကို|အား|မှာ|တွင်|၌|မှ|သို့|၏|ရဲ့|က|ဟု|ဟူ၍|ဟူသော|သော|သည့်	ppm	THI_SUBJECT	subject marker after a noun phrase
 သည်	reading	adj	THI_DEMONSTRATIVE	rare pre-nominal "this"; do not use if a subject or verb frame already matched
 
 က	all:prev:( & next:)	sb	KA_BULLET	parenthetical subclause letter only
@@ -129,8 +140,10 @@
 အား	after_word	ppm	AH_DATIVE	dative or accusative after a host; ဖိအား ဓာတ်အား အင်အား stay one token
 အား	reading	n	AH_NOUN	strength when there is no host on the left
 
-မည်	at_end	part	MYI_FINAL	clause-final future
-မည်	next_in:ဟု|ဟူ၍|။	part	MYI_BEFORE_QUOT	future particle before a quotative
+မည်	at_end	ppm	MYI_FINAL_LEGACY	clause-final future (legacy myPOS+ALT ppm)	legacy_mypos_alt
+မည်	at_end	part	MYI_FINAL	clause-final future	!legacy_mypos_alt
+မည်	next_in:ဟု|ဟူ၍|။	ppm	MYI_BEFORE_QUOT_LEGACY	future before a quotative (legacy myPOS+ALT ppm)	legacy_mypos_alt
+မည်	next_in:ဟု|ဟူ၍|။	part	MYI_BEFORE_QUOT	future particle before a quotative	!legacy_mypos_alt
 မည်	reading	part	MYI_READ	future or irrealis particle
 ဦး	prev_textnum	part	U_CLF	person classifier after a number; a name prefix stays glued to the name
 ယောက်	prev_textnum	part	YAUK_CLF	classifier after a number
@@ -141,29 +154,34 @@
 
 
 ခဲ့	prev:မ	v	KHE_MAIN	main verb after negation
+ခဲ့	prev_verb	part	KHE_AUX	aspect after a verb
 ပြီး	prev:မ	v	PYI_MAIN	main verb after negation
 လိုက်	prev:မ	v	LAIK_MAIN	main verb after negation
+လိုက်	prev_verb	part	LAIK_AUX	aspect after a verb
 နေ	prev:မ	v	NAY_MAIN	main verb after negation
+နေ	prev_verb	part	NAY_AUX	continuous aspect after a verb
 ပေး	prev:မ	v	PAY_MAIN	main verb after negation
+ပေး	prev_verb	part	PAY_AUX	benefactive auxiliary after a verb
 သွား	prev:မ	v	THWA_MAIN	main verb after negation
 လာ	prev:မ	v	LA_MAIN	main verb after negation
 ထား	prev:မ	v	HTA_MAIN	main verb after negation
-ခဲ့	reading	part	KHE_AUX	aspect after a verb
+ထား	prev_verb	part	HTA_AUX	resultative auxiliary after a verb
+ခဲ့	reading	part	KHE_AUX_READ	aspect after a verb
 ခဲ့	reading	v	KHE_VERB	lexical verb
 ပြီး	reading	part	PYI_AUX	aspect after a verb
 ပြီး	reading	conj	PYI_CONJ	only inside ပြီးလျှင် ပြီးနောက်, which should stay one token
 ပြီး	reading	v	PYI_VERB	to finish
-လိုက်	reading	part	LAIK_AUX	aspect
+လိုက်	reading	part	LAIK_AUX_READ	aspect
 လိုက်	reading	v	LAIK_VERB	lexical verb
-နေ	reading	part	NAY_AUX	continuous aspect
+နေ	reading	part	NAY_AUX_READ	continuous aspect
 နေ	reading	v	NAY_VERB	to stay
-ပေး	reading	part	PAY_AUX	benefactive auxiliary
+ပေး	reading	part	PAY_AUX_READ	benefactive auxiliary
 ပေး	reading	v	PAY_VERB	to give
 သွား	reading	part	THWA_AUX	directional auxiliary
 သွား	reading	v	THWA_VERB	to go
 လာ	reading	part	LA_AUX	directional auxiliary
 လာ	reading	v	LA_VERB	to come
-ထား	reading	part	HTA_AUX	resultative auxiliary
+ထား	reading	part	HTA_AUX_READ	resultative auxiliary
 ထား	reading	v	HTA_VERB	to keep
 
 တစ်စုံတစ်ရာ	next_in:ကို|က|သည်|၏|မှ|အား	pron	TASON_PRON	indefinite pronoun as the noun phrase
@@ -214,8 +232,10 @@
 ဖို့	after_word	ppm	PPM_PHO	benefactive after a noun or other host
 ဖို့	reading	part	PHO_READ	special head when the verb is not in the list
 တဲ့	after_word	part	PART_TE	colloquial relativizer after a clause
-တယ်	after_word	part	PART_TEH	colloquial realis after a verb
-မယ်	after_word	part	PART_MEH	colloquial irrealis after a verb
+တယ်	after_word	ppm	PART_TEH_LEGACY	colloquial realis after a verb (legacy myPOS+ALT ppm)	legacy_mypos_alt
+တယ်	after_word	part	PART_TEH	colloquial realis after a verb	!legacy_mypos_alt
+မယ်	after_word	ppm	PART_MEH_LEGACY	colloquial irrealis after a verb (legacy myPOS+ALT ppm)	legacy_mypos_alt
+မယ်	after_word	part	PART_MEH	colloquial irrealis after a verb	!legacy_mypos_alt
 ပြီ	after_word	part	PART_PYI	perfective after a verb
 နှင့်တကွ	always	conj	HNINT_TAKWA	fixed conjunctive, one token
 အပါအဝင်	always	ppm	APAIN_WIN	inclusive postposition, one token
@@ -230,7 +250,6 @@
 မယ့်	after_word	part	PART_MEI	spoken irrealis relativizer
 မည့်	after_word	part	PART_MYI	written irrealis relativizer
 လော့	prev_verb	part	PART_LAW	written imperative after a verb
-မည်	all:prev_verb & at_end	part	PART_MYI_FINAL	written irrealis after a verb; not a question word
 မို့	after_word	ppm	PPM_MO	spoken cause after a host
 ဘူး	prev_in:ပါ|လဲ|တာ	part	BU_AFTER_PART	spoken negative final
 ဘူး	all:prev_verb & at_end	part	BU_FINAL	spoken negative final after a verb
@@ -270,6 +289,8 @@
 စတုတ္ထ	always	adj	ORD_4	ordinal
 ပဉ္စမ	always	adj	ORD_5	ordinal
 သူ	always	pron	PRON_THU	person, or the relativizer after a verb; same tag
+သူ	reading	part	PART_THU_READ	nominalizer particle reading in some sub-corpora
+သူ	reading	n	NOUN_THU_READ	common noun reading (person)
 ဘယ်သူ	always	pron	PRON_WHO	interrogative pronoun; one token
 အဘယ်သူ	always	pron	PRON_WHO_LIT	literary who
 မည်သူ	always	pron	PRON_WHO_MYI	literary who

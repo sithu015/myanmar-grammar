@@ -20,7 +20,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-import types
+import unicodedata
 
 class MyParser:
 	MY_SYLLABLE_UNKNOWN	= 0
@@ -245,7 +245,7 @@ class MyParser:
 		
 		BKSTATUS = (
 			# -  C  M  V  T 39 3A  N  S
-			( 1, 3, 1, 1, 1, 1, 1, 1, 1 ),#-
+			( 1, 3, 3, 3, 3, 3, 3, 3, 4 ),#-
 			( 3, 5, 1, 1, 1, 1, 1, 2, 4 ),#C
 			( 3, 5, 1, 1, 1, 0, 1, 2, 4 ),#M
 			( 3, 5, 0, 1, 1, 0, 1, 2, 4 ),#V
@@ -258,18 +258,25 @@ class MyParser:
 
 		firstClass = self.get_char_class(before)
 		secondClass = self.get_char_class(after)
-		
-		# print firstClass, secondClass
+
+		if firstClass == self.MY_SYLLABLE_UNKNOWN and secondClass == self.MY_SYLLABLE_UNKNOWN:
+			b_ch = chr(self.get_char(before))
+			a_ch = chr(self.get_char(after))
+			if b_ch.isspace() != a_ch.isspace():
+				return self.MY_PAIR_WORD_BREAK
+			if b_ch.isspace() and a_ch.isspace():
+				return self.MY_PAIR_NO_BREAK
+			if b_ch.isascii() and a_ch.isascii() and b_ch.isalnum() and a_ch.isalnum():
+				return self.MY_PAIR_NO_BREAK
+			return self.MY_PAIR_PUNCTUATION
 
 		return BKSTATUS[firstClass][secondClass]
 
 	def evaluate_context(self, contextText, offset, langHint):
 		text = contextText[offset:]
-		
-		length = len(text)
-		if length < 4:
-			for x in range(1,4 - length):
-				text += " "
+
+		if len(text) < 4:
+			text = text.ljust(4)
 
 		if text[0] == u'\u1021' and langHint == self.LANG_MY:
 			return self.MY_PAIR_NO_BREAK;
@@ -323,15 +330,13 @@ class MyParser:
 		return False
 
 	def is_not_myanmar(self, string):
-		char = self.get_char(string)
-		charClass = self.get_char_class(char)
-		if charClass == MMC_OT or charClass == MMC_RQ or charClass == MMC_LQ or charClass == MMC_SP:
-			return true
-		return false
+		return not self.is_myanmar_char(string)
 
 	def is_neutral(self, string):
 		char = self.get_char(string)
-		charClass = self.get_char_class(char)
-		if charClass == MMC_WJ or charClass == MMC_RQ or charClass == MMC_LQ or charClass == MMC_SP or charClass == MMC_NJ:
-			return true
-		return false
+		if self.is_myanmar_char(char):
+			return False
+		ch = chr(char)
+		if ch.isspace():
+			return True
+		return unicodedata.category(ch).startswith(("P", "S", "Z"))

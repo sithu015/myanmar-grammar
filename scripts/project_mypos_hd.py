@@ -26,25 +26,31 @@ import sys
 from pathlib import Path
 from typing import Iterable
 
-ALLOWED_15_TAGS: frozenset[str] = frozenset(
-    {
-        "abb",
-        "adj",
-        "adv",
-        "conj",
-        "fw",
-        "int",
-        "n",
-        "num",
-        "part",
-        "ppm",
-        "pron",
-        "punc",
-        "sb",
-        "tn",
-        "v",
-    }
-)
+try:
+    from .common_standards import (
+        ALLOWED_15_TAGS,
+        CLASSIFIERS,
+        PERSON_PREFIXES,
+        PROFILES,
+        STRICT_TITLE_PREFIXES,
+        TITLES_AND_RANKS,
+        normalize_profile,
+        parse_pos_token,
+    )
+except ImportError:
+    _scripts_dir = str(Path(__file__).resolve().parent)
+    if _scripts_dir not in sys.path:
+        sys.path.insert(0, _scripts_dir)
+    from common_standards import (
+        ALLOWED_15_TAGS,
+        CLASSIFIERS,
+        PERSON_PREFIXES,
+        PROFILES,
+        STRICT_TITLE_PREFIXES,
+        TITLES_AND_RANKS,
+        normalize_profile,
+        parse_pos_token,
+    )
 
 ALLOWED_HD_TAGS: frozenset[str] = frozenset(
     {
@@ -121,11 +127,7 @@ AUX_SET = {
     "ပြီး", "ပေး", "သွား", "လာ", "လိုက်", "မိ", "ချင်", "တော်မူ", "ဘိ", "လေ",
     "ချေ", "ပြန်", "ဦး", "အံ့", "ဖူး", "လင့်",
 }
-CLF_SET = {
-    "ဦး", "ယောက်", "ခု", "ကြိမ်", "ရပ်", "ပါး", "စုံ", "ထည်", "ချပ်", "လုံး",
-    "ချောင်း", "စီး", "ဆူ", "ကောင်", "ပင်", "ဖွဲ့", "မျိုး", "တပ်", "သွယ်", "ထပ်",
-    "ဦးဦး", "ခုခု", "ရပ်ရပ်", "ယောက်ယောက်",
-}
+CLF_SET = set(CLASSIFIERS)
 ORD_PRECEDING_SET = {
     "ကြိမ်", "အကြိမ်", "ခု", "နှစ်", "ဆင့်", "အဆင့်", "ယောက်", "ဦး", "ရက်", "လ", "ပတ်", "ထပ်",
 }
@@ -134,7 +136,7 @@ NOM_SET = {"ခြင်း", "မှု", "ခွင့်", "ရာ", "ချ�
 REL_SET = {"သော", "သည့်", "မည့်", "တဲ့", "မယ့်"}
 SFP_SET = {
     "သည်", "မည်", "၏", "ပြီ", "လိမ့်မည်", "သတည်း", "တည်း", "လေ", "ချေ",
-    "သော်", "တကား", "တုံ", "အံ့", "တယ်", "မယ်", "ပါ", "စို့", "သနည်း", "ပေါ့",
+    "တကား", "တုံ", "အံ့", "တယ်", "မယ်", "ပါ", "စို့", "သနည်း", "ပေါ့",
 }
 FIN_PPM_COPULA_SET = {"သည်", "မည်", "တယ်", "မယ်", "၏", "ပြီ", "စို့", "သနည်း"}
 QUOT_SET = {"ဟု", "ဟူ၍", "ဟူသော", "ဟူသည်", "ဟူသမျှ"}
@@ -161,6 +163,7 @@ CCONJ_SET = {
 DISC_CONJ_SET = {
     "ထို့ကြောင့်", "သို့ဖြစ်၍", "သို့ဖြစ်ပါ၍", "သို့ရာတွင်", "သို့သော်",
     "ထို့ပြင်", "ထို့အပြင်", "ထို့နောက်", "သို့မဟုတ်ပါက", "သို့နှင့်",
+    "ဒါပေမယ့်", "ဒါပေမဲ့", "သို့ပေမယ့်", "သို့ပေမဲ့",
 }
 
 DET_SET = {"ဤ", "ထို", "ယင်း", "အဆိုပါ", "၎င်း", "ဒီ", "အဲဒီ", "မည်သည့်", "ဟို", "ဘယ်"}
@@ -184,12 +187,29 @@ CREAKY_GEN_NOUN_SET = {
 }
 CREAKY_GEN_PRON_SET = {"သူ့", "ငါ့", "မည်သူ့", "ကျွန်တော့်", "ကိုယ့်"}
 
-PERSON_PREFIXES = ("ဦး", "ဒေါ်", "ကို", "မ", "မောင်", "စဝ်", "စော", "နော်", "စလိုင်း", "ဆလိုင်း", "ဒူဝါ", "ရှင်", "င")
 NON_PERSON_LEXICAL = {
     "ဦးရေ", "ဦးစီး", "ဦးဆောင်", "ဦးထုပ်", "ဦးတည်", "ဦးနှောက်", "ဦးခေါင်း", "ဦးစွာ", "ဦးပိုင်", "ဦးချို",
+    "ဦးလေး", "ဦးလေးကြီး", "ဦးပဉ္စင်းကြီး", "ဦးစေတီကြီး", "ဦးစေတီတော်ကြီး", "ဦးလူကြီး",
     "ဒေါ်လာ", "ကိုယ်", "ကိုယ်တိုင်", "ကိုယ်စား", "ကိုယ်ပိုင်", "မိဘ", "မဟာ", "မင်း", "မင်းကြီး",
-    "မောင်နှမ", "မောင်တော်", "စောင့်", "စောစော", "နော်ဝေ", "ရှင်ဘုရင်",
+    "မောင်နှမ", "မောင်တော်", "စောင့်", "စောစော", "စောစီး", "စောဒက", "စောဒနာ",
+    "စောဒနာဝင်", "စောဒနာလွှာ", "စောင်းတန်း", "နော်ဝေ", "ရှင်ဘုရင်", "ခွန်အား",
+    "ကျူးကျော်သူ", "အခြေအနေမျိုး", "အနေမျိုး", "ဦးဆုံး", "ဦးနှုန်း", "ဒေါ်ဒေါ်",
+    "မဟာသင်္ကြံ", "သင်္ကြံပွဲ",
 }
+NON_PERSON_STEM_PREFIXES = (
+    "ဦးစီး", "ဦးဆောင်", "ဦးတည်", "ဦးနှောက်", "ဦးခေါင်း", "ဦးထုပ်", "ဦးရေ",
+    "ဦးစား", "ဦးပိုင်", "ဦးချို", "ဦးလေး", "ဦးပဉ္စင်း", "ဦးစေတီ", "ဦးလူကြီး",
+    "ဦးပေါင်း", "ဦးသျှောင်", "ဦးစာရင်း", "ဦးစွာ", "ဦးဦး",
+    "ဒေါ်လာ", "မောင်နှမ", "မောင်နှံ", "မောင်တော်", "မောင်တော",
+    "စောစော", "စောစီး", "စောင့်", "စောဒက", "စောဒနာ", "စောမုတ်သုန်",
+    "နော်ဝေ",
+    "ကျူးကျော်", "အခြေအနေ", "မဟာသင်္ကြံ", "ဦးဆုံး", "ဦးနှုန်း",
+)
+NON_PERSON_SUFFIXES = (
+    "တော်", "ချုပ်", "ဝန်", "မှူး", "ရေး", "မှု", "ခြင်း", "ခွင့်", "ချက်", "နိုင်ငံ",
+    "ဌာန", "ရုံး", "အဖွဲ့", "ကော်မတီ", "ကော်မရှင်", "စျေး", "ဈေး", "စနစ်", "ပစ္စည်း",
+    "များ", "တို့", "စွာ", "စီး", "ဥပဒေ", "ပုဒ်မ", "စာရင်း", "သတင်း", "တက္ကသိုလ်", "ဆေးရုံ",
+)
 ROYAL_TITLE_MARKERS = ("နေမျိုး", "သင်္ခယာ", "ကျော်ထင်", "ကျော်သူ", "သိင်္ခသူ", "တရဖျား", "နော်ရထာ", "သီဟသူ", "သင်္ကြံ")
 ASCII_NUM_RE = re.compile(r"^[0-9]+([.,:/-][0-9]+)*$")
 
@@ -204,14 +224,27 @@ def collapse_to_mypos15(hd_tag: str) -> str:
 def _is_person_or_royal_propn(word: str, prop_set: set[str]) -> bool:
     if word in prop_set:
         return True
+    if word in NON_PERSON_LEXICAL or word in TITLES_AND_RANKS:
+        return False
+    if word.startswith(NON_PERSON_STEM_PREFIXES):
+        return False
+    if word.endswith(NON_PERSON_SUFFIXES):
+        return False
     if any(m in word for m in ROYAL_TITLE_MARKERS):
         return True
-    if word not in NON_PERSON_LEXICAL and any(word.startswith(p) and len(word) > len(p) + 1 for p in PERSON_PREFIXES):
-        if word.startswith(("မ", "ကို")) and len(word) <= 3:
-            return False
-        if word.endswith(("တော်", "ကြီး", "ချုပ်", "ဝန်", "မှူး", "ရေး", "မှု", "ခြင်း", "နိုင်ငံ")):
-            return False
-        return word in prop_set or word.startswith(("ဦး", "ဒေါ်", "စဝ်", "စလိုင်း", "ဆလိုင်း", "ဒူဝါ"))
+    for p in STRICT_TITLE_PREFIXES:
+        if word.startswith(p) and len(word) > len(p):
+            rest = word[len(p):]
+            # Must begin a new syllable (consonant/independent vowel), not a combining mark
+            if not ("\u1000" <= rest[0] <= "\u102a"):
+                continue
+            if len(rest) > 1 and rest[1] == "\u103a":
+                continue
+            # Reject bare kinship/adverbial prefix+ကြီး (ဦးကြီး, ဒေါ်ကြီး, စောကြီး)
+            if rest == "ကြီး":
+                continue
+            if len(rest) > 1 or word in {"ဦးစ", "ဦးဘ", "ဦးဩ"}:
+                return True
     return False
 
 
@@ -221,6 +254,7 @@ def project_sentence_to_mypos_hd(
     profile: str = "auto",
 ) -> list[dict[str, str]]:
     """Project (word, base15_tag) sequence into multi-tier myPOS-HD v4.1 dictionaries."""
+    profile = normalize_profile(profile, default="auto", allow_auto=True)
     prop_set = set(proper_nouns)
     n_toks = len(tokens_with_pos)
     results: list[dict[str, str]] = []
@@ -255,6 +289,8 @@ def project_sentence_to_mypos_hd(
                 hd_tag, core_tag, upos, feats = "part:rel", "rel", "SCONJ", "VerbForm=Part"
             elif w in QUOT_SET:
                 hd_tag, core_tag, upos, feats = "part:quot", "part", "PART", "PartType=Quot"
+            elif w == "သော်":
+                hd_tag, core_tag, upos, feats = "conj:sub", "sconj", "SCONJ", "VerbForm=Conv"
             elif w in SFP_SET and (next_t in {"punc", ""} or next_w in QUOT_SET):
                 hd_tag, core_tag, upos, feats = "part:sfp", "sfp", "PART", "Mood=Ind"
             elif w in AUX_SET and prev_t in {"v", "part"}:
@@ -354,11 +390,11 @@ def project_sentence_to_mypos_hd(
 
 
 def _parse_pos_line(line: str) -> list[tuple[str, str]]:
-    pairs = []
+    pairs: list[tuple[str, str]] = []
     for tok in line.split():
-        if "/" in tok:
-            w, t = tok.rsplit("/", 1)
-            pairs.append((w, t))
+        parsed = parse_pos_token(tok)
+        if parsed is not None:
+            pairs.append(parsed)
     return pairs
 
 
@@ -393,6 +429,15 @@ def run_self_test() -> int:
     assert hd3[7]["mypos_hd"] == "sb:enum" and hd3[7]["upos"] == "SYM"
     assert hd3[9]["upos"] == "INTJ" and hd3[10]["upos"] == "PUNCT"
 
+    # 4. Royal title marker false positive guards vs genuine royal/personal names
+    s4 = _parse_pos_line("ကျူးကျော်သူ/n အခြေအနေမျိုး/n ဦးဆုံး/n နေမျိုးသီဟသူ/n ဦးကျော်သူ/n")
+    hd4 = project_sentence_to_mypos_hd(s4)
+    assert hd4[0]["mypos_hd"] == "n" and hd4[0]["upos"] == "NOUN"
+    assert hd4[1]["mypos_hd"] == "n" and hd4[1]["upos"] == "NOUN"
+    assert hd4[2]["mypos_hd"] == "n" and hd4[2]["upos"] == "NOUN"
+    assert hd4[3]["mypos_hd"] == "n:prop" and hd4[3]["upos"] == "PROPN"
+    assert hd4[4]["mypos_hd"] == "n:prop" and hd4[4]["upos"] == "PROPN"
+
     print("SELF-TEST PASSED: myPOS-HD v4.1 (all 15 base tags, Dual-Profile, clause-bounded neg/foc, valid creaky genitives, approx/plur split, rel/nom split, lossless collapse) verified.")
     return 0
 
@@ -401,7 +446,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Project 15-tag Myanmar POS text into myPOS-HD v4.1 and UD v2.")
     parser.add_argument("--input", type=Path, help="Input POS file (`word/tag` per line) or JSONL (`tokens`, `pos_tags`)")
     parser.add_argument("--mode", choices=["pos", "jsonl"], default="pos", help="Input format")
-    parser.add_argument("--profile", choices=["auto", "unified_modern", "legacy_mypos_alt"], default="auto")
+    parser.add_argument(
+        "--profile",
+        choices=["auto", "unified_modern", *PROFILES],
+        default="auto",
+    )
     parser.add_argument("--limit", type=int, default=20, help="Max lines to emit")
     parser.add_argument("--json", action="store_true", help="Emit JSON lines")
     parser.add_argument("--self-test", action="store_true", help="Run built-in unit self-tests")

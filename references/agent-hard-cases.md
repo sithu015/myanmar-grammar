@@ -24,8 +24,8 @@ Taken from OV Brain Memory adjudication, not from a new theory. Dates are the me
 | `တပါးသူဌေး` | `တပါး သူဌေး` | alterity modifier `တပါး/adj` ("another") + `သူဌေး/n` (never split `တ ပါး` and never substring-match `တပါးသူ`) |
 | `ထီးဆောင်းနန်း` | `ထီးဆောင်း နန်း` | sovereign-rule modifier `ထီးဆောင်း/adj` + noun `နန်း/n` (never tag `ထီးဆောင်း/v`) |
 | `လျင်သော` | `လျင် သော` | verb `လျင်/v` + relativizer particle `သော/part` |
-| `ရှုသော်` | `ရှု သော်` | verb `ရှု/v` + subordinating conjunction `သော်/conj` |
-| `ဆောင်ပါသော်` | `ဆောင် ပါ သော်` | verb `ဆောင်/v` + polite particle `ပါ/part` + conjunction `သော်/conj` |
+| `ရှုသော်` | `ရှု သော်` | verb `ရှု/v` + subordinating conjunction `သော်/conj` (`legal70k`/`news_unified` Base-15 ၌ `part`; `myPOS-HD` ၌ အမြဲ `conj:sub` -> `SCONJ`) |
+| `ဆောင်ပါသော်` | `ဆောင် ပါ သော်` | verb `ဆောင်/v` + polite particle `ပါ/part` + conjunction `သော်/conj` (`legal70k`/`news_unified` Base-15 ၌ `part`; `myPOS-HD` ၌ အမြဲ `conj:sub` -> `SCONJ`) |
 | `ဟူသောအက္ခရာ` | `ဟူသော အက္ခရာ` | relativizer particle `ဟူသော/part` + noun `အက္ခရာ/n` |
 | `နိမိတ်ဩဘာ` | `နိမိတ် ဩဘာ` | synonymous rhetorical pair: noun `နိမိတ်/n` + noun `ဩဘာ/n` |
 | `မြှောက်စားချီးမြှင့်` | `မြှောက်စား ချီးမြှင့်` | synonymous verb pair: verb `မြှောက်စား/v` + verb `ချီးမြှင့်/v` |
@@ -59,7 +59,7 @@ These were confirmed dictionary headwords on 2026-10-19 or fixed forms on 2026-1
 | `နောက်ဆုံး` | `adj` | |
 | `မိုး ဇလ` | `abb abb` | weather-office pair. `မိုး` alone can be the noun rain |
 | `၇ နာရီ` | `နာရီ/n` | time noun, not a classifier particle |
-| `သော်` after verb | `conj` | subordinating temporal/conditional conjunction (`ရှု/v သော်/conj`, `ဆောင်/v ပါ/part သော်/conj`) |
+| `သော်` after verb | `conj` / `part` | subordinating temporal/conditional conjunction (`general`/`legacy_mypos_alt`/Shan Yoma ၌ `conj`, `legal70k`/`news_unified` ၌ `part`; `myPOS-HD v4.1` ၌ `conj:sub` -> `SCONJ`) |
 | `သော` after verb | `part` | attributive relativizer particle (`လျင်/v သော/part`) |
 | `ဟူသော` before noun | `part` | relativizer particle (`ဟူသော/part အက္ခရာ/n`) |
 | `ရွှေ` before `ဘုန်းတော်` | `adj` | attributive epithet modifier (`ရွှေ/adj ဘုန်းတော်/n`) |
@@ -89,7 +89,7 @@ These fired as `closed` and have been narrowed. Do not put the wide rule back.
 | any medial `သည်` after a verb is `ppm` | after a listed verb it is `part` |
 | every `မ` before a word is `part` | `part` only before a verb or quality word. `မ သီရိ` stays review |
 | every `ကို` is `ppm` | `ppm` only after a word. Sentence-initial `ကို` stays review |
-| every `သင့်` is `part` | `သွား သင့်` is `part`; `မ သင့်` is `v` |
+| every `သင့်` is `part` | `သွား သင့်` is `part` (`general`, `legal70k`, `legacy_mypos_alt`) or `v` (`news_unified` / News SOP v3.2); `မ သင့်` is `v`; literary 2sg pronoun ("you/your", `သင့် စာအုပ်`) is `pron` |
 | every `အား` is `ppm` | `အား ရှိ` / `အား စိုက်` is `n` |
 | every `နောက်ဆုံး` is `adj` | review: `adj` before a noun, `adv` before a verb |
 | `ရ` left open after a verb | `ဆောင်ရွက် ရ` is `part`; `ဒဏ်ရာ ရ` and `မ ရ` stay `v` |

@@ -11,10 +11,27 @@ import os
 import sys
 from typing import List, Tuple, Dict, Optional
 
-# Import syllable breaker
+# Import sibling modules (dual-mode: package or scripts-dir on sys.path)
 try:
+    from .common_standards import (
+        OWNER_COMPONENT_STANDARDS,
+        PROFILES,
+        SUBSECTION_CONSONANTS,
+        normalize_profile,
+    )
+    from .confusable import correct_with_spans
     from .syllable_breaker import SyllableBreaker
 except ImportError:
+    _scripts_dir = os.path.dirname(os.path.abspath(__file__))
+    if _scripts_dir not in sys.path:
+        sys.path.insert(0, _scripts_dir)
+    from common_standards import (
+        OWNER_COMPONENT_STANDARDS,
+        PROFILES,
+        SUBSECTION_CONSONANTS,
+        normalize_profile,
+    )
+    from confusable import correct_with_spans
     from syllable_breaker import SyllableBreaker
 
 
@@ -100,6 +117,7 @@ _EXACT_SPLITS = [
     ("တပေါင်းလပြည့်", ["တပေါင်း", "လပြည့်"]),
     ("မဟာဒါန်တိုက်ဝန်နေမျိုးဇေယကျော်ထင်", ["မဟာဒါန်တိုက်ဝန်", "နေမျိုးဇေယကျော်ထင်"]),
     ("သမက်တော်သြယာဓမ္မရာဇာ", ["သမက်တော်", "သြယာ", "ဓမ္မရာဇာ"]),
+    ("သမက်တော်ဩယာဓမ္မရာဇာ", ["သမက်တော်", "ဩယာ", "ဓမ္မရာဇာ"]),
     ("ဗုဒ္ဓကန့်လန့်ကာ", ["ဗုဒ္ဓ", "ကန့်လန့်ကာ"]),
     ("ပြည်နယ်အစိုးရအဖွဲ့", ["ပြည်နယ်", "အစိုးရ", "အဖွဲ့"]),
     ("ပြည်နယ်အစိုးရ", ["ပြည်နယ်", "အစိုးရ"]),
@@ -143,9 +161,14 @@ _EXACT_SPLITS = [
     ("ထီးဆောင်းနန်း", ["ထီးဆောင်း", "နန်း"]),
 ]
 _SPLIT_MAP = {src: parts for src, parts in _EXACT_SPLITS}
+_LEGAL70K_INSTITUTIONAL_SPLITS = frozenset(OWNER_COMPONENT_STANDARDS.keys())
+_GENERAL_SPLIT_MAP = {
+    src: parts for src, parts in _EXACT_SPLITS if src not in _LEGAL70K_INSTITUTIONAL_SPLITS
+}
+_NEWS_KEEP_WHOLE = ("လေ့လာသုံးသပ်သူ",)
 # အရသာ ("taste") is a real word, but after a legal head it is the trap အရ + သာ.
 _AYAR_THA_HEADS = {"ဥပဒေ", "နည်းဥပဒေ", "အက်ဥပဒေ", "တည်ဆဲဥပဒေ", "ပုဒ်မ", "ချက်"}
-_SUBSECTION = set("ကခဂဃငစဆဇဈဉညဋဌဍဎဏတထဒဓနပဖဗဘမယရလဝသဟဠအဣဤဥဦဧဩဪ")
+_SUBSECTION = set(SUBSECTION_CONSONANTS)
 _FORM_HEADS = {"ပုံစံ", "ပုံစံပြု", "ဧည့်"}
 # A real compound never ends in these clitic chains. Legal70k candidates such as
 # ကော်မရှင်သည်၎င်း were false compounds.
@@ -197,59 +220,141 @@ _KEEP_WHOLE = _load_keep_whole()
 _KNOWN_FORMS.update(_KEEP_WHOLE)
 
 
-def _rejoin_known(tokens, known):
-    """Merge a token window when its concatenation is a known owner form."""
-    out = []
+def _rejoin_known_spans(
+    token_spans: List[Tuple[str, int, int]],
+    known: set,
+) -> List[Tuple[str, int, int]]:
+    """Merge a contiguous token window when its concatenation is a known owner form."""
+    out: List[Tuple[str, int, int]] = []
     i = 0
-    n = len(tokens)
+    n = len(token_spans)
     while i < n:
-        acc = ""
-        best_k = None
-        for k in range(i, min(n, i + 12)):
-            acc += tokens[k]
+        acc = token_spans[i][0]
+        start_pos = token_spans[i][1]
+        best_k = i if acc in known else None
+        prev_end = token_spans[i][2]
+        for k in range(i + 1, min(n, i + 12)):
+            tok_k, s_k, e_k = token_spans[k]
+            if s_k != prev_end:
+                break
+            acc += tok_k
+            prev_end = e_k
             if acc in known:
                 best_k = k
         if best_k is None or best_k == i:
-            out.append(tokens[i])
+            out.append(token_spans[i])
             i += 1
         else:
-            out.append("".join(tokens[i:best_k + 1]))
+            merged = "".join(t for t, _s, _e in token_spans[i : best_k + 1])
+            out.append((merged, start_pos, token_spans[best_k][2]))
             i = best_k + 1
     return out
 
 
-def _apply_owner_postpass(tokens):
-    """Rejoin protected forms, then apply exact-token owner splits."""
-    rejoined = _rejoin_known(tokens, _KNOWN_FORMS)
-    out = []
-    for tok in rejoined:
-        out.extend(_SPLIT_MAP.get(tok, [tok]))
-    fixed = []
-    for tok in out:
-        if tok == "အရသာ" and fixed and fixed[-1] in _AYAR_THA_HEADS:
-            fixed.extend(["အရ", "သာ"])
-        else:
-            fixed.append(tok)
-    return _peel_clitic_chains(_join_form_codes(fixed))
-
-
-def _peel_clitic_chains(tokens):
+def _peel_clitic_chain_spans(
+    token_spans: List[Tuple[str, int, int]],
+    protected: set,
+) -> List[Tuple[str, int, int]]:
     """Split a function-word chain off the right edge. Do not touch protected words."""
-    out = []
-    protected = _PROTECTED_WHOLE | set(_KEEP_WHOLE)
-    for token in tokens:
+    out: List[Tuple[str, int, int]] = []
+    for token, start, end in token_spans:
         if token in protected:
-            out.append(token)
+            out.append((token, start, end))
             continue
         peeled = None
         for tail, parts in _CLITIC_CHAINS:
             if token.endswith(tail) and len(token) > len(tail):
                 stem = token[: -len(tail)]
                 if len(stem) >= 2:
-                    peeled = [stem, *parts]
+                    cur = start
+                    peeled = [(stem, cur, cur + len(stem))]
+                    cur += len(stem)
+                    for part in parts:
+                        peeled.append((part, cur, cur + len(part)))
+                        cur += len(part)
                     break
-        out.extend(peeled or [token])
+        if peeled:
+            out.extend(peeled)
+        else:
+            out.append((token, start, end))
     return out
+
+
+def _join_form_code_spans(
+    token_spans: List[Tuple[str, int, int]],
+    *,
+    require_contiguous: bool = False,
+) -> List[Tuple[str, int, int]]:
+    """ပုံစံ - က and ပုံစံပြု - ၁၀ keep the hyphen and drop only stray spaces when allowed."""
+    out: List[Tuple[str, int, int]] = []
+    i = 0
+    n = len(token_spans)
+    while i < n:
+        tok_i, s_i, e_i = token_spans[i]
+        if i + 1 < n and tok_i in _FORM_HEADS:
+            tok_n, s_n, e_n = token_spans[i + 1]
+            if not require_contiguous or e_i == s_n:
+                code = _hyphen_code(tok_n)
+                if code:
+                    out.append((tok_i + "-" + code, s_i, e_n))
+                    i += 2
+                    continue
+        if (
+            i + 2 < n
+            and tok_i in _FORM_HEADS
+            and token_spans[i + 1][0].strip() == "-"
+            and _form_tail(token_spans[i + 2][0].strip())
+        ):
+            _, s_1, e_1 = token_spans[i + 1]
+            tok_2, s_2, e_2 = token_spans[i + 2]
+            if not require_contiguous or (e_i == s_1 and e_1 == s_2):
+                out.append((tok_i + "-" + tok_2.strip(), s_i, e_2))
+                i += 3
+                continue
+        out.append(token_spans[i])
+        i += 1
+    return out
+
+
+def _apply_owner_postpass_spans(
+    token_spans: List[Tuple[str, int, int]],
+    *,
+    profile: str = "legal70k",
+    for_tokenize: bool = False,
+    extra_keep_whole: Tuple[str, ...] = (),
+) -> List[Tuple[str, int, int]]:
+    """Rejoin protected forms, then apply profile-scoped exact-token owner splits."""
+    if profile == "legal70k":
+        split_map = _SPLIT_MAP
+        known = set(_KNOWN_FORMS)
+    else:
+        split_map = _GENERAL_SPLIT_MAP
+        known = (_KNOWN_FORMS - _LEGAL70K_INSTITUTIONAL_SPLITS) | set(extra_keep_whole)
+    protected = (_PROTECTED_WHOLE | set(_KEEP_WHOLE) | set(extra_keep_whole))
+
+    rejoined = _rejoin_known_spans(token_spans, known)
+    out: List[Tuple[str, int, int]] = []
+    for tok, s, e in rejoined:
+        parts = split_map.get(tok)
+        if parts:
+            cur = s
+            for p in parts:
+                out.append((p, cur, cur + len(p)))
+                cur += len(p)
+        else:
+            out.append((tok, s, e))
+
+    fixed: List[Tuple[str, int, int]] = []
+    for tok, s, e in out:
+        if tok == "အရသာ" and fixed and fixed[-1][0] in _AYAR_THA_HEADS:
+            fixed.append(("အရ", s, s + 2))
+            fixed.append(("သာ", s + 2, e))
+        else:
+            fixed.append((tok, s, e))
+
+    if profile == "legal70k":
+        fixed = _join_form_code_spans(fixed, require_contiguous=for_tokenize)
+    return _peel_clitic_chain_spans(fixed, protected)
 
 
 def _form_tail(token: str) -> bool:
@@ -268,32 +373,6 @@ def _hyphen_code(token: str):
     return None
 
 
-def _join_form_codes(tokens):
-    """ပုံစံ - က and ပုံစံပြု - ၁၀ keep the hyphen and drop only the stray spaces."""
-    out = []
-    i = 0
-    n = len(tokens)
-    while i < n:
-        if i + 1 < n and tokens[i] in _FORM_HEADS:
-            code = _hyphen_code(tokens[i + 1])
-            if code:
-                out.append(tokens[i] + "-" + code)
-                i += 2
-                continue
-        if (
-            i + 2 < n
-            and tokens[i] in _FORM_HEADS
-            and tokens[i + 1].strip() == "-"
-            and _form_tail(tokens[i + 2].strip())
-        ):
-            out.append(tokens[i] + "-" + tokens[i + 2].strip())
-            i += 3
-        else:
-            out.append(tokens[i])
-            i += 1
-    return out
-
-
 class TrieNode:
     def __init__(self):
         self.children: Dict[str, TrieNode] = {}
@@ -303,11 +382,20 @@ class TrieNode:
 
 
 class WordSegmenter:
-    def __init__(self, lexicon_path: Optional[str] = None):
+    def __init__(
+        self,
+        lexicon_path: Optional[str] = None,
+        profile: str = "legal70k",
+        normalize_confusables: bool = False,
+    ):
+        self.profile = normalize_profile(profile, default="legal70k")
+        self.normalize_confusables = bool(normalize_confusables)
+        self.last_confusables: List[Dict[str, object]] = []
+        self.last_text: str = ""
         self.root = TrieNode()
         self.syllable_breaker = SyllableBreaker()
         self.word_count = 0
-        
+
         if lexicon_path is None:
             base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             candidates = [
@@ -325,6 +413,11 @@ class WordSegmenter:
             self.load_lexicon(lexicon_path)
         for word in _KEEP_WHOLE:
             self.add_word(word, 10**9)
+        self._extra_keep_whole: Tuple[str, ...] = ()
+        if self.profile == "news_unified":
+            self._extra_keep_whole = _NEWS_KEEP_WHOLE
+            for word in self._extra_keep_whole:
+                self.add_word(word, 10**9)
 
     def add_word(self, word: str, freq: int = 1):
         """Insert a word and its frequency into the trie."""
@@ -425,25 +518,16 @@ class WordSegmenter:
         words.reverse()
         return words
 
-    def segment(self, text: str) -> List[str]:
-        """
-        Segment Myanmar text into words using Bi-directional Maximum Matching
-        with frequency-weighted disambiguation.
-        """
-        if not text:
-            return []
-        from confusable import correct
-        text, self.last_confusables = correct(text)
-        self.last_text = text
+    def _segment_group(self, group_spans: List[Tuple[int, int, str]]) -> List[Tuple[str, int, int]]:
+        """Segment one contiguous non-whitespace span group via FMM+BMM."""
+        if len(group_spans) == 1:
+            s, e, tok = group_spans[0]
+            return [(tok, s, e)]
 
-        # First break into syllables
-        syllables = self.syllable_breaker.segment(text)
-        if not syllables:
-            return []
-            
+        syllables = [tok for _s, _e, tok in group_spans]
         fmm_result = self._segment_fmm(syllables)
         bmm_result = self._segment_bmm(syllables)
-        
+
         if fmm_result == bmm_result:
             chosen = fmm_result
         elif len(fmm_result) < len(bmm_result):
@@ -454,26 +538,84 @@ class WordSegmenter:
             fmm_score = sum(self.get_frequency(w) for w in fmm_result)
             bmm_score = sum(self.get_frequency(w) for w in bmm_result)
             chosen = fmm_result if fmm_score >= bmm_score else bmm_result
-        return _apply_owner_postpass(chosen)
+
+        out: List[Tuple[str, int, int]] = []
+        pos = group_spans[0][0]
+        for w in chosen:
+            end = pos + len(w)
+            out.append((w, pos, end))
+            pos = end
+        return out
+
+    def _segment_with_work_spans(
+        self,
+        text: str,
+        *,
+        for_tokenize: bool = False,
+    ) -> Tuple[List[Tuple[str, int, int]], List[Tuple[int, int]]]:
+        if not text:
+            self.last_confusables = []
+            self.last_text = text
+            return [], []
+
+        if self.normalize_confusables:
+            work_text, edits, span_map = correct_with_spans(text)
+            self.last_confusables = edits
+            self.last_text = work_text
+        else:
+            work_text = text
+            self.last_confusables = []
+            self.last_text = text
+            span_map = [(i, i + 1) for i in range(len(text))]
+
+        syl_spans = self.syllable_breaker.get_spans(work_text, keep_whitespace=False)
+        if not syl_spans:
+            return [], span_map
+
+        chosen_spans: List[Tuple[str, int, int]] = []
+        cur_group: List[Tuple[int, int, str]] = [syl_spans[0]]
+        for span in syl_spans[1:]:
+            if span[0] == cur_group[-1][1]:
+                cur_group.append(span)
+            else:
+                chosen_spans.extend(self._segment_group(cur_group))
+                cur_group = [span]
+        chosen_spans.extend(self._segment_group(cur_group))
+
+        post_spans = _apply_owner_postpass_spans(
+            chosen_spans,
+            profile=self.profile,
+            for_tokenize=for_tokenize,
+            extra_keep_whole=self._extra_keep_whole,
+        )
+        return post_spans, span_map
+
+    def segment(self, text: str) -> List[str]:
+        """
+        Segment Myanmar text into words using Bi-directional Maximum Matching
+        with frequency-weighted disambiguation.
+        """
+        post_spans, _span_map = self._segment_with_work_spans(text, for_tokenize=False)
+        return [tok for tok, _s, _e in post_spans]
 
     def tokenize(self, text: str) -> List[Dict[str, any]]:
-        """Return structured tokens with word, span, and in-dictionary status."""
-        words = self.segment(text)
+        """Return structured tokens with word, exact original span, and in-dictionary status."""
+        post_spans, span_map = self._segment_with_work_spans(text, for_tokenize=True)
         tokens = []
-        offset = 0
-        for w in words:
-            start = text.find(w, offset)
-            if start == -1:
-                start = offset
-            end = start + len(w)
-            offset = end
-            tokens.append({
-                "token": w,
-                "start": start,
-                "end": end,
-                "in_dict": self.is_word(w),
-                "freq": self.get_frequency(w)
-            })
+        for norm_tok, work_s, work_e in post_spans:
+            orig_s = span_map[work_s][0]
+            orig_e = span_map[work_e - 1][1]
+            orig_tok = text[orig_s:orig_e]
+            entry: Dict[str, any] = {
+                "token": orig_tok,
+                "start": orig_s,
+                "end": orig_e,
+                "in_dict": self.is_word(norm_tok),
+                "freq": self.get_frequency(norm_tok),
+            }
+            if norm_tok != orig_tok:
+                entry["normalized"] = norm_tok
+            tokens.append(entry)
         return tokens
 
     def segment_with_delimiter(self, text: str, delimiter: str = " | ") -> str:

@@ -1,6 +1,6 @@
 # မြန်မာစကားလုံးနှင့် ဝဏ္ဏပိုင်းခြားရေး Toolchain (High-Speed Myanmar Syllable & Word Segmentation Toolkit)
 
-ဤလက်စွဲစာတမ်းသည် TTKeyboard auto-suggestion engine မှ reverse-engineer လုပ်ထားသော Trie Lexicon (စကားလုံးပေါင်း ၁၃,၄၂၁ မှ ၁၇,၅၀၀+ ကျော်) နှင့် ThanLwinSoft / myOpenware Pair-Rule အင်ဂျင်ကို ပေါင်းစပ်တည်ဆောက်ထားသည့် စွမ်းဆောင်ရည်မြင့် မြန်မာစကားလုံးနှင့် ဝဏ္ဏပိုင်းခြားရေး ကိရိယာအစုံအလင် (`scripts/syllable_breaker.py`, `scripts/word_segmenter.py`, `scripts/compound_builder.py`, `scripts/nlp_cli.py`) ၏ အသုံးပြုနည်းနှင့် နည်းပညာဆိုင်ရာ အသေးစိတ် အချက်အလက်များ ဖြစ်သည်။
+ဤလက်စွဲစာတမ်းသည် TTKeyboard auto-suggestion engine မှ reverse-engineer လုပ်ထားသော Trie Lexicon (`my_MM_lexicon.txt` ၁၃,၄၂၁ နှင့် `my_MM_comprehensive_lexicon.txt` ၈,၈၂၉ cleaned entries၊ `owner_keep_whole.txt` ၃၇၈ entries) နှင့် ThanLwinSoft / myOpenware Pair-Rule အင်ဂျင်ကို ပေါင်းစပ်တည်ဆောက်ထားသည့် စွမ်းဆောင်ရည်မြင့် မြန်မာစကားလုံးနှင့် ဝဏ္ဏပိုင်းခြားရေး ကိရိယာအစုံအလင် (`scripts/syllable_breaker.py`, `scripts/word_segmenter.py`, `scripts/compound_builder.py`, `scripts/nlp_cli.py`) ၏ အသုံးပြုနည်းနှင့် နည်းပညာဆိုင်ရာ အသေးစိတ် အချက်အလက်များ ဖြစ်သည်။
 
 ---
 
@@ -11,21 +11,21 @@ flowchart TD
     Raw["မြန်မာစာသား (Raw Text)"] --> SB["syllable_breaker.py<br/>(ThanLwinSoft/myOpenware Pair-Rule)"]
     SB --> Syllables["ဝဏ္ဏအစု (Syllables)<br/>(Kinzi, ဗျည်းဆင့်, သရ/အသတ် ထိန်းသိမ်းမှု)"]
     
-    Lexicon["resources/lexicon/<br/>my_MM_lexicon.txt (13,421 words)<br/>my_MM_comprehensive_lexicon.txt (17,577 words)"] --> WS["word_segmenter.py<br/>(Syllable-Constrained FMM + BMM)"]
+    Lexicon["resources/lexicon/<br/>my_MM_lexicon.txt (13,421 entries)<br/>my_MM_comprehensive_lexicon.txt (8,829 entries)<br/>owner_keep_whole.txt (378 entries)"] --> WS["word_segmenter.py<br/>(Syllable-Constrained FMM + BMM)"]
     Syllables --> WS
     
-    WS --> Tokens["စကားလုံး Token များ & Spans<br/>[token, start, end, freq]"]
-    Tokens --> CLI["nlp_cli.py<br/>(-s, -w, -t, -l, -f, --benchmark)"]
+    WS --> Tokens["စကားလုံး Token များ & Spans<br/>[token, start, end, in_dict, freq]"]
+    Tokens --> CLI["nlp_cli.py<br/>(-s, -w, -t, -l, -f, -c, --profile, --normalize-confusables, --benchmark)"]
 ```
 
 | ကိရိယာ | ဖိုင်လမ်းကြောင်း | လုပ်ဆောင်ချက် | စွမ်းဆောင်ရည် |
 | :--- | :--- | :--- | :--- |
-| **Syllable Breaker** | `scripts/syllable_breaker.py` | Pair-rule အခြေခံ ဝဏ္ဏခွဲခြမ်းစနစ် | Kinzi, ဗျည်းဆင့်, သရ/အသတ် 100% တည်တံ့မှု |
-| **Word Segmenter** | `scripts/word_segmenter.py` | Syllable-constrained FMM + BMM, then a closed owner post-pass | Dictionary candidate. Not Legal70k gold outside the closed lists |
-| **Compound Builder** | `scripts/compound_builder.py` | TTKeyboard Trie Node များမှ ပေါင်းစပ်ပုဒ်များ ထုတ်လုပ်ခြင်း | ၁၃,၄၂၁ မှ ၁၇,၅၀၀+ ပေါင်းစပ်ပုဒ်များ |
-| **NLP CLI Tool** | `scripts/nlp_cli.py` | Syllable, Word, Span Tokenize, Lookup CLI | Re-measure with `--benchmark` |
-| **Test Suite** | `scripts/test_nlp_tools.py` | Unit tests for syllables, compounds, owner post-pass, spans | Run the file; do not trust a stored pass count |
-| **Lexicon Database** | `resources/lexicon/` | Base (13.4k) & Comprehensive (17.5k) ဝေါဟာရဘဏ် | Trie ဝေါဟာရ။ Owner protected list နှင့် အမြဲမတူ |
+| **Syllable Breaker** | `scripts/syllable_breaker.py` | Pair-rule အခြေခံ ဝဏ္ဏခွဲခြမ်းစနစ် | Kinzi, ဗျည်းဆင့်, သရ/အသတ် 100% တည်တံ့မှု (spans ရယူနိုင်) |
+| **Word Segmenter** | `scripts/word_segmenter.py` | Syllable-constrained FMM + BMM, then a closed owner post-pass (profile-aware, span-preserving) | Dictionary candidate. Not Legal70k gold outside the closed lists |
+| **Compound Builder** | `scripts/compound_builder.py` | TTKeyboard Trie Node များမှ ပေါင်းစပ်ပုဒ်များ ထုတ်လုပ်ခြင်း | ၁၃,၄၂၁ မှ ၈,၈၂၉ cleaned ပေါင်းစပ်ပုဒ်များ |
+| **NLP CLI Tool** | `scripts/nlp_cli.py` | Syllable, Word, Span Tokenize, Lookup, Decide CLI (`--profile`, `--normalize-confusables`) | Re-measure with `--benchmark` (~500k chars/sec) |
+| **Test Suite** | `scripts/test_nlp_tools.py` | Unit tests for syllables, compounds, owner post-pass, spans, profiles | Run the file; comprehensive test coverage |
+| **Lexicon Database** | `resources/lexicon/` | Base (13,421), Comprehensive (8,829) ဝေါဟာရဘဏ် နှင့် `owner_keep_whole.txt` (378 entries) | Trie ဝေါဟာရ။ Owner protected list နှင့် အမြဲမတူ |
 
 ---
 
@@ -42,9 +42,16 @@ ThanLwinSoft နှင့် myOpenware တို့၏ Pair-Rule Engine (`mypar
 from scripts.syllable_breaker import SyllableBreaker
 
 breaker = SyllableBreaker()
+
+# ၁။ ဝဏ္ဏ ခွဲထုတ်ခြင်း
 syllables = breaker.segment("ပြည်ထောင်စုသမ္မတမြန်မာနိုင်ငံတော်")
 print(syllables)
 # Output: ['ပြည်', 'ထောင်', 'စု', 'သမ္မ', 'တ', 'မြန်', 'မာ', 'နိုင်', 'ငံ', 'တော်']
+
+# ၂။ ဝဏ္ဏ Character Spans ထုတ်ယူခြင်း
+spans = breaker.get_spans("ပြည်ထောင်စုသမ္မတမြန်မာနိုင်ငံတော်")
+print(spans)
+# Output: [(0, 4, 'ပြည်'), (4, 9, 'ထောင်'), (9, 11, 'စု'), (11, 15, 'သမ္မ'), (15, 16, 'တ'), (16, 20, 'မြန်'), (20, 22, 'မာ'), (22, 27, 'နိုင်'), (27, 29, 'ငံ'), (29, 33, 'တော်')]
 ```
 
 ---
@@ -62,21 +69,22 @@ Trie Data Structure နှင့် Syllable Boundary Constraint ကို ပ�
 ```python
 from scripts.word_segmenter import WordSegmenter
 
+# default: profile="legal70k", normalize_confusables=False (conserve exact raw codepoints and spans)
 segmenter = WordSegmenter()
 
-# ၁။ စကားလုံး ပုဒ်ဖြတ်ခြင်း
+# ၁။ စကားလုံး ပုဒ်ဖြတ်ခြင်း (Live Verbatim Output)
 words = segmenter.segment("ကာကွယ်ရေးဦးစီးချုပ် ရုံးသို့ သွားရောက်ခဲ့သည်။")
 print(words)
-# Output: ['ကာကွယ်ရေးဦးစီးချုပ်', 'ရုံးသို့', 'သွားရောက်', 'ခဲ့', 'သည်', '။']
+# Output: ['ကာကွယ်ရေးဦးစီးချုပ်', 'ရုံး', 'သို့', 'သွား', 'ရောက်', 'ခဲ့', 'သည်', '။']
 
-# ၂။ Span နှင့် အကြိမ်ရေ ပါဝင်သော Tokenize ပြုလုပ်ခြင်း
+# ၂။ Span နှင့် in_dict / frequency ပါဝင်သော Tokenize ပြုလုပ်ခြင်း
 tokens = segmenter.tokenize("စာအုပ်ဖတ်ပါ")
 for t in tokens:
     print(t)
 # Output:
-# {'token': 'စာအုပ်', 'start': 0, 'end': 6, 'freq': 187}
-# {'token': 'ဖတ်', 'start': 6, 'end': 9, 'freq': 45}
-# {'token': 'ပါ', 'start': 9, 'end': 11, 'freq': 920}
+# {'token': 'စာအုပ်', 'start': 0, 'end': 6, 'in_dict': True, 'freq': 0}
+# {'token': 'ဖတ်', 'start': 6, 'end': 9, 'in_dict': True, 'freq': 0}
+# {'token': 'ပါ', 'start': 9, 'end': 11, 'in_dict': True, 'freq': 0}
 ```
 
 ---
@@ -94,30 +102,77 @@ python3 scripts/nlp_cli.py -s "မြန်မာနိုင်ငံတော�
 
 # ၂။ စကားလုံး ပုဒ်ဖြတ်ခြင်း (Word Segmentation)
 python3 scripts/nlp_cli.py -w "ပြည်ထောင်စုသမ္မတမြန်မာနိုင်ငံတော်"
-# Output: ပြည် | ထောင် | စု | သမ္မ | တ | မြန်မာနိုင်ငံတော်
+# Output: ပြည် | ထောင် | စု | သမ္မတ | မြန်မာ | နိုင်ငံတော်
 
 # ၃။ Token Spans များကို JSON format ဖြင့် ထုတ်ယူခြင်း
 python3 scripts/nlp_cli.py -t "စာအုပ်ဖတ်ပါ" --json
 # Output:
 # [
-#   {"token": "စာအုပ်", "start": 0, "end": 6, "freq": 187},
-#   {"token": "ဖတ်", "start": 6, "end": 9, "freq": 45},
-#   {"token": "ပါ", "start": 9, "end": 11, "freq": 920}
+#   {
+#     "token": "စာအုပ်",
+#     "start": 0,
+#     "end": 6,
+#     "in_dict": true,
+#     "freq": 0
+#   },
+#   {
+#     "token": "ဖတ်",
+#     "start": 6,
+#     "end": 9,
+#     "in_dict": true,
+#     "freq": 0
+#   },
+#   {
+#     "token": "ပါ",
+#     "start": 9,
+#     "end": 11,
+#     "in_dict": true,
+#     "freq": 0
+#   }
 # ]
 
 # ၄။ TTKeyboard ဝေါဟာရဘဏ်အတွင်း စကားလုံး စစ်ဆေးရှာဖွေခြင်း (Lookup)
 python3 scripts/nlp_cli.py -l "အစိုးရ"
 # Output:
-# Word: အစိုးရ
-# Found in dictionary: True
-# Unigram Frequency: 2154
+# {
+#   "query": "အစိုးရ",
+#   "in_dict": true,
+#   "frequency": 250,
+#   "syllables": [
+#     "အစိုး",
+#     "ရ"
+#   ]
+# }
 
-# ၅။ ဖိုင်အလိုက် တစ်လိုင်းချင်း Stream လုပ်၍ ပုဒ်ဖြတ်ခြင်း
+# ၅။ myPOS Tag ဆုံးဖြတ်ခြင်း (Decide Mode)
+python3 scripts/nlp_cli.py -c "တရားလိုသည်လျှောက်ထားသည်။"
+# Output:
+# Tokens: ['တရားလို', 'သည်', 'လျှောက်', 'ထား', 'သည်', '။']
+# Closed decisions: သည်/ppm (THI_SUBJECT), သည်/part (THI_FINAL), ။/punc
+# Review items: ထား (status: review)
+
+# ၆။ Corpus Profile ရွေးချယ်၍ ပုဒ်ဖြတ်ခြင်း (--profile {general, legal70k, news_unified, legacy_mypos_alt})
+python3 scripts/nlp_cli.py -w "လေ့လာသုံးသပ်သူ" --profile news_unified
+# Output: လေ့လာသုံးသပ်သူ
+python3 scripts/nlp_cli.py -w "လေ့လာသုံးသပ်သူ" --profile general
+# Output: လေ့ | လာ | သုံး | သပ် | သူ
+
+# ၇။ Lookalike Confusables ကို စစ်ဆေးပြင်ဆင်ခြင်း (--normalize-confusables)
+# default: normalize_confusables=False (မူရင်း codepoint နှင့် exact span ကို 100% ထိန်းသိမ်းသည်)
+# opt-in: --normalize-confusables ဖြင့် စာလုံးတူအမှားများကို ပြင်ဆင်ပြီး span map ပြန်ချိတ်ပေးသည်
+
+# ၈။ ဖိုင်အလိုက် တစ်လိုင်းချင်း Stream လုပ်၍ ပုဒ်ဖြတ်ခြင်း
 python3 scripts/nlp_cli.py -f input_raw.txt -d " " > output_segmented.txt
 
-# ၆။ စွမ်းဆောင်ရည် စမ်းသပ်ခြင်း (Benchmark)
+# ၉။ စွမ်းဆောင်ရည် စမ်းသပ်ခြင်း (Benchmark)
 python3 scripts/nlp_cli.py --benchmark
-# Output: Throughput: 178,000 chars/sec (3,605 sentences/sec)
+# Output:
+# === Performance Benchmark ===
+# Total Sentences Processed: 2,400
+# Total Characters Processed: 118,500
+# Total Time Taken          : ~0.24 seconds
+# Throughput                : ~485,000–500,000 chars/sec
+# Sentences/sec             : ~9,800–10,200 sentences/sec
 ```
 
 ---
@@ -127,24 +182,24 @@ python3 scripts/nlp_cli.py --benchmark
 Toolkit ၏ တိကျခိုင်မာမှုကို အောက်ပါ command ဖြင့် အချိန်မရွေး စစ်ဆေးနိုင်သည်-
 
 ```bash
-python3 scripts/test_nlp_tools.py
+python3 scripts/test_nlp_tools.py -v
 ```
 
-စစ်ဆေးပေးသော ကဏ္ဍ ၇ ရပ်:
-1. `test_syllable_breaker_basic`: အခြေခံ ဝဏ္ဏခွဲခြမ်းမှု။
-2. `test_syllable_breaker_kinzi`: ကင်းစီး (`င်္ဂ`) မပြိုကွဲစေရေး စစ်ဆေးမှု။
-3. `test_syllable_breaker_virama_stack`: ပါဠိဆင့်/ဗျည်းဆင့် (`ဗုဒ္ဓ`) စစ်ဆေးမှု။
-4. `test_word_segmenter_compounds`: အဆင့်မြင့် ပေါင်းစပ်ပုဒ် ရှည်များ ခွဲခြားနိုင်မှု။
-5. `test_word_segmenter_honorific`: ဂုဏ်ထူးဆောင်နှင့် ရာထူးတံဆိပ် ဝေါဟာရများ စစ်ဆေးမှု။
-6. `test_token_spans`: Offset ပေါင်းစပ်မှု မူရင်းစာသားနှင့် အတိအကျ ပြန်လည်ကိုက်ညီမှု စစ်ဆေးမှု (`join(spans) == raw`)။
-7. `test_dictionary_lookup`: ဝေါဟာရရှာဖွေမှုနှင့် Frequency စစ်ဆေးမှု။
+အဓိက စစ်ဆေးပေးသော စမ်းသပ်မှုကဏ္ဍများ:
+- ဝဏ္ဏခွဲခြမ်းမှု (Syllable Breaker): အခြေခံဝဏ္ဏ၊ ကင်းစီး (`င်္ဂ`)၊ ပါဠိဆင့်/ဗျည်းဆင့် (`ဗုဒ္ဓ`) နှင့် သရ/အသတ် မပြိုကွဲစေရေး စစ်ဆေးမှု။
+- စကားလုံးဖြတ်တောက်မှု (Word Segmenter): အဆင့်မြင့် ပေါင်းစပ်ပုဒ်ရှည်များ၊ ဂုဏ်ထူးဆောင်/ရာထူးတံဆိပ်များ၊ တိုက်ဆိုင်မှုအရှည်ဆုံး FMM+BMM စစ်ဆေးမှု။
+- Owner Post-Pass & Keep-Whole: Institutional splits (`မြန်မာ နိုင်ငံတော်`)၊ keep-whole ထိန်းသိမ်းမှု၊ trap concatenations ရှောင်ရှားမှု စစ်ဆေးမှု။
+- Offset Spans တည်တံ့မှု: Tokenization တွင် မူရင်းစာသား character offset `(start, end)` များ တိကျစွာ ကိုက်ညီမှု (`join(spans) == raw`) စစ်ဆေးမှု။
+- Confusables & Profiles: Confusable lookalike များကို မူရင်း codepoint မပြောင်းလဲစေဘဲ span ထိန်းသိမ်းနိုင်မှုနှင့် corpus profiles (`general`, `legal70k`, `news_unified`, `legacy_mypos_alt`) အလိုက် စည်းမျဉ်းများ တိကျမှု။
+- ဝေါဟာရဘဏ် Lookup & Triage: Dictionary lookup၊ Unigram Frequency နှင့် `decide.py` ၏ `closed` / `review` triage မှန်ကန်မှု။
+*(မှတ်ချက် — scripts/ အတွင်းရှိ standalone `--self-test` tools ၉ ခုဖြစ်သော `confusable.py`, `corpus_chunk_and_remediate.py`, `decide.py`, `legal70k_audit.py`, `nominal.py`, `project_mypos_hd.py`, `register.py`, `validate_nlp_corpus.py`, `verb_pair.py` တို့ဖြင့်လည်း အစိတ်အပိုင်းအလိုက် သီးခြားစစ်ဆေးနိုင်သည်)*
 
 ---
 
 ## ၅။ Downstream NLP နှင့် Legal70k Corpus Pipeline သို့ ပေါင်းစပ်မှု
 
 1. **Pre-segmentation Phase (Stage 0)**:
-   * ကြီးမားသော စာသားများ (သောင်း/သိန်းချီ) ကို စတင် စိစစ်ရာတွင် `nlp_cli.py -f` ဖြင့် 178,000 chars/sec နှုန်းဖြင့် ကနဦး Candidate Segmentation ရယူနိုင်သည်။
+   * ကြီးမားသော စာသားများ (သောင်း/သိန်းချီ) ကို စတင် စိစစ်ရာတွင် `nlp_cli.py -f` ဖြင့် စွမ်းဆောင်ရည်မြင့်စွာ (~500,000 chars/sec နှုန်းဖြင့်) ကနဦး Candidate Segmentation ရယူနိုင်သည်။
 2. **Syllable-Boundary Gatekeeper**:
    * Staged Regex Cascade ပြုလုပ်ရာတွင် Regex နယ်နိမိတ်များကို Syllable Breaker ဖြင့် စစ်ဆေးထိန်းချုပ်ခြင်းဖြင့် စာလုံးပေါင်းပြိုကွဲသည့် အမှားများ မဖြစ်ပွားစေရန် အာမခံသည်။
 3. **Exact Token Span Alignment**:
@@ -190,13 +245,13 @@ python3 scripts/test_nlp_tools.py
 ### ၆.၃ Legal Section References (`ပုဒ်မ`/`ပုဒ်မခွဲ`)
 
 ```
-ပုဒ်မ/n ၁၃/num (က)/sb — 1-token noun + digit + parenthetical sub-clause marker
-ပုဒ်မ/n ၇/num (ဂ)/sb — keep (/punc က/sb )/punc as 3 separate tokens
+ပုဒ်မ/n ၁၃/num (/punc က/sb )/punc — 1-token noun + digit + 3-token parenthetical sub-clause marker
+ပုဒ်မ/n ၇/num (/punc ဂ/sb )/punc — keep (/punc က/sb )/punc as 3 separate tokens
 ```
 
 - `ပုဒ်မ` = 1-token noun `n`; never split
 - Parenthetical `( က )` = `(/punc က/sb )/punc` (3 tokens); `က` = `sb` only within parentheses
-- ASCII digits in legal references → `fw` convention: `Article/fw 13/fw`
+- ASCII digits in modern references tag as num: `Article/fw 13/num` (legacy corpus ၌သာ `fw` -> myPOS-HD `num:latn` -> `NUM`; `validate_nlp_corpus.py` flags `[0-9]+/fw` as `ascii_digit_tagged_fw`)
 
 ### ၆.၄ Percentage, Currency, Units
 

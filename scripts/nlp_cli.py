@@ -16,9 +16,14 @@ import sys
 import time
 
 try:
+    from .common_standards import PROFILES, normalize_profile
     from .syllable_breaker import SyllableBreaker
     from .word_segmenter import WordSegmenter
 except ImportError:
+    _scripts_dir = os.path.dirname(os.path.abspath(__file__))
+    if _scripts_dir not in sys.path:
+        sys.path.insert(0, _scripts_dir)
+    from common_standards import PROFILES, normalize_profile
     from syllable_breaker import SyllableBreaker
     from word_segmenter import WordSegmenter
 
@@ -38,11 +43,28 @@ def main():
 
     parser.add_argument("-d", "--delimiter", type=str, default=" | ", help="Delimiter between tokens")
     parser.add_argument("--json", action="store_true", help="Output results in JSON format")
+    parser.add_argument(
+        "--profile",
+        choices=list(PROFILES),
+        default=None,
+        help="Workflow profile (general, legal70k, news_unified, legacy_mypos_alt)",
+    )
+    parser.add_argument(
+        "--normalize-confusables",
+        action="store_true",
+        help="Apply confusable keystroke normalization before segmentation",
+    )
 
     args = parser.parse_args()
 
+    ws_profile = normalize_profile(args.profile, default="legal70k")
+    pos_profile = normalize_profile(args.profile, default="general")
+
     syl_breaker = SyllableBreaker()
-    word_seg = WordSegmenter()
+    word_seg = WordSegmenter(
+        profile=ws_profile,
+        normalize_confusables=args.normalize_confusables,
+    )
 
     if args.syllable:
         result = syl_breaker.segment(args.syllable)
@@ -90,7 +112,7 @@ def main():
 
         tokens = word_seg.segment(args.decide)
         print(json.dumps(
-            {"tokens": tokens, "decisions": decide_tokens(tokens, load_table())},
+            {"tokens": tokens, "decisions": decide_tokens(tokens, load_table(), profile=pos_profile)},
             ensure_ascii=False,
             indent=2,
         ))

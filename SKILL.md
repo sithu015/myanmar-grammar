@@ -106,9 +106,9 @@ flowchart TD
 | စကားပြောနှင့် စာအရေးအသား တွဲဖက်အသုံး | `scripts/register.py` ပြီးမှ [စကားပြောနှင့် စာအရေး](references/spoken-written.md) |
 | နာမ်၊ နာမ်စား၊ နာမဝိသေသနနှင့် NLP နေရာ | `scripts/nominal.py` ပြီးမှ [နာမ်သုံးမျိုး](references/nominals.md) |
 | ပစ္စည်းနှင့် ဝိဘတ် ခွဲခြားဆန်းစစ်မှု၊ Diagnostic Criteria နှင့် NLP Benchmarks | [Particles & Postpositions Guide](references/particles-and-postpositions-guide.md) |
-| မြန်မာစာ၏ ဓလေ့ထုံးစံအစဉ်အလာ၊ အနက်တူတွဲလုံးများ၊ Bilingual Glossing (`နိမိတ် ဩဘာ`၊ `ဇမ္ဗူဒီပါ လက်ယာ တောင်ကျွန်း`) | [Segmentation & Lexicon Ref Section 11](references/segmentation-lexicon.md#11-classical-myanmar-rhetorical-traditions--synonymous-pairing--bilingual-glossing) |
-| မင်းခမ်းသုံး `-တော်` ပုဒ်များ၊ `ရွှေ` အထူးပြုပုဒ်နှင့် `သော/သော်` ခွဲခြားမှု | [Segmentation & Lexicon Ref Section 12-13](references/segmentation-lexicon.md#12-royal--sacred-honorific-system--တော်-rules) |
-| ဗေဒင်၊ နက္ခတ်၊ `ဓာတ်ရကိန်း` နှင့် အက္ခရာဂြိုဟ်သက် ပေါင်းစပ်ပုဒ်များ | [Segmentation & Lexicon Ref Section 14](references/segmentation-lexicon.md#14-astrological-elemental-and-cultural-compounds) |
+| မြန်မာစာ၏ ဓလေ့ထုံးစံအစဉ်အလာ၊ အနက်တူတွဲလုံးများ၊ Bilingual Glossing (`နိမိတ် ဩဘာ`၊ `ဇမ္ဗူဒီပါ လက်ယာ တောင်ကျွန်း`) | [Segmentation & Lexicon Ref Section 11](references/segmentation-lexicon.md#11-classical-myanmar-rhetorical-traditions-synonymous-pairing--bilingual-glossing-မြန်မာစာ-ဓလေ့ထုံးစံအစဉ်အလာ---အနက်တူတွဲလုံးများနှင့်-ပါဠိ-မြန်မာ-တွဲဖက်အနက်ဖွင့်ဆိုချက်များ) |
+| မင်းခမ်းသုံး `-တော်` ပုဒ်များ၊ `ရွှေ` အထူးပြုပုဒ်နှင့် `သော/သော်` ခွဲခြားမှု | [Segmentation & Lexicon Ref Section 12-13](references/segmentation-lexicon.md#12-royal--sacred-honorific-system--တော်-စည်းမျဉ်းနှင့်-နန်းတွင်းသုံး-ဝေါဟာရများ) |
+| ဗေဒင်၊ နက္ခတ်၊ `ဓာတ်ရကိန်း` နှင့် အက္ခရာဂြိုဟ်သက် ပေါင်းစပ်ပုဒ်များ | [Segmentation & Lexicon Ref Section 14](references/segmentation-lexicon.md#14-astrological-elemental-royal--cultural-compounds-ဗေဒင်-နက္ခတ်-ဓာတ်နှင့်-ယဉ်ကျေးမှု-ဝေါဟာရများ) |
 
 ## 🛠 ထောက်ပံ့ရေး ဖိုင်များနှင့် NLP ကိရိယာများ (Supporting References & Tools)
 
@@ -116,7 +116,8 @@ flowchart TD
 - **[Glossary](glossary.md)** - မြန်မာသဒ္ဒါ ဝေါဟာရအဘိဓာန် (အက္ခရာစဉ်အလိုက်)။
 - **[Patterns](patterns.md)** - လက်တွေ့ သဒ္ဒါစစ်ဆေးခြင်း၊ ဝါကျတည်ဆောက်ခြင်း၊ POS ခွဲခြားခြင်း၊ NER/UD Treebank၊ Blast-Radius ကာကွယ်ရေးနှင့် Large-Corpus Chunking / Line-by-Line / 6-Stage Regex ပုံစံတမ်းများ။
 - **[Downstream NLP Guide](references/downstream-nlp-guide.md)** - End-to-End NLP Pipeline (Stage 0-5)၊ NER၊ Dependency Parsing (`CoNLL-U`)၊ CQL/Word Sketch၊ NMT၊ RAG/LLM Chunking၊ G2P နှင့် Sentiment/Deontic IE စနစ်များ။
-- **[POS & UD Mapping Reference](references/pos-ud-mapping.md)** - MLC ဝါစင်္ဂ ၉ မျိုး၊ `myPOS` 15-tag၊ Corpus Dialect Profiles (၂) မျိုး၊ `myPOS-HD (v4.1)` (`base:sub`) နှင့် `UD v2` တို့၏ Alignment Matrix နှင့် Context အလိုက် POS ခွဲခြားပုံ Decision Trees။
+- **[POS & UD Mapping Reference](references/pos-ud-mapping.md)** - MLC ဝါစင်္ဂ ၉ မျိုး၊ `myPOS` 15-tag၊ Corpus Profiles (၄) မျိုး (`general`, `legal70k`, `news_unified`, `legacy_mypos_alt`)၊ `myPOS-HD (v4.1)` (`base:sub`) နှင့် `UD v2` တို့၏ Alignment Matrix နှင့် Context အလိုက် POS ခွဲခြားပုံ Decision Trees။
+- **[Common Standards](scripts/common_standards.py)** - Repository ၏ Single Source of Truth (`ALLOWED_15_TAGS`, `PROFILES`, `PERSON_PREFIXES`, `STRICT_TITLE_PREFIXES`, `TITLES_AND_RANKS`, `CLASSIFIERS`, `TIME_MEASURE_NOUNS`, `SUBSECTION_CONSONANTS`, Owner standards, token helpers)။
 - **[Segmentation & Lexicon Reference](references/segmentation-lexicon.md)** - Rule Precedence ၅ ဆင့်၊ `-ရေး` နှင့် `-သူ` စည်းမျဉ်းများ၊ Protected Lexicon စာရင်း၊ Boundary-Shift Trap ဇယားနှင့် Blast-Radius ကာကွယ်ရေး မူဘောင်။
 - **[ဝါစင်္ဂ (၅) မျိုး သဒ္ဒါနှင့် NLP သုတေသန အစီရင်ခံစာ](references/myanmar-grammar-5-pos-linguistic-nlp-report.md)** - အစဉ်အလာ မြန်မာသဒ္ဒါနှင့် ခေတ်သစ်ဘာသာဗေဒ၊ နာမ်၊ နာမ်စား၊ နာမဝိသေသန၊ ကြိယာ၊ ကြိယာဝိသေသန သဒ္ဒါမှတ်ကျောက်များ၊ sylbreak RE၊ myPOS v3 နှင့် XLM-RoBERTa-BiLSTM-CRF-Joint Syllable-Level Joint WS+POS မော်ဒယ်များနှင့် Dependency Parsing သုတေသန အပြည့်အစုံ။
 - **[Large-Corpus Chunking & Regex Guide](references/large-corpus-chunking-and-regex-pipeline.md)** - Corpus ဖိုင်ကြီးများအတွက် Two-Tier Chunking (`1,000` လိုင်း Batch နှင့် `50-100` လိုင်း Sub-Chunk)၊ $O(1)$ Memory Line-by-Line Streaming Engine နှင့် 6-Stage Token-Bounded Regex Cascade လမ်းညွှန်။
@@ -124,7 +125,7 @@ flowchart TD
 - **[Corpus Validator Script](scripts/validate_nlp_corpus.py)** - မူရင်းအက္ခရာ တည်တံ့မှု (`Character Conservation`)၊ Unicode NFC / Illegal Word-Initial Dependent Sign စစ်ဆေးမှု၊ 15-tag / `myPOS-HD` (`--mode hd`) စစ်ဆေးမှု၊ Burmese-script `punc`/`fw` gate၊ `num+ဦး/n` နှင့် split name prefix စစ်ဆေးမှု၊ bracket reconstruction နှင့် consistency scan စစ်ဆေးပေးသော Python CLI ကိရိယာ။
 - **[myPOS-HD Projector Script](scripts/project_mypos_hd.py)** - Lossless Additive Layer (`myPOS-15` <-> `myPOS-HD base:sub` <-> Expanded Core <-> `UD v2 UPOS+FEATS`) ထုတ်ပေးသော CLI နှင့် Library Module (`collapse_to_mypos15()` ပါဝင်သည်)။
 - **[Legal70k Gold Corpus Audit Tool](scripts/legal70k_audit.py)** - Legal70k gold corpus အစုံအလင်ကို WS စစ်ဆေးမှု၊ POS စစ်ဆေးမှု၊ Dual-stream Parity၊ Token Consistency Scan နှင့် Record-Only Typo Leads စစ်ဆေးခြင်း အားလုံးကို တစ်ပြိုင်နက်တည်း လုပ်ဆောင်ပေးပြီး structured JSON/TSV report ထုတ်ပေးသော All-in-One CLI ကိရိယာ။
-- **[Syllable & Word Segmentation Toolkit](references/syllable-and-word-segmentation-toolkit.md)** - TTKeyboard Trie Lexicon (၁၇,၅၀၀+ words) နှင့် ThanLwinSoft/myOpenware Pair-Rule Syllable Breaker ပေါင်းစပ်ထားသော စွမ်းဆောင်ရည်မြင့် ပုဒ်ဖြတ်ခြင်း၊ Token Spans Offset ထုတ်ယူခြင်းနှင့် CLI လက်စွဲ။
+- **[Syllable & Word Segmentation Toolkit](references/syllable-and-word-segmentation-toolkit.md)** - TTKeyboard Trie Lexicon (၈,၈၂၉ cleaned words) နှင့် ThanLwinSoft/myOpenware Pair-Rule Syllable Breaker ပေါင်းစပ်ထားသော စွမ်းဆောင်ရည်မြင့် ပုဒ်ဖြတ်ခြင်း၊ Token Spans Offset ထုတ်ယူခြင်းနှင့် CLI လက်စွဲ။
 - **[Syllable Breaker Script](scripts/syllable_breaker.py)** - Pair-Rule အခြေခံ ဝဏ္ဏခွဲခြမ်းစနစ် (Kinzi, ဗျည်းဆင့်, သရ/အသတ် မပြိုကွဲစေသော အင်ဂျင်)။
 - **[Word Segmenter Script](scripts/word_segmenter.py)** - Syllable-constrained Bi-directional Maximum Matching, then the keep-whole list and the owner splits.
 - **[NLP CLI Tool](scripts/nlp_cli.py)** - `-s` syllables, `-w` words, `-c` decide tags. `-w` is still not Legal70k gold outside the closed lists.
@@ -132,15 +133,15 @@ flowchart TD
 - **[Keep-whole lexicon](resources/lexicon/owner_keep_whole.txt)** - Documented one-token vocabulary the segmenter rejoins. Trap concatenations are intentionally absent.
 - **[Fetch corpus script](scripts/fetch_corpus_v1_1_from_gdrive.py)** - Optional. Run only when the user explicitly asks to download the news-corpus release. Needs the `gdrive` CLI. The Extreme SSD path in that file is the author's machine, not a default you should look for.
 - **[Compound Builder Script](scripts/compound_builder.py)** - TTKeyboard Trie Node များမှ ပေါင်းစပ်စကားလုံးများ ပြန်လည်ထုတ်လုပ်သော Script။
-- **[Test NLP Tools Script](scripts/test_nlp_tools.py)** - Syllable breaker, Kinzi, Pint-sint, Compound words, Token spans များအတွက် Unit Test Suite (7/7 PASS)။
-- **[Lexicon Resources](resources/lexicon/)** - `my_MM_lexicon.txt` (၁၃,၄၂၁ entries) နှင့် `my_MM_comprehensive_lexicon.txt` (၁၇,၅၇၇ entries) ပါဝင်သော အဘိဓာန် ဝေါဟာရဘဏ်။
+- **[Test NLP Tools Script](scripts/test_nlp_tools.py)** - Syllable breaker, Kinzi, Pint-sint, Compound words, Token spans, Confusable span conservation နှင့် Profile-scoped Decide/Validate/Remediate စည်းမျဉ်းများအတွက် Unit & Regression Test Suite (ထို့ပြင် standalone `--self-test` script ၉ ခု — `confusable.py`, `decide.py`, `project_mypos_hd.py`, `nominal.py`, `register.py`, `verb_pair.py`, `validate_nlp_corpus.py`, `corpus_chunk_and_remediate.py`, `legal70k_audit.py` — ဖြင့် အပြည့်အဝ စစ်ဆေးနိုင်သည်)။
+- **[Lexicon Resources](resources/lexicon/)** - `my_MM_lexicon.txt` (၁၃,၄၂၁ entries)၊ `my_MM_comprehensive_lexicon.txt` (၈,၈၂၉ cleaned entries) နှင့် `owner_keep_whole.txt` (၃၇၈ unique entries) ပါဝင်သော အဘိဓာန် ဝေါဟာရဘဏ်။
 
 ## 🔄 Core, Large-Corpus & Downstream NLP လုပ်ငန်းစဉ် အဆင့်ဆင့်
 
 0. **Candidate segmentation, not gold**:
    - `scripts/nlp_cli.py -s` (syllable break) keeps kinzi, virama, and dependent signs together. Use it when the question is orthographic.
    - `scripts/nlp_cli.py -w` / `-f` runs dictionary FMM+BMM, then a closed post-pass: it rejoins protected forms (`မြန်မာနိုင်ငံသား`, `သာသနာရေး`, `နှလုံးသား`, the documented example names, `[X]ပေါင်းများစွာ`) and splits only exact owner rows (`မြန်မာနိုင်ငံတော်` → `မြန်မာ နိုင်ငံတော်`, `တကျွန်းပို့ဒဏ်ခံ` → `တကျွန်းပို့ဒဏ် ခံ`, the four attested title+name glues).
-   - Anything outside those closed lists is still a candidate. `ကို` / `မ` / `နိုင်` / `မန်း` / `မိုင်း` / `ဒူဝါ` are not auto-joined, because those syllables are ambiguous. Open `-ရေး` / `-သူ` chains and contextual POS are not decided here.
+   - Anything outside those closed lists is still a candidate. Ambiguous prefixes (`ကို`, `မ`, `ရှင်`, `င`, `မိုင်း`, `နိုင်`, `မန်း`, `ခွန်`, `စိုင်း`, `နန်း` — canonical 19-member `PERSON_PREFIXES` ထဲမှ 9-member `STRICT_TITLE_PREFIXES` ပြင်ပရှိ ပုဒ်များ) are not auto-joined without confirmation. Open `-ရေး` / `-သူ` chains and contextual POS are not decided here.
    - Do not ship trie output as Legal70k WS. Pass it through `remediate`, then the 10-point audit below.
 1. **Deterministic Chunking (ဖိုင်ကြီးမားလွန်းလျှင် အပိုင်းခွဲခြင်း)**:
    - စာကြောင်းရေ သောင်း/သိန်းချီရှိသော Corpus ဖိုင်ကြီးများကို တစ်ကြိမ်တည်း မပြင်ဆင်မီ `scripts/corpus_chunk_and_remediate.py chunk --input <file> --outdir <dir> --chunk-size 1000 --subchunk-size 100` ဖြင့် 1-based global `line_number` နှင့် SHA-256 `manifest.json` ပါဝင်သော Chunk များအဖြစ် စနစ်တကျ ပိုင်းခြားပါ။
@@ -237,16 +238,16 @@ ws_line = " ".join(w for w, _ in pos_tokens)
 ### Name Prefix vs. Title/Rank Standard (အမည်ရှေ့ဆက် မခွဲခြင်း နှင့် ရာထူး/ဂုဏ်ပုဒ် ခွဲထုတ်ခြင်း စံသတ်မှတ်ချက်)
 
 - **လူမှုရေး၊ ဆွေမျိုးတော်စပ်မှုနှင့် တိုင်းရင်းသား အမည်ရှေ့ဆက်များ (Name Prefixes - Merged as 1 Token `/n`)**:
-  - မြန်မာနှင့် တိုင်းရင်းသား အမည်ရှေ့ဆက်များဖြစ်သော `ဦး`, `ဒေါ်`, `ကို`, `မ`, `စဝ်`, `စော`, `နော်`, `စလိုင်း`, `မိုင်း`, `ဒူဝါ`, `နိုင်`, `မန်း` စသည်တို့သည် လူပုဂ္ဂိုလ်၏ အမည်နှင့် တိုက်ရိုက်တွဲစပ်ထားသော Name Prefix များ ဖြစ်သည်။
-  - **စည်းမျဉ်း**: အမည်ရှေ့ဆက် (Name Prefix) များကို အမည်မှ **မခွဲဘဲ (Do NOT split)** တစ်ဆက်တည်း ပေါင်းစည်းထားသော သမ္မာနာမ်/တစ်ပုဒ်တည်း (`/n`) အဖြစ် သတ်မှတ်သည်။ Script ၏ auto-join သည် ဥပမာအမည်စာရင်းပိတ် (`မင်းအောင်လှိုင်`, `အောင်ဆန်းစုကြည်`, `ကျော်မိုးထွန်း`, `စံထွန်း`, `မုတ်သုန်`) သာဖြစ်သည်။ `ကို`, `မ`, `နိုင်`, `မန်း`, `မိုင်း`, `ဒူဝါ` ကို script က အလိုအလျောက် မဆက်ပါ။ ထိုစာလုံးများသည် ဝိဘတ်/အငြင်း/ကြိယာလည်း ဖြစ်နိုင်သောကြောင့် စာရင်းပိတ်ထဲ မဝင်သော အမည်ကို auditor ကသာ ဆက်ရမည်။
+  - မြန်မာနှင့် တိုင်းရင်းသား အမည်ရှေ့ဆက် ၁၉ မျိုး (`ဦး`, `ဒေါ်`, `ကို`, `မ`, `မောင်`, `ရှင်`, `င`, `စဝ်`, `စော`, `နော်`, `စလိုင်း`, `ဆလိုင်း`, `မိုင်း`, `ဒူဝါ`, `နိုင်`, `မန်း`, `ခွန်`, `စိုင်း`, `နန်း` — `scripts/common_standards.py: PERSON_PREFIXES`) သည် လူပုဂ္ဂိုလ်၏ အမည်နှင့် တိုက်ရိုက်တွဲစပ်ထားသော Name Prefix များ ဖြစ်သည်။
+  - **စည်းမျဉ်း**: အမည်ရှေ့ဆက် (Name Prefix) များကို အမည်မှ **မခွဲဘဲ (Do NOT split)** တစ်ဆက်တည်း ပေါင်းစည်းထားသော သမ္မာနာမ်/တစ်ပုဒ်တည်း (`/n` -> `myPOS-HD: n:prop`, `NER: B-PER`) အဖြစ် သတ်မှတ်သည်။ Script ၏ low-ambiguity split စစ်ဆေးမှုတွင် ၉ မျိုး (`STRICT_TITLE_PREFIXES: ဦး, ဒေါ်, မောင်, စဝ်, စော, နော်, စလိုင်း, ဆလိုင်း, ဒူဝါ`) ကို အဓိက သုံးသည်။ ကျန် 10 မျိုး (`ကို`, `မ`, `ရှင်`, `င`, `မိုင်း`, `နိုင်`, `မန်း`, `ခွန်`, `စိုင်း`, `နန်း`) သည် ဝိဘတ်/အငြင်း/ကြိယာ/နာမ် အဖြစ်လည်း ဖြစ်နိုင်သောကြောင့် context ကို သေချာစိစစ်ရမည်။
   - **မှန်ကန်သော ပုံစံ**:
     - `ဦးမင်းအောင်လှိုင်/n` (မခွဲရ — ❌ `ဦး/part မင်းအောင်လှိုင်/n`)
     - `ဒေါ်အောင်ဆန်းစုကြည်/n` (မခွဲရ — ❌ `ဒေါ်/part အောင်ဆန်းစုကြည်/n`)
     - `ဦးကျော်မိုးထွန်း/n` (မခွဲရ — ❌ `ဦး/part ကျော်မိုးထွန်း/n`)
     - `စဝ်စံထွန်း/n` (ရှမ်းအမည်ရှေ့ဆက် `စဝ်` မခွဲရ — ❌ `စဝ်/part စံထွန်း/n`)
-    - `ကိုမင်းကိုနိုင်/n`, `မသီရိစိုး/n`, `စောဘဦးကြီး/n`, `နော်စီဖိုးရာစိန်/n`, `စလိုင်းတင်မောင်ဦး/n`, `နိုင်ရွှေကျင်/n`.
+    - `ကိုမင်းကိုနိုင်/n`, `မသီရိစိုး/n`, `စောဘဦးကြီး/n`, `နော်စီဖိုးရာစိန်/n`, `စလိုင်းတင်မောင်ဦး/n`, `နိုင်ရွှေကျင်/n`, `စိုင်းထီးဆိုင်/n`, `ခွန်ထွန်းဦး/n`.
 - **ရာထူး၊ အဆင့်အတန်း၊ ဘွဲ့ထူးဂုဏ်ပုဒ်၊ အုပ်ချုပ်ရေးနှင့် စစ်ဘက်ရာထူးများ (Official/Feudal/Military/Academic Titles & Ranks - Split as Separate Token `/n`)**:
-  - ဥပမာ - `ဗိုလ်ချုပ်ကြီး`, `ဗိုလ်ချုပ်`, `သံအမတ်ကြီး`, `စော်ဘွားကြီး`, `သမ္မတ`, `ဝန်ကြီးချုပ်`, `ဒေါက်တာ`, `ပါမောက္ခ`, `စစ်ခေါင်းဆောင်`, `တရားသူကြီးချုပ်` စသည်တို့သည် သီးခြား အဆင့်အတန်းနှင့် တာဝန်ကို ညွှန်းဆိုသော သာမည/ဝေါဟာရ နာမ်ပုဒ်များ ဖြစ်ကြသည်။
+  - `scripts/common_standards.py: TITLES_AND_RANKS` (၄၉ မျိုး) ဥပမာ - `ဗိုလ်ချုပ်ကြီး`, `ဗိုလ်ချုပ်`, `သံအမတ်ကြီး`, `စော်ဘွားကြီး`, `သမ္မတ`, `ဝန်ကြီးချုပ်`, `ဒေါက်တာ`, `ပါမောက္ခ`, `စစ်ခေါင်းဆောင်`, `တရားသူကြီးချုပ်`, `မြဝတီမင်းကြီး`, `လှေသင်းအတွင်းဝန်`, `မဟာဒါန်တိုက်ဝန်` စသည်တို့သည် သီးခြား အဆင့်အတန်းနှင့် တာဝန်ကို ညွှန်းဆိုသော သာမည/ဝေါဟာရ နာမ်ပုဒ်များ ဖြစ်ကြသည်။
   - **စည်းမျဉ်း**: ရာထူး၊ အဆင့်အတန်းနှင့် ဘွဲ့ထူးဂုဏ်ပုဒ်များကို အမည်ရှေ့မှ **သီးခြား ခွဲထုတ်သည် (Segment as a separate noun token `/n`)**။
   - **မှန်ကန်သော တွဲစပ်ပုံ ဥပမာများ**:
     - `မိုင်းပွန်/n စော်ဘွားကြီး/n စဝ်စံထွန်း/n` (မိုင်းပွန် = ဒေသအမည်/n၊ စော်ဘွားကြီး = ရာထူးဂုဏ်ပုဒ်/n သီးခြားခွဲ၊ စဝ်စံထွန်း = စဝ် name prefix မခွဲဘဲ တစ်ပုဒ်တည်း/n)
@@ -261,9 +262,14 @@ ws_line = " ".join(w for w, _ in pos_tokens)
   - `ဒေါက်တာ/O စင်သီယာမောင်/B-PER`
 - **အခြား သဒ္ဒါစံနှုန်းဖြည့်စွက်ချက်များ**:
   - `ဝိုင်းဝန်း/adv ခုတ်/v` (အမူအရာပြ ကြိယာဝိသေသန + ကြိယာ ခွဲထုတ်ခြင်း)
-  - `[Verb] + သူ/pron` (Relativizer pronoun `သူ/pron` e.g., `ဆက်နွှယ်/v သူ/pron များ/part`)
+  - `[Verb] + သူ/pron` (Relativizer/agentive pronoun `သူ/pron` / UD `PRON` e.g., `ဆက်နွှယ်/v သူ/pron များ/part`, `လျှောက်ထား/v သူ/pron`; `scripts/project_mypos_hd.py:331-339` နှင့် `common_standards.py` အရ `pron` အဖြစ် တပြေးညီ သတ်မှတ်ပြီး၊ အဘိဓာန်ဝင် `ပြည်သူ/n` ကဲ့သို့သော နာမ်များနှင့် မရောထွေးရ)
+  - `သော်` (Subordinating conjunction/clause marker: `general` နှင့် `legacy_mypos_alt` ၌ `conj`၊ `legal70k` နှင့် `news_unified` ၌ `part` တပ်ပြီး၊ `myPOS-HD v4.1` တွင် `conj:sub` -> UD `SCONJ[VerbForm=Conv]` အဖြစ် တပြေးညီ lossless ချိတ်ဆက်သည်)
+  - `သင့်` (Homograph Disambiguation: ကြိယာနောက်လိုက် modal "should/ought to" ကို `general`/`legal70k`/`legacy_mypos_alt` ၌ `part:aux`၊ `news_unified` ၌ `v`၊ မူလကြိယာ "လျော်ကန်/ထိခိုက်" ၌ `v`၊ စာသုံးဒုတိယပုဂ္ဂလနာမ်စား "you/your" ၌ `pron` ဟု ခွဲခြားသည်)
   - `[num] ရက်/n ဆက်/adv` (e.g., `၂/num ရက်/n ဆက်/adv`)
+  - **Canonical 15-Tag Invariant**: Base-15 တွင် `ALLOWED_15_TAGS` (၁၅ လုံး) ကိုသာ သုံးရမည်။ ပြင်ပ/မူကြမ်းသုံး `prpn` (use `n`), `for` (use `fw`), `tnum` (use `tn`) များကို လုံးဝ မသုံးရ။
+  - **ASCII Digits (`1, 2, 3, 2026`)**: လက်တင်ဂဏန်းများကို `fw` မတပ်ရ; `num` (myPOS-HD: `num:latn`) အဖြစ်သာ တပ်ရမည်။
   - **မျိုးပြပစ္စည်း "ဦး" နှင့် နာမည်ရှေ့ဆက် "ဦး" ကွဲပြားမှု**: သင်္ချာ/ဂဏန်းနောက်မှ လူမျိုးပြပစ္စည်း `ဦး` (`၁/num ဦး/part`, `တစ်/tn ဦး/part`, `၃/num ဦး/part`) သည် `part` အဖြစ် တည်ရှိပြီး၊ နာမည်ရှေ့ဆက် `ဦးမင်းအောင်လှိုင်/n` နှင့် မရောထွေးရပါ။
+  - **Codepoint Conservation vs. Opt-In `--normalize-confusables`**: Pipeline သည် မူလ codepoints နှင့် character offsets များကို အတိအကျ ထိန်းသိမ်းပြီး (`re.sub(r"\s+", "", before) == re.sub(r"\s+", "", after)`)၊ `--normalize-confusables` flag ပါရှိမှသာ အမြင်တူအက္ခရာများကို normalization ပြုလုပ်သည်။
 
 ### Indefinite Multipliers (-ပေါင်းများစွာ) & Counting Compounds ([Noun]ပေါင်း + Numeral)
 

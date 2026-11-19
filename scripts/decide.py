@@ -15,19 +15,46 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
+
+try:
+    from .common_standards import (
+        ALLOWED_15_TAGS,
+        CLASSIFIERS as STANDARD_CLASSIFIERS,
+        PROFILES,
+        SUBSECTION_CONSONANTS,
+        TIME_MEASURE_NOUNS,
+        TITLES_AND_RANKS,
+        normalize_profile,
+    )
+except ImportError:
+    _scripts_dir = str(Path(__file__).resolve().parent)
+    if _scripts_dir not in sys.path:
+        sys.path.insert(0, _scripts_dir)
+    from common_standards import (
+        ALLOWED_15_TAGS,
+        CLASSIFIERS as STANDARD_CLASSIFIERS,
+        PROFILES,
+        SUBSECTION_CONSONANTS,
+        TIME_MEASURE_NOUNS,
+        TITLES_AND_RANKS,
+        normalize_profile,
+    )
 
 ROOT = Path(__file__).resolve().parents[1]
 TABLE = ROOT / "resources" / "decisions" / "homographs.tsv"
 
-PUNCT = set("။၊၊!?？！…-—–()[]{}「」『』\"'“”‘’")
+PUNCT = set("။၊!?？！…-—–()[]{}「」『』\"'“”‘’,.:;/")
 SYMBOLS = set("%$£¥#&@+=×÷λ")
-CLASSIFIERS = {"ဦး", "ယောက်", "ခု", "ရပ်", "ပါး", "ကြိမ်", "မျိုး", "စုံ", "လုံး", "ကောင်", "စီး", "အုပ်"}
+CLASSIFIERS = set(STANDARD_CLASSIFIERS)
 TEXTNUMS = {"တ", "တစ်", "နှစ်", "သုံး", "လေး", "ငါး", "ခြောက်", "ခုနစ်", "ရှစ်", "ကိုး", "ဆယ်", "ရာ", "ထောင်", "သိန်း", "သန်း", "သုည"}
-TAGS = {"abb", "adj", "adv", "conj", "fw", "int", "n", "num", "part", "ppm", "pron", "punc", "sb", "tn", "v"}
-SUBSECTION = set("ကခဂဃငစဆဇဈဉညဋဌဍဎဏတထဒဓနပဖဗဘမယရလဝသဟဠအဣဤဥဦဧဩဪ")
-ASPECT_AFTER_VERB = {"နေ", "ခဲ့"}
+TAGS = ALLOWED_15_TAGS
+SUBSECTION = set(SUBSECTION_CONSONANTS)
+_ASCII_NUM_RE = re.compile(r"^[0-9]+(?:[.,][0-9]+)*$")
+_MY_NUM_RE = re.compile(r"^[၀-၉]+(?:[.,၊][၀-၉]+)*$")
+
 ASPECT_VERBS = {
     "စီစဉ်", "ဆောင်ရွက်", "လျှောက်ထား", "စစ်ဆေး", "ဖော်ပြ", "ကျင်းပ", "တက်ရောက်",
     "ထုတ်ပြန်", "ချမှတ်", "ဆုံးဖြတ်", "ပြော", "လုပ်", "ရေးသား", "ဖတ်", "ကြည့်",
@@ -36,11 +63,69 @@ ASPECT_VERBS = {
     "ဆောက်", "ကျ", "ချ", "ကျက်", "ချက်", "ပွင့်", "ဖွင့်", "ပျက်", "ဖျက်",
     "လွတ်", "လွှတ်", "မြင့်", "မြှင့်", "စား", "ကျွေး", "သေ", "သတ်", "စေ", "ခိုင်း",
     "တည်ထောင်", "တည်ဆောက်", "ကြိုးစား", "ပြဋ္ဌာန်း", "ထိန်းသိမ်း", "ဟုတ်",
+    # Unambiguous causative_pairs verbs (excluding noun/num/part homographs)
+    "ကျေ", "ကျိုး", "ချိုး", "ကျွတ်", "ချွတ်", "ကြွေ", "ခြွေ", "ကျဉ်း", "ချဉ်း",
+    "ကြွင်း", "ခြွင်း", "ကွာ", "ခွာ", "ကြောက်", "စွတ်", "ဆွတ်", "စန့်", "ဆန့်",
+    "စုတ်", "ဆုတ်", "ပေါက်", "ဖောက်", "ပေါ်", "ဖော်", "ပြေ", "ဖြေ", "ပြည့်", "ဖြည့်",
+    "ပြတ်", "ဖြတ်", "ပြုတ်", "ဖြုတ်", "ပြန့်", "ဖြန့်", "ပဲ့", "ဖဲ့", "ပြို", "ဖြို",
+    "မြုပ်", "မြှုပ်", "မျော", "မျှော", "နု", "နှု", "နိမ့်", "နှိမ့်", "ညွတ်", "ညှွတ်",
+    "ညှိ", "လှဲ", "လန်", "လှန်", "လှည့်", "လှိမ့်", "လွင့်", "လွှင့်", "လျော့", "လျှော့",
+    "သောက်", "အိပ်", "သိပ်", "မြင်", "ပြ", "ဝတ်",
+    # High-frequency unambiguous corpus verbs
+    "ဝယ်", "တိုးတက်", "ကူညီ", "ဝယ်ယူ", "နေထိုင်", "အသုံးပြု", "ပြုလုပ်", "ရရှိ",
+    "တင်ပြ", "သတ်မှတ်", "ပြောကြား", "ဖွဲ့စည်း", "ရောင်းချ", "စတင်", "ထုတ်လုပ်",
+    "ရယူ", "ပြောင်းလဲ", "တင်သွင်း", "ပြင်ဆင်", "ထုတ်ပေး", "သုံးစွဲ", "ထိခိုက်",
+    "လက်ခံ", "ခံစား", "လုပ်ဆောင်", "ဝင်ရောက်", "အတည်ပြု", "ပေးအပ်", "ဖြစ်ပွား",
+    "စိစစ်", "ကြေညာ", "ခန့်ခွဲ", "ကာကွယ်", "ကြီးကြပ်", "သေဆုံး", "စီရင်",
+    "လွှဲပြောင်း", "ရှာဖွေ", "တောင်းဆို", "အရေးယူ", "တိုက်ခိုက်", "တွေ့", "မြင့်တက်",
+    "ပိုင်ဆိုင်", "ပြသ", "ဖြစ်ပေါ်", "ပူးပေါင်း", "ဆွေးနွေး", "ကြိုးပမ်း", "စုံစမ်း",
+    "ပျက်စီး", "တိုးမြှင့်", "ယှဉ်ပြိုင်", "ပေးပို့", "ညှိနှိုင်း", "ပြုပြင်",
+}
+VERBAL_CHAIN_AUX = {
+    "ခဲ့", "ပြီး", "နိုင်", "ရ", "စေ", "သင့်", "လိုက်", "နေ", "ပေး", "ထား",
+    "သွား", "လာ", "ပါ", "ကြ", "မိ", "ချင်", "တတ်", "ထိုက်", "အပ်", "ပိုင်",
+    "ဖူး", "ပြန်", "ဦး", "လိမ့်", "တော့",
+}
+UNAMBIGUOUS_NONINITIAL_VERBAL = {
+    "ခဲ့", "ပြီး", "စေ", "သင့်", "လိုက်", "နိုင်", "ရ", "ကြ", "လိမ့်",
 }
 NEGATABLE = ASPECT_VERBS | {
     "ဟုတ်", "ကောင်း", "မှား", "မှန်", "သင့်", "ရ", "နိုင်", "စေ", "ပြီး", "နေ",
     "ခဲ့", "လိုက်", "များ", "လှ", "ကြီး",
 }
+_KNOWN_NOMINALS = (
+    CLASSIFIERS
+    | set(TIME_MEASURE_NOUNS)
+    | set(TITLES_AND_RANKS)
+    | {
+        "ဤ", "ထို", "ယင်း", "၎င်း", "ဒါ", "အဲဒါ", "ဟို", "ဒီ", "ဟိုဟာ",
+        "ဤအရာ", "ထိုအရာ", "အဘယ်အရာ", "တစ်စုံတစ်ရာ", "တစုံတရာ",
+        "သူ", "သင်", "ငါ", "ကျွန်တော်", "ကျွန်မ", "ကျွန်ုပ်", "ကျုပ်",
+        "ခင်ဗျား", "ဘယ်သူ", "မည်သူ", "အဘယ်သူ", "မိမိ", "ကိုယ်",
+        "တရားလို", "တရားခံ", "တရားသူကြီး", "ဥပဒေ", "ပုဒ်မ",
+        "အစိုးရ", "ပြည်သူ", "နိုင်ငံ", "နိုင်ငံတော်", "လူ", "ကုမ္ပဏီ",
+        "ကော်မတီ", "ကော်မရှင်", "အဖွဲ့", "ဌာန", "ရုံး",
+    }
+)
+_NOMINAL_SUFFIXES = (
+    "သူ", "သား", "သမီး", "ရေး", "မှု", "ခြင်း", "ခွင့်", "ချက်",
+    "တော်", "ဌာန", "ရုံး", "နိုင်ငံ", "အဖွဲ့", "ကောင်စီ", "ကော်မရှင်",
+    "ကော်မတီ", "ဥပဒေ", "ပုဒ်မ", "စနစ်", "ပစ္စည်း", "ပုဂ္ဂိုလ်", "အစိုးရ",
+    "ကုမ္ပဏီ", "တက္ကသိုလ်", "ကျောင်း", "ဆေးရုံ", "မြို့", "ရွာ", "ပြည်နယ်",
+)
+_LEGACY_VERBAL_FIN_RULES = frozenset(
+    {
+        "I_REALIS_LEGACY",
+        "THI_FINAL_LEGACY",
+        "THI_BEFORE_QUOT_LEGACY",
+        "THI_AFTER_VERB_LEGACY",
+        "MYI_FINAL_LEGACY",
+        "MYI_BEFORE_QUOT_LEGACY",
+        "PART_MYI_FINAL_LEGACY",
+        "PART_TEH_LEGACY",
+        "PART_MEH_LEGACY",
+    }
+)
 
 
 def load_table(path: Path = TABLE) -> dict[str, list[dict[str, str]]]:
@@ -49,24 +134,81 @@ def load_table(path: Path = TABLE) -> dict[str, list[dict[str, str]]]:
         line = raw.split("#", 1)[0].strip()
         if not line:
             continue
-        surface, when, tag, rule, note = line.split("\t")
+        cols = line.split("\t")
+        if len(cols) == 5:
+            surface, when, tag, rule, note = cols
+            profiles = "*"
+        elif len(cols) == 6:
+            surface, when, tag, rule, note, profiles = cols
+        else:
+            raise ValueError(f"bad column count ({len(cols)}) on {line!r}")
         if tag not in TAGS:
             raise ValueError(f"bad tag {tag} on {surface}")
         table.setdefault(surface, []).append(
-            {"when": when, "tag": tag, "rule": rule, "note": note}
+            {
+                "when": when,
+                "tag": tag,
+                "rule": rule,
+                "note": note,
+                "profiles": profiles.strip() or "*",
+            }
         )
     return table
+
+
+def _row_matches_profile(row_profiles: str, profile: str) -> bool:
+    if not row_profiles or row_profiles == "*":
+        return True
+    parts = [p.strip() for p in row_profiles.split(",") if p.strip()]
+    excludes = {p[1:] for p in parts if p.startswith("!")}
+    if profile in excludes:
+        return False
+    includes = {p for p in parts if not p.startswith("!")}
+    if includes:
+        return profile in includes
+    return True
 
 
 def _is_number(token: str) -> bool:
     if not token:
         return False
-    core = token.replace(",", "").replace("၊", "")
-    return core.isdigit() or all("၀" <= ch <= "၉" for ch in core)
+    return bool(_ASCII_NUM_RE.match(token) or _MY_NUM_RE.match(token))
 
 
-def _clause(clause: str, prev: str, nxt: str, prev2: str, nxt2: str = "") -> bool:
+def _clause(
+    clause: str,
+    prev: str,
+    nxt: str,
+    prev2: str,
+    nxt2: str = "",
+    *,
+    prev_is_verb: bool | None = None,
+    prev_is_nominal: bool | None = None,
+) -> bool:
     clause = clause.strip()
+    if clause.startswith("!"):
+        return not _clause(
+            clause[1:],
+            prev,
+            nxt,
+            prev2,
+            nxt2,
+            prev_is_verb=prev_is_verb,
+            prev_is_nominal=prev_is_nominal,
+        )
+    if prev_is_verb is None:
+        prev_is_verb = prev in ASPECT_VERBS
+    if prev_is_nominal is None:
+        prev_is_nominal = (
+            prev != ""
+            and prev not in ASPECT_VERBS
+            and prev not in VERBAL_CHAIN_AUX
+            and prev not in PUNCT
+            and (
+                prev in _KNOWN_NOMINALS
+                or any(prev.endswith(suf) and len(prev) > len(suf) for suf in _NOMINAL_SUFFIXES)
+            )
+        )
     if clause == "always":
         return True
     if clause == "at_end":
@@ -79,12 +221,16 @@ def _clause(clause: str, prev: str, nxt: str, prev2: str, nxt2: str = "") -> boo
         return nxt in CLASSIFIERS
     if clause == "prev_textnum":
         return prev in TEXTNUMS or _is_number(prev)
+    if clause == "next_textnum":
+        return nxt in TEXTNUMS or _is_number(nxt)
     if clause == "between_num":
         return (_is_number(prev) or prev in TEXTNUMS) and (_is_number(nxt) or nxt in TEXTNUMS)
     if clause == "after_word":
         return prev != "" and prev not in PUNCT
     if clause == "prev_verb":
-        return prev in ASPECT_VERBS
+        return prev_is_verb
+    if clause == "prev_nominal":
+        return prev_is_nominal
     if clause == "next_neg":
         return nxt in NEGATABLE
     if clause == "next_verb":
@@ -112,26 +258,64 @@ def _clause(clause: str, prev: str, nxt: str, prev2: str, nxt2: str = "") -> boo
     raise ValueError(f"unknown when-clause {clause}")
 
 
-def matches(when: str, prev: str, nxt: str, prev2: str, nxt2: str = "") -> bool:
+def matches(
+    when: str,
+    prev: str,
+    nxt: str,
+    prev2: str,
+    nxt2: str = "",
+    *,
+    prev_is_verb: bool | None = None,
+    prev_is_nominal: bool | None = None,
+) -> bool:
     if when.startswith("all:"):
-        return all(_clause(part.strip(), prev, nxt, prev2, nxt2) for part in when[4:].split("&"))
-    return _clause(when, prev, nxt, prev2, nxt2)
+        return all(
+            _clause(
+                part.strip(),
+                prev,
+                nxt,
+                prev2,
+                nxt2,
+                prev_is_verb=prev_is_verb,
+                prev_is_nominal=prev_is_nominal,
+            )
+            for part in when[4:].split("&")
+        )
+    return _clause(
+        when,
+        prev,
+        nxt,
+        prev2,
+        nxt2,
+        prev_is_verb=prev_is_verb,
+        prev_is_nominal=prev_is_nominal,
+    )
 
 
 def _script_token(token: str) -> dict[str, object] | None:
+    if not token:
+        return None
     if all(ch in PUNCT for ch in token):
         return {"tag": "punc", "rule": "CHAR_PUNC", "status": "closed", "note": "punctuation"}
     if token in SYMBOLS or all(ch in SYMBOLS for ch in token):
         return {"tag": "sb", "rule": "CHAR_SYMBOL", "status": "closed", "note": "symbol"}
-    if _is_number(token) and any("၀" <= ch <= "၉" for ch in token):
+    if _MY_NUM_RE.match(token):
         return {"tag": "num", "rule": "CHAR_MYDIGIT", "status": "closed", "note": "Myanmar digits"}
+    if _ASCII_NUM_RE.match(token):
+        return {"tag": "num", "rule": "CHAR_ASCIIDIGIT", "status": "closed", "note": "ASCII digits"}
     if token.isascii() and any(ch.isalpha() for ch in token):
         return {"tag": "fw", "rule": "CHAR_LATIN", "status": "closed", "note": "Latin word; Myanmar loans stay n"}
     return None
 
 
-def decide_tokens(tokens: list[str], table: dict[str, list[dict[str, str]]]) -> list[dict[str, object]]:
+def decide_tokens(
+    tokens: list[str],
+    table: dict[str, list[dict[str, str]]],
+    profile: str = "general",
+) -> list[dict[str, object]]:
+    profile = normalize_profile(profile, default="general")
     out: list[dict[str, object]] = []
+    verbal_chain: list[bool] = []
 
     def stamp(payload: dict[str, object], prev: str, nxt: str) -> None:
         payload["left"] = prev
@@ -143,28 +327,59 @@ def decide_tokens(tokens: list[str], table: dict[str, list[dict[str, str]]]) -> 
         prev2 = tokens[i - 2] if i > 1 else ""
         nxt = tokens[i + 1] if i + 1 < len(tokens) else ""
         nxt2 = tokens[i + 2] if i + 2 < len(tokens) else ""
+        prev_is_verb = i > 0 and (
+            prev in ASPECT_VERBS
+            or verbal_chain[i - 1]
+            or (
+                prev in UNAMBIGUOUS_NONINITIAL_VERBAL
+                and i > 1
+                and prev2 not in PUNCT
+                and out[i - 1]["tag"] in (None, "v", "part")
+            )
+        )
+        prev_is_nominal = i > 0 and (
+            out[i - 1]["tag"] in {"n", "pron", "num", "tn", "abb", "fw"}
+            or (
+                prev not in ASPECT_VERBS
+                and prev not in VERBAL_CHAIN_AUX
+                and prev not in PUNCT
+                and (
+                    prev in _KNOWN_NOMINALS
+                    or any(prev.endswith(suf) and len(prev) > len(suf) for suf in _NOMINAL_SUFFIXES)
+                )
+            )
+        )
+
         if token in SUBSECTION and prev in "([" and nxt in ")]":
             stamp({
                 "i": i, "w": token, "tag": "sb", "rule": "SUBSECTION_SB",
                 "status": "closed", "note": "parenthetical subsection letter, not a word",
                 "readings": [],
             }, prev, nxt)
+            verbal_chain.append(False)
             continue
-        if token in ASPECT_AFTER_VERB and prev in ASPECT_VERBS:
-            stamp({
-                "i": i, "w": token, "tag": "part", "rule": "ASPECT_AFTER_V",
-                "status": "closed", "note": "aspect after a listed verb; ပြီး stays review",
-                "readings": [],
-            }, prev, nxt)
-            continue
+
         scripted = _script_token(token)
         if scripted is not None:
             stamp({"i": i, "w": token, **scripted, "readings": []}, prev, nxt)
+            verbal_chain.append(False)
             continue
-        rows = table.get(token, [])
+
+        rows = [
+            row for row in table.get(token, [])
+            if _row_matches_profile(row.get("profiles", "*"), profile)
+        ]
         hit = None
         for row in rows:
-            if matches(row["when"], prev, nxt, prev2, nxt2):
+            if matches(
+                row["when"],
+                prev,
+                nxt,
+                prev2,
+                nxt2,
+                prev_is_verb=prev_is_verb,
+                prev_is_nominal=prev_is_nominal,
+            ):
                 hit = row
                 break
         readings = [
@@ -173,11 +388,12 @@ def decide_tokens(tokens: list[str], table: dict[str, list[dict[str, str]]]) -> 
             if row["when"] == "reading" or hit is None
         ]
         if hit is not None:
+            resolved_tag = hit["tag"]
             stamp(
                 {
                     "i": i,
                     "w": token,
-                    "tag": hit["tag"],
+                    "tag": resolved_tag,
                     "rule": hit["rule"],
                     "status": "closed",
                     "note": hit["note"],
@@ -187,6 +403,7 @@ def decide_tokens(tokens: list[str], table: dict[str, list[dict[str, str]]]) -> 
                 nxt,
             )
         elif rows:
+            resolved_tag = None
             stamp(
                 {
                     "i": i,
@@ -204,6 +421,7 @@ def decide_tokens(tokens: list[str], table: dict[str, list[dict[str, str]]]) -> 
                 nxt,
             )
         else:
+            resolved_tag = None
             stamp(
                 {
                     "i": i,
@@ -217,11 +435,25 @@ def decide_tokens(tokens: list[str], table: dict[str, list[dict[str, str]]]) -> 
                 prev,
                 nxt,
             )
+        is_verbal_here = (
+            resolved_tag == "v"
+            or (token in ASPECT_VERBS and resolved_tag is None)
+            or (resolved_tag == "part" and token in VERBAL_CHAIN_AUX and prev_is_verb)
+        )
+        verbal_chain.append(is_verbal_here)
     return out
 
 
-def lookup_word(word: str, table: dict[str, list[dict[str, str]]]) -> dict[str, object]:
-    rows = table.get(word, [])
+def lookup_word(
+    word: str,
+    table: dict[str, list[dict[str, str]]],
+    profile: str = "general",
+) -> dict[str, object]:
+    profile = normalize_profile(profile, default="general")
+    rows = [
+        row for row in table.get(word, [])
+        if _row_matches_profile(row.get("profiles", "*"), profile)
+    ]
     if not rows:
         return {"w": word, "status": "open", "note": "no closed rule; content word or unseen", "readings": []}
     return {
@@ -344,15 +576,22 @@ def main() -> None:
     parser.add_argument("--tokens", help="Whitespace-tokenized line")
     parser.add_argument("--text", help="Raw Burmese; segmented before tagging")
     parser.add_argument("--word", help="Show the catalog readings for one surface")
+    parser.add_argument(
+        "--profile",
+        choices=list(PROFILES),
+        default="general",
+        help="Workflow profile (general, legal70k, news_unified, legacy_mypos_alt)",
+    )
     parser.add_argument("--hd", action="store_true", help="Also emit myPOS-HD / UPOS projection for closed tags")
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
+    profile = normalize_profile(args.profile, default="general")
     table = load_table()
     if args.self_test:
         self_test()
         return
     if args.word:
-        print(json.dumps(lookup_word(args.word, table), ensure_ascii=False, indent=2))
+        print(json.dumps(lookup_word(args.word, table, profile=profile), ensure_ascii=False, indent=2))
         return
     if args.tokens:
         tokens = args.tokens.split()
@@ -360,23 +599,33 @@ def main() -> None:
         sys.path.insert(0, str(ROOT / "scripts"))
         from word_segmenter import WordSegmenter
 
-        tokens = WordSegmenter().segment(args.text)
+        tokens = WordSegmenter(profile=profile).segment(args.text)
     else:
         parser.error("give --tokens, --text, --word, or --self-test")
         return
-    decisions = decide_tokens(tokens, table)
+    decisions = decide_tokens(tokens, table, profile=profile)
     payload: dict[str, object] = {"tokens": tokens, "decisions": decisions}
     if args.hd:
         sys.path.insert(0, str(ROOT / "scripts"))
         from project_mypos_hd import project_sentence_to_mypos_hd
 
         base_pairs = [(str(d["w"]), str(d["tag"] or "open")) for d in decisions]
-        hd_rows = project_sentence_to_mypos_hd(base_pairs)
+        hd_profile = "legacy_mypos_alt" if profile == "legacy_mypos_alt" else "unified_modern"
+        hd_rows = project_sentence_to_mypos_hd(base_pairs, profile=hd_profile)
         for d, row in zip(decisions, hd_rows):
             if d["tag"] is None:
                 row["mypos15"] = "open"
                 row["mypos_hd"] = "open"
                 row["mypos_core"] = "open"
+            elif (
+                profile == "legacy_mypos_alt"
+                and d.get("rule") in _LEGACY_VERBAL_FIN_RULES
+                and row["mypos15"] == "ppm"
+            ):
+                row["mypos_hd"] = "ppm:fin"
+                row["mypos_core"] = "sfp"
+                row["upos"] = "PART"
+                row["feats"] = "Mood=Ind"
         payload["mypos_hd"] = hd_rows
     print(json.dumps(payload, ensure_ascii=False, indent=2))
 

@@ -63,7 +63,7 @@ Attach `-ရေး` **only** to the single token immediately preceding it:
   - Attached directly to verb stem: `ပြဋ္ဌာန်းချက်`, `ဆုံးဖြတ်ချက်`, `သတ်မှတ်ချက်`, `ညွှန်ကြားချက်`, `တင်ပြချက်`, `ထွက်ဆိုချက်`, `စီရင်ချက်`, `စွဲချက်`.
   - Split when an auxiliary intervenes: `သတ်မှတ် ထား ချက်`, `ဖော်ပြ ပါ ချက်`.
 - **Agentive `-သူ` (Productive Split vs. Lexicalized Merged)**:
-  - **Productive Relative-Clause Agent (`V + သူ` -> Split)**: `လျှောက်ထား သူ`, `ကြီးကြပ် သူ`, `ကျူးလွန် သူ`, `ပိုင်ဆိုင် သူ`, `ရှိ သူ`, `ဖြစ် သူ`, `ရင်းနှီးမြှုပ်နှံ သူ`.
+  - **Productive Relative-Clause Agent (`V + သူ/pron` -> Split)**: `လျှောက်ထား/v သူ/pron`, `ကြီးကြပ်/v သူ/pron`, `ကျူးလွန်/v သူ/pron`, `ပိုင်ဆိုင်/v သူ/pron`, `ရှိ/v သူ/pron`, `ဖြစ်/v သူ/pron`, `ရင်းနှီးမြှုပ်နှံ/v သူ/pron` (Base-15 နှင့် `myPOS-HD v4.1` နှစ်ရပ်လုံးတွင် `pron` -> UD: `PRON`; `pron:rel` ဟူသော tag သီးခြားမရှိပါ).
   - **Lexicalized Nouns & Titles (Merged as 1 Token)**: `ပြည်သူ`, `အများပြည်သူ`, `တောင်သူ`, `စားသုံးသူ`, `ကျောင်းသူ`, `ရန်သူ`, `ချစ်သူ`, `ဝယ်သူ`, `အခြားသူ`, `တခြားသူ`, `တစ်ပါးသူ`, `တပါးသူ`, `သူတစ်ပါး`, `သူတပါး` *(Zero-Modernization: keep both archaic `တပါးသူ` / `သူတပါး` and modern `တစ်ပါးသူ` / `သူတစ်ပါး` merged as `/n`, e.g., `တပါးသူ/n ကို/ppm ထိခိုက်/v နာကျင်/v စေ/part ခြင်း/part မ/part ရှိ/v ရ/part ။/punc`, `သူတပါး/n ထက်/ppm`; NEVER shatter `သူတပါး` into `သူ/pron တ/tn ပါး/part` and NEVER substring-match `တပါးသူ` inside `တပါးသူဌေး` -> `တပါး/adj သူဌေး/n`)*, `မသန်စွမ်းသူ`, `အုပ်ထိန်းသူ`, `ပြောရေးဆိုခွင့်ရှိသူ`, `မဟာသရေစည်သူ`.
 
 ### 2.3 Verbs, Double Verbs, and Noun + Verb Constructions
@@ -132,7 +132,7 @@ Always scan segmented output for false compounds created by accidental boundary 
 | Trap (Wrong Segmentation) | Correct Segmentation | Linguistic Reason |
 | --- | --- | --- |
 | `အများ ကလေး စား ထိုက်` | `အများ က လေးစား ထိုက်` | `က` is subject marker (`ppm`); `လေးစား` ("respect") is the verb, not `ကလေး` ("child") |
-| `စစ်ဆေး ခြင်း ခံ ရ သူမ ဟုတ် ဘဲ` | `စစ်ဆေး ခြင်း ခံ ရ သူ မ ဟုတ် ဘဲ` | `သူ` is agentive particle (`part`); `မ` is negation (`part`), not pronoun `သူမ` ("she") |
+| `စစ်ဆေး ခြင်း ခံ ရ သူမ ဟုတ် ဘဲ` | `စစ်ဆေး ခြင်း ခံ ရ သူ မ ဟုတ် ဘဲ` | `သူ` after verbs/action nominals functions as agentive/relativizer pronoun `pron` / UD `PRON` (per `scripts/project_mypos_hd.py:331-339` and `common_standards.py`, harmonizing older legacy annotations that labeled it as `part` or `n` without context); `မ` is negation (`part`), not fused pronoun `သူမ` ("she") |
 | `သက်ဆိုင်ရာ ဥပဒေ အရသာ` | `သက်ဆိုင်ရာ ဥပဒေ အရ သာ` | `အရ` ("according to") + restrictive particle `သာ` ("only"), not noun `အရသာ` ("taste") |
 | `လွှတ်တော် အစည်းအဝေးခန်း မ` | `လွှတ်တော် အစည်းအဝေး ခန်းမ` | `ခန်းမ` ("hall") is a noun, not negation `မ` |
 | `ဗုဒ္ဓ ဘာသာသာ သ နာ` | `ဗုဒ္ဓ ဘာသာ သာသနာ` | `ဘာသာ/n သာသနာ/n` (Owner Component Row 7) |
@@ -272,6 +272,8 @@ When generalizing a single human/owner segmentation or POS fix across a corpus, 
 - **Confusable / Typo Note**:
   - User typing `ဥပုပ်` or `ဥပုပ်နေ့` is a common phonological confusable for `ဥပုသ်` / `ဥပုသ်နေ့` (Pali *Uposatha*). On corpus lines, observe `RECORD_ONLY_NOT_APPLIED`.
 
+<a id="11-classical-myanmar-rhetorical-traditions--synonymous-pairing--bilingual-glossing"></a>
+<a id="11-classical-myanmar-rhetorical-traditions-synonymous-pairing--bilingual-glossing-မြန်မာစာ-ဓလေ့ထုံးစံအစဉ်အလာ---အနက်တူတွဲလုံးများနှင့်-ပါဠိ-မြန်မာ-တွဲဖက်အနက်ဖွင့်ဆိုချက်များ"></a>
 ## 11. Classical Myanmar Rhetorical Traditions: Synonymous Pairing & Bilingual Glossing (မြန်မာစာ၏ ဓလေ့ထုံးစံအစဉ်အလာ - အနက်တူတွဲလုံးများနှင့် ပါဠိ-မြန်မာ တွဲဖက်အနက်ဖွင့်ဆိုချက်များ)
 
 ### 11.1 Rhetorical Stylistic Principle (စကားအထားအသိုနှင့် စာပေအစဉ်အလာ)
@@ -319,6 +321,8 @@ When generalizing a single human/owner segmentation or POS fix across a corpus, 
    - **`သူတပါး` / `သူတစ်ပါး`**: *မြန်မာအဘိဓာန်* headword ဖြစ်ပြီး "မိမိမှတစ်ပါး အခြားလူ" ဟု အနက်ရသည့် ပေါင်းစပ်နာမ်တစ်ပုဒ်တည်း ဖြစ်သဖြင့် ရှေးဟောင်း (`သူတပါး`) နှင့် ခေတ်သစ် (`သူတစ်ပါး`) နှစ်မျိုးလုံးကို **လုံးဝ မခွဲရ (`1 Token` `/n`)** (`သူ` + `တ/tn ပါး/part` ဟု အရေအတွက် `၁` နှင့် မရောထွေးရ; မြန်မာသဒ္ဒါတွင် "သူ" ကို `ပါး` ဖြင့် မရေတွက်ဘဲ `ယောက်` ဖြင့်သာ ရေတွက်သောကြောင့် `သူတပါး` သည် မည်သည့်အခါမျှ ကိန်း+မျိုးပြ မဟုတ်ပါ)။
      - စံပြုဥပမာ: `သူတပါး/n ထက်/ppm` (❌ `သူ/pron တ/tn ပါး/part ထက်/ppm`)၊ `သူတစ်ပါး/n တို့/part ၏/ppm သားမယား/n` (❌ `သူ/pron တစ်/tn ပါး/part`)။
 
+<a id="12-royal--sacred-honorific-system--တော်-rules"></a>
+<a id="12-royal--sacred-honorific-system--တော်-စည်းမျဉ်းနှင့်-နန်းတွင်းသုံး-ဝေါဟာရများ"></a>
 ## 12. Royal & Sacred Honorific System (`-တော်` စည်းမျဉ်းနှင့် နန်းတွင်းသုံး ဝေါဟာရများ)
 
 ### 12.1 Fused Royal Kinship & Attribute Nouns (`[Noun]တော်` -> 1 Token `/n`)
@@ -365,9 +369,11 @@ When generalizing a single human/owner segmentation or POS fix across a corpus, 
 |---|---|---|---|---|
 | **`သော`** | နာမဝိသေသနပြု ပစ္စည်း (Relativizer Particle) | `part` | `လျင်/v သော/part လေ/n`<br>`ကြီးမား/v သော/part အဆောက်အအုံ/n` | ကြိယာနောက်မှကပ်၍ နောက်လိုက်နာမ်ကို အထူးပြုစေသော ပစ္စည်း ဖြစ်သည် |
 | **`ဟူသော`** | အညွှန်း/စကားကိုး နာမဝိသေသန ပစ္စည်း | `part` | `ဟူသော/part အက္ခရာ/n`<br>`ဟူသော/part အချက်/n` | "ဟူ၍ဆိုအပ်သော" ဟူသည့် ညွှန်းဆိုချက်ပစ္စည်းအဖြစ် နာမ်ရှေ့တွင် အထူးပြုသည် |
-| **`သော်`** | ဝါကျဆက် သမ္ဗန္ဓ (Subordinating Conjunction) | `conj` | `ရှု/v သော်/conj`<br>`ဆောင်/v ပါ/part သော်/conj`<br>`စဉ်းစား/v သော်/conj` | "စဉ်းစားသောအခါ/ကြည့်လျှင်" ဟူသော ကာလ/အခြေအနေပြ အမှီဝါကျဆက် ဖြစ်သည် |
+| **`သော်`** | ဝါကျဆက် သမ္ဗန္ဓ / ပစ္စည်း (Subordinating Conjunction / Clause Particle) | `conj` (`general`, `legacy_mypos_alt`, Shan Yoma) / `part` (`legal70k`, `news_unified`) -> `conj:sub` (`SCONJ`) in `myPOS-HD` | `ရှု/v သော်/conj` (သို့မဟုတ် `သော်/part`)<br>`ဆောင်/v ပါ/part သော်/conj`<br>`စဉ်းစား/v သော်/conj` | "စဉ်းစားသောအခါ/ကြည့်လျှင်" ဟူသော ကာလ/အခြေအနေပြ အမှီဝါကျဆက် ဖြစ်သည် (Base-15 တွင် profile အလိုက် `conj` သို့မဟုတ် `part` တပ်ပြီး `myPOS-HD v4.1` ၌ `conj:sub` -> UD `SCONJ`, `VerbForm=Conv` သို့ တပြေးညီ ချိတ်ဆက်သည်) |
 | **`သော်လည်း`** | ဆန့်ကျင်ဘက်ပြ ဝါကျဆက် သမ္ဗန္ဓ | `conj` | `ကြိုးစား/v သော်လည်း/conj` | ဆန့်ကျင်ဘက်ပြ သမ္ဗန္ဓအဖြစ် တစ်ပုဒ်တည်း သုံးသည် |
 
+<a id="14-astrological-elemental-and-cultural-compounds"></a>
+<a id="14-astrological-elemental-royal--cultural-compounds-ဗေဒင်-နက္ခတ်-ဓာတ်နှင့်-ယဉ်ကျေးမှု-ဝေါဟာရများ"></a>
 ## 14. Astrological, Elemental, Royal & Cultural Compounds (ဗေဒင်၊ နက္ခတ်၊ ဓာတ်နှင့် ယဉ်ကျေးမှု ဝေါဟာရများ)
 
 ### 14.1 Astrological Calculation Compounds (`ဓာတ်ရကိန်း`, `ဂြိုဟ်သက်`)
@@ -393,5 +399,22 @@ When generalizing a single human/owner segmentation or POS fix across a corpus, 
 - **`သစ်တိုင် ထူ`**: သစ်တိုင် (မဏ္ဍိုင်တိုင်/n) + ထူ (စိုက်ထူ/v) -> `သစ်တိုင်/n ထူ/v`။
 - **`သတ္တမ အကြိမ်`**: အဆင့်ပြ နာမဝိသေသန (`သတ္တမ/adj`) + အကြိမ်ရေပြ နာမ် (`အကြိမ်/n`) ဖြစ်သဖြင့် `ပထမ/adj အကြိမ်/n`၊ `ဒုတိယ/adj အကြိမ်/n` တို့နှင့် တသမတ်တည်း **`သတ္တမ/adj အကြိမ်/n`** (`2 Tokens`) ဟု အမြဲ ခွဲထုတ်ရမည် (❌ `သတ္တမအကြိမ်/n` ဟု မကပ်ရ)။
 - **`ယုံယုံကြည်ကြည်`**: လေးလုံးစပ် ကြိယာဝိသေသန -> `ယုံယုံကြည်ကြည်/adv`။
+
+## 15. Phase 5 Open Design Trade-Offs & Multi-Workflow Architecture
+
+### 15.1 Official Titles & Sobriquets vs Personal Names (`မြဝတီမင်းကြီး`, `လှေသင်းအတွင်းဝန်`)
+- **Single Token Standard in News & Legal Corpora**: Official titles, feudal ministries, and historical sobriquets (`မြဝတီမင်းကြီး/n`, `ကင်းဝန်မင်းကြီး/n`, `ယောမင်းကြီး/n`, `လှေသင်းအတွင်းဝန်/n`, `မဟာဒါန်တိုက်ဝန်/n`, `တောင်ဘက်တိုက်ဝန်/n` in `TITLES_AND_RANKS` of `scripts/common_standards.py`) are maintained as **1 Token `/n`** (UD `PROPN`/`NOUN`). Personal names (`ဦးစ/n`, `ဦးချိန်/n`, `ဦးမောင်ကြီး/n`) remain distinct 1-token units.
+- **Architectural Trade-Off**: Decomposing titles (e.g., `မြဝတီ/n မင်းကြီး/n ဦးစ/n` or `လှေသင်း/n အတွင်းဝန်/n ဦးချိန်/n`) breaks Downstream Named Entity Recognition (NER) boundaries where the title is an outside designator (`O`) and the name is an entity (`B-PER I-PER`). Modern administrative and legal systems require titles to be atomic entities, whereas historical philological studies may favor compositional splitting.
+
+### 15.2 Reversible 3-Slot `compound_groups` Layering
+To resolve conflicts between tight word tokenization for syntax and broad multi-word expression (MWE) grouping for information retrieval:
+- **Slot 1 (Orthographic Syllables)**: Character and syllable token spans (`မြန် | မာ | နိုင် | ငံ | တော်`).
+- **Slot 2 (Canonical Base-15 Syntactic Tokens)**: Minimal syntactic words (`မြန်မာ/n နိုင်ငံတော်/n`).
+- **Slot 3 (MWE / Compound Grouping Annotations)**: Higher-order lexical unit grouping (`[မြန်မာနိုင်ငံတော်] = မြန်မာ/n + နိုင်ငံတော်/n`).
+- **Lossless Interoperability**: Downstream syntactic dependency parsers consume Slot 2 to avoid flat multi-syllable compound tree distortions, while search engines, NER models, and MT systems leverage Slot 3 for entity span resolution.
+
+### 15.3 Archaic vs. Modern Corpus Expectations
+- **Archaic Register & Orthography**: Pre-modern and classical texts (Konebaung dynasty royal orders, palm-leaf manuscripts, early 20th-century literature) exhibit non-modernized orthography (`တပါးသူ`, `ရွှေမင်ကြောင်း`, non-standard stacked Pali ligatures, un-reformed loanwords).
+- **Profile Decoupling**: Rigid application of modern news standards (`news_unified`) to archaic texts produces false positive segmentation errors and unwarranted typo alarms. By utilizing profile-aware pipelines (`legacy_mypos_alt` or dedicated historical configurations), historical phonological and orthographic variants are preserved with zero blast-radius contamination.
 
 

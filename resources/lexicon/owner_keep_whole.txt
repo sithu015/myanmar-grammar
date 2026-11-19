@@ -296,7 +296,9 @@
 ခရီးစရိတ်နှုန်း
 စက်မှုလက်မှုကျောင်း
 ကျင့်ထုံး
-ကော်မရှင်
+ဝန်ကြီး
+ဩဘာ
+လက်ယာ
 
 # traditional myanmar calendar, lunar months, lunar phases, observance days
 ကောဇာ

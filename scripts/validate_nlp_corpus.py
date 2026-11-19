@@ -23,33 +23,46 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from project_mypos_hd import ALLOWED_HD_TAGS, collapse_to_mypos15
+    from .common_standards import (
+        ALLOWED_15_TAGS,
+        CLASSIFIERS,
+        OWNER_COMPONENT_STANDARDS,
+        OWNER_COMPONENT_STANDARDS_ORDERED,
+        OWNER_FIXED_TAG_SURFACES,
+        PERSON_PREFIXES,
+        PROFILES,
+        RECORD_ONLY_LEADS,
+        STRICT_TITLE_PREFIXES,
+        SUBSECTION_CONSONANTS,
+        TIME_MEASURE_NOUNS,
+        TITLES_AND_RANKS,
+        normalize_profile,
+        parse_pos_token,
+        strip_ws,
+    )
+    from .project_mypos_hd import ALLOWED_HD_TAGS, collapse_to_mypos15
 except ImportError:
     _scripts_dir = str(Path(__file__).resolve().parent)
     if _scripts_dir not in sys.path:
         sys.path.insert(0, _scripts_dir)
+    from common_standards import (
+        ALLOWED_15_TAGS,
+        CLASSIFIERS,
+        OWNER_COMPONENT_STANDARDS,
+        OWNER_COMPONENT_STANDARDS_ORDERED,
+        OWNER_FIXED_TAG_SURFACES,
+        PERSON_PREFIXES,
+        PROFILES,
+        RECORD_ONLY_LEADS,
+        STRICT_TITLE_PREFIXES,
+        SUBSECTION_CONSONANTS,
+        TIME_MEASURE_NOUNS,
+        TITLES_AND_RANKS,
+        normalize_profile,
+        parse_pos_token,
+        strip_ws,
+    )
     from project_mypos_hd import ALLOWED_HD_TAGS, collapse_to_mypos15
-
-# 15 allowed lowercase myPOS / Legal70k tags
-ALLOWED_15_TAGS: frozenset[str] = frozenset(
-    {
-        "abb",
-        "adj",
-        "adv",
-        "conj",
-        "fw",
-        "int",
-        "n",
-        "num",
-        "part",
-        "ppm",
-        "pron",
-        "punc",
-        "sb",
-        "tn",
-        "v",
-    }
-)
 
 # 15 allowed canonical NER classes (ner-mya-v2)
 ALLOWED_15_NER_CLASSES: frozenset[str] = frozenset(
@@ -122,98 +135,22 @@ PROTECTED_LEXEMES_ENDING_IN_CLITIC_CHARS: frozenset[str] = frozenset(
     }
 )
 
-# Known titles, ranks, and status honors that must be tagged 'O', never inside 'PER'
-TITLES_AND_RANKS: frozenset[str] = frozenset(
-    {
-        "သမ္မတ", "ဝန်ကြီး", "ဝန်ကြီးချုပ်", "ဒုတိယသမ္မတ", "ဒုတိယဝန်ကြီး",
-        "ဗိုလ်ချုပ်", "ဗိုလ်ချုပ်ကြီး", "ဒုတိယဗိုလ်ချုပ်ကြီး", "ဗိုလ်မှူးချုပ်",
-        "ဗိုလ်မှူးကြီး", "ဗိုလ်မှူး", "ဗိုလ်ကြီး", "ဗိုလ်", "စစ်ဗိုလ်ချုပ်",
-        "စော်ဘွား", "စော်ဘွားကြီး", "သံအမတ်", "သံအမတ်ကြီး", "ဒေါက်တာ",
-        "ပုပ်ရဟန်းမင်းကြီး", "ဥက္ကဋ္ဌ", "မင်းကြီး", "အိမ်ရှေ့မင်း", "မြို့စား",
-        "ဆရာတော်", "ဆရာတော်ကြီး", "ရှင်ကြီး", "ပုံနှိပ်တိုက်", "မဂ္ဂဇင်း"
-    }
-)
-
-# 11 Owner fixed-tag exact archaic/standard surfaces (2026-10-26 ruling)
-OWNER_FIXED_TAG_SURFACES: dict[str, str] = {
-    "တမျိုးတည်း": "adj",
-    "တဖက်သတ်": "adv",
-    "တဆက်တည်း": "adv",
-    "တဦးတည်းပိုင်": "adj",
-    "တချိန်တည်း": "adv",
-    "တပြိုင်နက်": "adv",
-    "တခါတရံ": "adv",
-    "အခါတမျိုးမျိုး": "adv",
-    "တချက်လွှတ်": "adj",
-    "တကျွန်းပို့ဒဏ်": "n",
-    "တသီးတခြား": "adv",
-}
-
-# 10 Owner component-standard rows (complete lexical surfaces -> flat POS tokens)
-OWNER_COMPONENT_STANDARDS: dict[str, list[tuple[str, str]]] = {
-    "မြန်မာနိုင်ငံ": [("မြန်မာ", "n"), ("နိုင်ငံ", "n")],
-    "မြန်မာနိုင်ငံတော်": [("မြန်မာ", "n"), ("နိုင်ငံတော်", "n")],
-    "ပြည်ထောင်စုအစိုးရ": [("ပြည်ထောင်စု", "n"), ("အစိုးရ", "n")],
-    "အစိုးရအဖွဲ့": [("အစိုးရ", "n"), ("အဖွဲ့", "n")],
-    "အစိုးရအဖွဲ့ဝင်": [("အစိုးရ", "n"), ("အဖွဲ့ဝင်", "n")],
-    "ပြည်နယ်အစိုးရ": [("ပြည်နယ်", "n"), ("အစိုးရ", "n")],
-    "ပြည်နယ်အစိုးရအဖွဲ့": [("ပြည်နယ်", "n"), ("အစိုးရ", "n"), ("အဖွဲ့", "n")],
-    "အာဏာပိုင်နက်": [("အာဏာ", "n"), ("ပိုင်နက်", "n")],
-    "ဝန်ကြီးရုံး": [("ဝန်ကြီး", "n"), ("ရုံး", "n")],
-    "ဘာသာသာသနာ": [("ဘာသာ", "n"), ("သာသနာ", "n")],
-    "စီးပွားရေးစနစ်": [("စီးပွားရေး", "n"), ("စနစ်", "n")],
-    "သယံဇာတပစ္စည်း": [("သယံဇာတ", "n"), ("ပစ္စည်း", "n")],
-    "ရေပေါ်ရေအောက်": [("ရေပေါ်", "n"), ("ရေအောက်", "n")],
-    "မြေပေါ်မြေအောက်": [("မြေပေါ်", "n"), ("မြေအောက်", "n")],
-}
-
-# Dependent signs / combining marks that can NEVER start a valid Myanmar word token
+# Dependent signs / combining marks / final stacks that can NEVER start a valid Myanmar word token
 ILLEGAL_WORD_START_CHARS: frozenset[str] = frozenset(
-    chr(c) for c in list(range(0x102B, 0x103F)) + list(range(0x1056, 0x105A))
+    chr(c) for c in list(range(0x102B, 0x1040)) + list(range(0x1056, 0x105A))
 )
 
-# Common Zawgyi-only codepoints/sequences for quick contamination check
-# Note: In Unicode, \u1031 after a consonant/medial followed by the next syllable's consonant (e.g. နေထိုင်) is valid;
-# Zawgyi visual-order \u1031 occurs at token start or after a tone/asat/punctuation before a consonant.
+# Common Zawgyi-only codepoints/sequences without Shan/Mon/Karen false positives
 ZAWGYI_INDICATORS: re.Pattern[str] = re.compile(
-    r"[\u1033\u1034\u105a\u1060-\u1097]|(?:(?:^|[\s\u1037\u1038\u103a\u104a\u104b])\u1031[\u1000-\u1021])"
+    r"(?:^|[\s\u1037\u1038\u103a\u104a\u104b\(\[\{\"'<«\-/])\u1031[\u1000-\u1021]"
+    r"|\u1005\u103b[\u1031\u1038]"
+    r"|\u1031\u1031"
 )
 
-# Bracketed compound pattern: [w1/p1 | w2/p2]/outer_pos
+# Compound bracket regex ignoring escaped brackets \[ ... \]/sb
 BRACKET_COMPOUND_RE: re.Pattern[str] = re.compile(
-    r"\[([^\[\]]+?)\]/([a-z]+)"
+    r"(?<!\\)\[([^\[\]]+?\|[^\[\]]+?)\]/([a-z]+)"
 )
-
-
-def strip_ws(text: str) -> str:
-    """Remove all whitespace characters and normalize standard orthographic typos for exact conservation checks."""
-    t = re.sub(r"\s+", "", text)
-    t = re.sub(r"[\u200b\u200c\u200d\u200e\u200f\u202a-\u202e\u2066-\u2069\ufeff]", "", t)
-    t = t.replace("စျ", "ဈ").replace("ဦး", "ဦး")
-    t = t.replace("\u103a\u1037", "\u1037\u103a")
-    return t
-
-
-def parse_pos_token(token: str) -> tuple[str, str] | None:
-    """Parse a flat 'word/tag' token using the last unescaped '/' delimiter."""
-    idx = token.rfind("/")
-    if idx <= 0 or idx == len(token) - 1:
-        return None
-    # Support literal backslash '\/tag' and escaped backslash '\\/tag'
-    if token[:idx] in ("\\", "\\\\"):
-        tag = token[idx + 1 :]
-        return "\\", tag
-    # Check if the slash was escaped by an odd number of backslashes
-    j = idx - 1
-    bs_count = 0
-    while j >= 0 and token[j] == "\\":
-        bs_count += 1
-        j -= 1
-    if bs_count % 2 == 1:
-        return None
-    surface = token[:idx].replace("\\\\", "\\").replace("\\/", "/")
-    tag = token[idx + 1 :]
-    return surface, tag
 
 
 def flatten_bracket_line(line: str) -> tuple[str, list[str]]:
@@ -306,8 +243,10 @@ def audit_line(
     line_no: int,
     mode: str = "ws",
     ref_line: str | None = None,
+    profile: str = "general",
 ) -> list[dict[str, Any]]:
     """Audit a single line for orthographic fidelity, Unicode/dependent signs, and POS rules."""
+    norm_profile = normalize_profile(profile, default="general")
     issues: list[dict[str, Any]] = []
     clean_line = line.rstrip("\r\n")
 
@@ -425,7 +364,7 @@ def audit_line(
                                 ),
                             }
                         )
-                if surf in OWNER_COMPONENT_STANDARDS:
+                if norm_profile == "legal70k" and surf in OWNER_COMPONENT_STANDARDS:
                     expected_flat = " ".join(
                         f"{w}/{t}" for w, t in OWNER_COMPONENT_STANDARDS[surf]
                     )
@@ -443,7 +382,7 @@ def audit_line(
             parsed_pairs.append((surf, base_tag if mode == "hd" else tag))
         else:
             surf = tok
-            if surf in OWNER_COMPONENT_STANDARDS:
+            if norm_profile == "legal70k" and surf in OWNER_COMPONENT_STANDARDS:
                 expected_ws = " ".join(w for w, _ in OWNER_COMPONENT_STANDARDS[surf])
                 issues.append(
                     {
@@ -458,12 +397,12 @@ def audit_line(
                 )
 
         # Check for title/rank unsplit from personal names (Title must be split: e.g. ဗိုလ်ချုပ် အောင်ဆန်း, ဗိုလ်ကြီး ဇင်ယော်)
-        KNOWN_TITLES_TO_SPLIT = ("ဗိုလ်ချုပ်", "ဗိုလ်ကြီး", "ဗိုလ်မှူး", "စော်ဘွားကြီး", "သံအမတ်ကြီး", "ဒေါက်တာ")
         KNOWN_NAMES_AFTER_TITLE = ("အောင်ဆန်း", "ဇင်ယော်", "စောမုတ်သုန်", "စဝ်စံထွန်း", "တေဇာဆန်း")
-        for title in KNOWN_TITLES_TO_SPLIT:
+        for title in TITLES_AND_RANKS:
             if surf.startswith(title) and len(surf) > len(title):
                 rem = surf[len(title):]
-                if rem in KNOWN_NAMES_AFTER_TITLE:
+                rem_base_cons = len(re.findall(r"[\u1000-\u102A\u103F]", rem))
+                if rem in KNOWN_NAMES_AFTER_TITLE or (rem_base_cons >= 2 and re.match(r"^[\u1000-\u102A][\u1000-\u109F]+$", rem)):
                     issues.append(
                         {
                             "line": line_no,
@@ -471,10 +410,11 @@ def audit_line(
                             "type": "unsplit_title_name",
                             "message": (
                                 f"Title/Rank '{title}' must be split from personal name '{rem}' "
-                                f"into '{title}/{'n' if mode in ('pos', 'bracket') else ''} {rem}/{'n' if mode in ('pos', 'bracket') else ''}'."
+                                f"into '{title}/{'n' if mode in ('pos', 'bracket', 'hd') else ''} {rem}/{'n' if mode in ('pos', 'bracket', 'hd') else ''}'."
                             ),
                         }
                     )
+                    break
 
         surfaces.append(surf)
 
@@ -549,15 +489,26 @@ def audit_line(
             prv_w, prv_t = parsed_pairs[i - 1] if i > 0 else ("", "")
             nxt_w, nxt_t = parsed_pairs[i + 1] if i + 1 < n_pairs else ("", "")
 
-            if surf == "သည်" and prv_w == "ဆို" and prv_t == "v" and tag != "part":
-                issues.append(
-                    {
-                        "line": line_no,
-                        "token_index": i + 1,
-                        "type": "so_thi_pos_violation",
-                        "message": f"Nominalizer 'သည်' after 'ဆို/v' must be 'part', got '{tag}'.",
-                    }
-                )
+            if surf == "သည်" and prv_w == "ဆို" and prv_t == "v":
+                if norm_profile == "legacy_mypos_alt":
+                    if tag not in ("part", "ppm"):
+                        issues.append(
+                            {
+                                "line": line_no,
+                                "token_index": i + 1,
+                                "type": "so_thi_pos_violation",
+                                "message": f"Nominalizer 'သည်' after 'ဆို/v' in legacy profile must be 'part' or 'ppm', got '{tag}'.",
+                            }
+                        )
+                elif tag != "part":
+                    issues.append(
+                        {
+                            "line": line_no,
+                            "token_index": i + 1,
+                            "type": "so_thi_pos_violation",
+                            "message": f"Nominalizer 'သည်' after 'ဆို/v' must be 'part', got '{tag}'.",
+                        }
+                    )
             if surf == "မှာ" and prv_w == "သည်" and i >= 2 and parsed_pairs[i - 2][0] == "ဆို" and tag != "ppm":
                 issues.append(
                     {
@@ -588,7 +539,7 @@ def audit_line(
                         "message": f"Quotative particle '{surf}' must be 'part', got '{tag}'.",
                     }
                 )
-            if surf in ("ဦး", "ယောက်", "ပါး", "ကြိမ်") and tag == "n" and prv_t in ("num", "tn"):
+            if surf in CLASSIFIERS and tag == "n" and prv_t in ("num", "tn"):
                 issues.append(
                     {
                         "line": line_no,
@@ -599,10 +550,8 @@ def audit_line(
                 )
 
             # Check for prohibited split personal name prefix (Name prefixes must NOT be split from the name)
-            KNOWN_NAME_PREFIXES = ("ဦး", "ဒေါ်", "စဝ်", "စော", "နော်", "ဆလိုင်း")
             KNOWN_NAMES_WITH_PREFIX = ("မင်းအောင်လှိုင်", "အောင်ဆန်းစုကြည်", "ကျော်မိုးထွန်း", "စံထွန်း", "မုတ်သုန်")
-            STRICT_TITLE_PREFIXES = ("ဦး", "ဒေါ်", "မောင်", "စဝ်", "စော", "နော်", "စလိုင်း", "ဆလိုင်း", "ဒူဝါ")
-            if surf in KNOWN_NAME_PREFIXES and nxt_w in KNOWN_NAMES_WITH_PREFIX:
+            if surf in PERSON_PREFIXES and nxt_w in KNOWN_NAMES_WITH_PREFIX:
                 if prv_t not in ("num", "tn") and prv_w not in ("တစ်", "နှစ်", "သုံး", "လေး", "ငါး", "အချို့", "အနည်းဆုံး", "အများဆုံး", "စုစုပေါင်း"):
                     issues.append(
                         {
@@ -617,23 +566,44 @@ def audit_line(
                     )
             elif (
                 surf in STRICT_TITLE_PREFIXES
-                and tag == "n"
+                and tag in ("n", "part")
                 and nxt_t == "n"
                 and prv_t not in ("num", "tn")
-                and len(nxt_w) >= 3
-                and re.match(r"^[\u1000-\u102A][\u1000-\u109F]+$", nxt_w)
-                and nxt_w not in COMMON_PREFIX_NOUN_FOLLOWERS
-                and nxt_w not in TITLES_AND_RANKS
+            ):
+                base_cons = len(re.findall(r"[\u1000-\u102A\u103F]", nxt_w))
+                if (
+                    (base_cons >= 2 or nxt_w in KNOWN_NAMES_WITH_PREFIX)
+                    and nxt_w not in COMMON_PREFIX_NOUN_FOLLOWERS
+                    and nxt_w not in COMMON_NER_CLITICS
+                    and nxt_w not in TITLES_AND_RANKS
+                    and re.match(r"^[\u1000-\u102A][\u1000-\u109F]+$", nxt_w)
+                ):
+                    issues.append(
+                        {
+                            "line": line_no,
+                            "token_index": i + 1,
+                            "type": "split_name_prefix_violation",
+                            "message": (
+                                f"Personal name prefix '{surf}/{tag}' split from '{nxt_w}/n'; "
+                                f"unify into '{surf}{nxt_w}/n'."
+                            ),
+                        }
+                    )
+
+            # Parenthetical subsection marker check under legal70k: ( က ) /sb
+            if (
+                surf in SUBSECTION_CONSONANTS
+                and prv_w in ("(", "（")
+                and nxt_w in (")", "）")
+                and norm_profile == "legal70k"
+                and tag != "sb"
             ):
                 issues.append(
                     {
                         "line": line_no,
                         "token_index": i + 1,
-                        "type": "split_name_prefix_violation",
-                        "message": (
-                            f"Personal name prefix '{surf}/n' split from '{nxt_w}/n'; "
-                            f"unify into '{surf}{nxt_w}/n'."
-                        ),
+                        "type": "subsection_marker_pos_violation",
+                        "message": f"Parenthetical subsection marker '{surf}' between parentheses must be tagged 'sb', got '{tag}'.",
                     }
                 )
 
@@ -809,17 +779,30 @@ def audit_ner_tsv(lines: list[str]) -> list[dict[str, Any]]:
                     "message": f"Postposition token '{token}/ppm' must not have entity tag '{ner}' (Zero-Clitic Invariant).",
                 }
             )
+        elif pos in ("part", "conj") and (token in COMMON_NER_CLITICS or token in ("များ", "တို့", "အပေါင်း", "လည်း", "ပင်")):
+            issues.append(
+                {
+                    "line": row_idx,
+                    "token": token,
+                    "type": f"clitic_bleed_{pos}_tagged",
+                    "message": f"{pos.upper()} clitic token '{token}/{pos}' must not have entity tag '{ner}' (Zero-Clitic Invariant).",
+                }
+            )
         for cl in COMMON_NER_CLITICS:
-            if token.endswith(cl) and len(token) > len(cl) and token not in PROTECTED_LEXEMES_ENDING_IN_CLITIC_CHARS:
-                issues.append(
-                    {
-                        "line": row_idx,
-                        "token": token,
-                        "type": "clitic_bleed_in_token",
-                        "message": f"Token '{token}' ends with postposition clitic '{cl}'. Separate clitic before tagging '{ner}'.",
-                    }
-                )
-                break
+            if token.endswith(cl) and len(token) > len(cl):
+                if not (
+                    token in PROTECTED_LEXEMES_ENDING_IN_CLITIC_CHARS
+                    or token.endswith(("ကိုကို", "နာယက", "သောက"))
+                ):
+                    issues.append(
+                        {
+                            "line": row_idx,
+                            "token": token,
+                            "type": "clitic_bleed_in_token",
+                            "message": f"Token '{token}' ends with postposition clitic '{cl}'. Separate clitic before tagging '{ner}'.",
+                        }
+                    )
+                    break
 
         # 5. Title Leak Invariant
         if token in TITLES_AND_RANKS and etype == "PER":
@@ -844,7 +827,7 @@ def run_self_test() -> int:
     # Test 1: Valid POS line with owner fixed forms, component splits, ဆိုသည်မှာ, and post-verbal ရာ/part
     valid_pos = "ပြည်နယ်/n အစိုးရ/n အဖွဲ့/n ဆို/v သည်/part မှာ/ppm တပြိုင်နက်/adv ဆောင်ရွက်/v ရာ/part တွင်/ppm အတည်/n ဖြစ်/v သည်/part ။/punc"
     ref_text = "ပြည်နယ်အစိုးရအဖွဲ့ ဆိုသည်မှာ တပြိုင်နက် ဆောင်ရွက်ရာတွင် အတည်ဖြစ်သည်။"
-    issues = audit_line(valid_pos, 1, mode="pos", ref_line=ref_text)
+    issues = audit_line(valid_pos, 1, mode="pos", ref_line=ref_text, profile="legal70k")
     assert not issues, f"Expected 0 issues on valid POS line, got: {issues}"
 
     # Test 2: Bracket compound reconstruction
@@ -855,7 +838,7 @@ def run_self_test() -> int:
 
     # Test 3: Detect invalid tag, broken dependent sign, wrong fixed tag, ဆိုသည်မှာ violation, post-verbal ရာ/v violation, unsplit title, split name prefix, split paung myarswar, and split noun paung numeral
     bad_line = "တပြိုင်နက်/adj ခ/n ံ/n မြန်မာနိုင်ငံ/n ဆို/v သည်/ppm မှာ/part ဆောင်ရွက်/v ရာ/v တွင်/ppm သည်/DET ဗိုလ်ချုပ်အောင်ဆန်း/n ဦး/part မင်းအောင်လှိုင်/n သန်းပေါင်း/n များစွာ/adv တိုက်ပွဲ/n ပေါင်း/part ၁၀၀/num"
-    issues_bad = audit_line(bad_line, 3, mode="pos")
+    issues_bad = audit_line(bad_line, 3, mode="pos", profile="legal70k")
     issue_types = {i["type"] for i in issues_bad}
     assert "owner_fixed_tag_violation" in issue_types, "Missed owner_fixed_tag_violation"
     assert "illegal_word_start_dependent_sign" in issue_types, "Missed illegal dependent sign"
@@ -871,7 +854,7 @@ def run_self_test() -> int:
 
     # Test 3b: Legal70k/News/HD QA gates (၏/punc, ၄၄၀/num ဦး/n, 8/fw, ဦး/n ကျော်ဇော/n, valid & invalid HD mode)
     bad_g = "မိမိ/pron ၏/punc ၄၄၀/num ဦး/n 8/fw ဦး/n ကျော်ဇော/n"
-    g_types = {i["type"] for i in audit_line(bad_g, 4, mode="pos")}
+    g_types = {i["type"] for i in audit_line(bad_g, 4, mode="pos", profile="legal70k")}
     assert "burmese_letter_tagged_punc" in g_types, "Missed burmese_letter_tagged_punc"
     assert "num_classifier_tagged_n" in g_types, "Missed num_classifier_tagged_n"
     assert "ascii_digit_tagged_fw" in g_types, "Missed ascii_digit_tagged_fw"
@@ -910,6 +893,39 @@ def run_self_test() -> int:
     assert "invalid_ner_class" in bad_ner_types, "Missed invalid_ner_class"
     assert "orphan_i_tag_across_sentence" in bad_ner_types, "Missed orphan_i_tag_across_sentence"
 
+    # Test 5: Zawgyi detection & Shan/Karen/Mon false positive immunity
+    assert not ZAWGYI_INDICATORS.search("တႆး"), "Shan character false positive in ZAWGYI_INDICATORS"
+    assert not ZAWGYI_INDICATORS.search("ၡ"), "Karen character false positive in ZAWGYI_INDICATORS"
+    assert ZAWGYI_INDICATORS.search("(\u1031က)"), "Failed to detect Zawgyi in parentheses"
+    assert ZAWGYI_INDICATORS.search("လေးေသောင်း"), "Failed to detect Zawgyi Medial E"
+    esc_line = r"\[/sb ဥပမာ/n \]/sb"
+    assert not audit_line(esc_line, 50, mode="bracket"), "Escaped brackets must not trigger bracket error"
+
+    # Test 6: NER TSV clitic bleeds & protected names
+    tsv_hardened = [
+        "line_number\ttoken_id\ttoken\tpos\tner_bio",
+        "1\t1\tဦးကိုကို\tn\tB-PER",
+        "1\t2\tအသောက\tn\tB-PER",
+        "1\t3\tသံဃာ့နာယက\tn\tB-ORG",
+        "1\t4\tများ\tpart\tB-ORG",
+        "1\t5\tနှင့်\tconj\tI-PER",
+    ]
+    ner_h_issues = audit_ner_tsv(tsv_hardened)
+    ner_h_types = {i["type"] for i in ner_h_issues}
+    assert "clitic_bleed_in_token" not in ner_h_types, "False positive clitic_bleed_in_token on protected names"
+    assert "clitic_bleed_part_tagged" in ner_h_types, "Missed clitic_bleed_part_tagged"
+    assert "clitic_bleed_conj_tagged" in ner_h_types, "Missed clitic_bleed_conj_tagged"
+
+    # Test 7: Subsection, U+103F, Classifiers, and Split Prefix immunity
+    types_clean = {i["type"] for i in audit_line("အဆောက်အဦး/n ကို/n", 60, mode="pos", profile="legal70k")}
+    assert "split_name_prefix_violation" not in types_clean, "False positive on အဆောက်အဦး/n ကို/n"
+    types_sub = {i["type"] for i in audit_line("(/punc က/n )/punc", 61, mode="pos", profile="legal70k")}
+    assert "subsection_marker_pos_violation" in types_sub, "Missed subsection_marker_pos_violation"
+    types_103f = {i["type"] for i in audit_line("ဿာန်/n", 62, mode="pos")}
+    assert "illegal_word_start_dependent_sign" in types_103f, "Missed U+103F in ILLEGAL_WORD_START_CHARS"
+    types_clf = {i["type"] for i in audit_line("၃/num အုပ်/n", 63, mode="pos")}
+    assert "num_classifier_tagged_n" in types_clf, "Missed num_classifier_tagged_n on expanded classifier"
+
     print("SELF-TEST PASSED: All orthographic, 15-tag, fixed-form, component, title-split, prefix-preservation, -ပေါင်းများစွာ, [Noun]ပေါင်း numeral, ဆိုသည်မှာ, ရာ/part, bracket, and 15-class BIO NER checks verified.")
     return 0
 
@@ -920,6 +936,12 @@ def main() -> int:
     parser.add_argument("--reference", type=Path, help="Optional raw/reference file for character conservation check")
     parser.add_argument("--mode", choices=["ws", "pos", "bracket", "hd", "consistency", "ner"], default="ws", help="Validation mode (hd=myPOS-HD hierarchical validation, consistency=token scan, ner=BIO NER TSV audit)")
     parser.add_argument("--json", action="store_true", help="Emit JSON report")
+    parser.add_argument(
+        "--profile",
+        choices=PROFILES,
+        default="general",
+        help="Corpus profile: general, legal70k, news_unified, legacy_mypos_alt (default: general)",
+    )
     parser.add_argument("--self-test", action="store_true", help="Run built-in unit self-tests")
     args = parser.parse_args()
 
@@ -959,23 +981,6 @@ def main() -> int:
                 print(f"  Row {issue['line']} [{issue['type']}]: {issue['message']}")
         return 0 if not ner_issues else 1
 
-    if args.self_test:
-        return run_self_test()
-
-    if not args.input or not args.input.is_file():
-        parser.error("--input file is required unless --self-test is specified.")
-
-    input_lines = args.input.read_text(encoding="utf-8").splitlines()
-    ref_lines: list[str] | None = None
-    if args.reference:
-        ref_lines = args.reference.read_text(encoding="utf-8").splitlines()
-        if len(ref_lines) != len(input_lines):
-            print(
-                f"ERROR: Line count mismatch: input={len(input_lines)} vs reference={len(ref_lines)}",
-                file=sys.stderr,
-            )
-            return 1
-
     # Consistency mode: scan entire file for intra-corpus segmentation mismatches
     if args.mode == "consistency":
         consistency_issues = scan_token_consistency(input_lines, mode="ws")
@@ -1010,7 +1015,7 @@ def main() -> int:
         else:
             target_line = line
             ref_l = ref_lines[idx - 1] if ref_lines is not None else None
-        all_issues.extend(audit_line(target_line, idx, mode=audit_mode, ref_line=ref_l))
+        all_issues.extend(audit_line(target_line, idx, mode=audit_mode, ref_line=ref_l, profile=args.profile))
 
     report = {
         "file": str(args.input),

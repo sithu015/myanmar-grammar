@@ -30,6 +30,31 @@ LEXICON_PATH = os.path.join(LEX_DIR, "my_MM_lexicon.txt")
 OUT_PATH = os.path.join(LEX_DIR, "my_MM_comprehensive_lexicon.txt")
 
 
+_EXCLUDED_OWNER_SPLITS = frozenset({
+    "မြန်မာနိုင်ငံ",
+    "မြန်မာနိုင်ငံတော်",
+    "နေထိုင်သူ",
+})
+
+
+def is_all_myanmar(word: str) -> bool:
+    if not word:
+        return False
+    for ch in word:
+        code = ord(ch)
+        if not ((0x1000 <= code <= 0x109F) or (0xAA60 <= code <= 0xAA7F)):
+            return False
+    return True
+
+
+def is_valid_myanmar_word(word: str) -> bool:
+    if not word or not is_all_myanmar(word):
+        return False
+    # Must start with consonant (1000..1021, 103F), independent vowel (1022..102A), or digit (1040..1049)
+    first = ord(word[0])
+    return (0x1000 <= first <= 0x102A) or first == 0x103F or (0x1040 <= first <= 0x1049)
+
+
 def load_raw_lexicon():
     raw_words = {}
     with open(LEXICON_PATH, "r", encoding="utf-8") as f:
@@ -37,22 +62,16 @@ def load_raw_lexicon():
             parts = line.strip().split("\t")
             if parts and parts[0]:
                 word = parts[0]
+                if not is_valid_myanmar_word(word):
+                    continue
                 freq = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 1
                 raw_words[word] = freq
     return raw_words
 
 
-def is_valid_myanmar_word(word: str) -> bool:
-    if not word or len(word) < 1:
-        return False
-    # Must start with consonant (1000..1021) or independent vowel (1022..102A) or digit (1040..1049)
-    first = ord(word[0])
-    return (0x1000 <= first <= 0x102A) or (0x1040 <= first <= 0x1049)
-
-
 def build_comprehensive_lexicon():
     raw_words = load_raw_lexicon()
-    print(f"Loaded {len(raw_words)} raw entries from {LEXICON_PATH}")
+    print(f"Loaded {len(raw_words)} clean raw entries from {LEXICON_PATH}")
 
     # Separate into prefixes (valid starting words) and suffixes
     prefixes = [w for w in raw_words if is_valid_myanmar_word(w)]
@@ -69,23 +88,27 @@ def build_comprehensive_lexicon():
         "စပါး", "အလုပ်", "အဖွဲ့", "အသင်း", "ကော်မတီ", "ကော်မရှင်"
     ]
 
-    high_freq_suffixes = [s for s in suffixes if raw_words.get(s, 0) > 0 and len(s) <= 8]
+    high_freq_suffixes = [
+        s for s in suffixes
+        if raw_words.get(s, 0) > 0 and len(s) <= 8 and is_valid_myanmar_word(s)
+    ]
 
     for p in known_prefixes:
         for s in high_freq_suffixes:
             if s.startswith(p):
                 continue
             cand = p + s
-            if 2 <= len(cand) <= 18:
+            if 2 <= len(cand) <= 18 and cand not in _EXCLUDED_OWNER_SPLITS:
                 compounds[cand] = max(compounds.get(cand, 0), raw_words.get(s, 1))
 
     # 2. Verified Canonical Compounds & Domain Lexicon (Frequency 200..255)
     canonical = [
         # Country & Governance
         ("မြန်မာ", 255),
-        ("မြန်မာနိုင်ငံ", 254),
-        ("မြန်မာနိုင်ငံတော်", 253),
         ("နိုင်ငံတော်", 250),
+        ("ဝန်ကြီး", 250),
+        ("ဩဘာ", 240),
+        ("လက်ယာ", 240),
         ("ပြည်သူ", 250),
         ("ပြည်သူလူထု", 245),
         ("အစိုးရ", 250),
@@ -297,7 +320,11 @@ def build_comprehensive_lexicon():
         canonical.append((f"{ts}သမား", 240))
 
     for w, f in canonical:
-        compounds[w] = max(compounds.get(w, 0), f)
+        if w not in _EXCLUDED_OWNER_SPLITS:
+            compounds[w] = max(compounds.get(w, 0), f)
+
+    for w in _EXCLUDED_OWNER_SPLITS:
+        compounds.pop(w, None)
 
     # Sort entries by frequency (descending) then length (descending)
     sorted_entries = sorted(compounds.items(), key=lambda x: (-x[1], -len(x[0]), x[0]))

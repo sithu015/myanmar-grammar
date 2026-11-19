@@ -214,6 +214,209 @@ class TestMyanmarNLP(unittest.TestCase):
         self.assertIn("split_name_prefix_violation", types)
 
 
+class TestM1M2Hardening(unittest.TestCase):
+    """Milestone 1 & Milestone 2 Hardening Regression & Parity Test Suite."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.breaker = SyllableBreaker()
+        cls.ws_general = WordSegmenter(profile="general", normalize_confusables=False)
+        cls.ws_legal = WordSegmenter(profile="legal70k", normalize_confusables=False)
+        cls.ws_news = WordSegmenter(profile="news_unified", normalize_confusables=False)
+        cls.ws_legacy = WordSegmenter(profile="legacy_mypos_alt", normalize_confusables=False)
+
+    def test_f1_myparser_three_char_dot_below_no_crash(self):
+        from myparser import MyParser
+        p = MyParser()
+        # "ကမ့" has C1 + C2 + \u1037 (dot below), previously caused evaluate_context IndexError
+        res = p.evaluate_context("ကမ့", 0, 0)
+        self.assertIsInstance(res, int)
+
+    def test_f1_f4_syllable_breaker_whitespace_and_numerals(self):
+        # Syllable breaker handles leading/interleaved spaces and mixed numerals cleanly
+        spans = self.breaker.get_spans(" ၁၃")
+        self.assertTrue(any(syl == "၁၃" for _, _, syl in spans))
+        seg = self.breaker.segment(" (")
+        self.assertEqual(seg, ["("])
+        self.assertEqual(self.breaker.segment(" "), [])
+
+    def test_f3_f4_word_segmenter_conservation_spans_and_u1029(self):
+        # Spans map exactly to input characters by default (no confusable normalization by default)
+        text = "ဝန်ကြီး သမက်တော်ဩယာဓမ္မရာဇာ ဩဘာ လက်ယာ"
+        toks = self.ws_general.tokenize(text)
+        for t in toks:
+            self.assertEqual(text[t["start"]:t["end"]], t["token"])
+        words = [t["token"] for t in toks]
+        self.assertIn("ဝန်ကြီး", words)
+        self.assertIn("ဩယာ", words)
+        self.assertIn("ဓမ္မရာဇာ", words)
+        self.assertIn("ဩဘာ", words)
+        self.assertIn("လက်ယာ", words)
+
+        # Opt-in confusable normalization correctly normalizes digit zero
+        ws_norm = WordSegmenter(profile="general", normalize_confusables=True)
+        norm_words = ws_norm.segment("၀န်ကြီး")
+        self.assertEqual(norm_words, ["ဝန်ကြီး"])
+
+    def test_profile_switching_word_segmenter(self):
+        # Comparing segmentation across profiles
+        legal_words = self.ws_legal.segment("ပုံစံ - က")
+        self.assertEqual(legal_words, ["ပုံစံ-က"])
+        # Verify profiles exist and can be instantiated cleanly
+        self.assertEqual(self.ws_legal.profile, "legal70k")
+        self.assertEqual(self.ws_general.profile, "general")
+        self.assertEqual(self.ws_news.profile, "news_unified")
+        self.assertEqual(self.ws_legacy.profile, "legacy_mypos_alt")
+
+    def test_f10_confusable_multipass_punctuation_and_shan(self):
+        from confusable import correct
+        self.assertEqual(correct("၁ဝဝ")[0], "၁၀၀")
+        self.assertEqual(correct("ဝ.၅")[0], "၀.၅")
+        self.assertEqual(correct("က့်")[0], "က့်")
+        self.assertEqual(correct("၁ဝ။")[0], "၁၀။")
+        self.assertEqual(correct("႞၀")[0], "႞၀")  # Shan One + Myanmar zero preserved
+        self.assertEqual(correct("႞ဝ")[0], "႞ဝ")
+
+    def test_f5_decide_ascii_next_textnum_and_chained_aux(self):
+        import decide
+        self.assertFalse(decide._is_number(","))
+        self.assertFalse(decide._is_number(""))
+        self.assertTrue(decide._is_number("123"))
+        self.assertTrue(decide._is_number("၁၂၃"))
+        table = decide.load_table()
+        # Test ASCII digits/punctuation categorization
+        d_num = decide.decide_tokens(["123"], table, profile="general")
+        self.assertEqual(d_num[0]["tag"], "num")
+        d_punc = decide.decide_tokens([":"], table, profile="general")
+        self.assertEqual(d_punc[0]["tag"], "punc")
+        # Chained auxiliary test: သွား ခဲ့ သည် ကို -> ကို/ppm
+        d_chain = decide.decide_tokens(["သွား", "ခဲ့", "သည်", "ကို"], table, profile="general")
+        self.assertEqual(d_chain[3]["tag"], "ppm")
+
+    def test_profile_switching_decide_and_hd(self):
+        import decide
+        table = decide.load_table()
+        # Profile-specific triage of သော် after a clause word
+        d_gen = decide.decide_tokens(["ဖြစ်", "သော်"], table, profile="general")
+        d_leg = decide.decide_tokens(["ဖြစ်", "သော်"], table, profile="legal70k")
+        self.assertEqual(d_gen[1]["tag"], "conj")
+        self.assertEqual(d_leg[1]["tag"], "part")
+
+    def test_f11_project_mypos_hd_escaped_slash_conj_propn(self):
+        from project_mypos_hd import _parse_pos_line, project_sentence_to_mypos_hd
+        line = r"km\/h/n ဒါပေမယ့်/conj စောဘဦးကြီး/n ကျူးကျော်သူ/n အခြေအနေမျိုး/n ဦးဆုံး/n နေမျိုးသီဟသူ/n"
+        toks = _parse_pos_line(line)
+        hd = project_sentence_to_mypos_hd(toks)
+        # km/h unescaped
+        self.assertEqual(hd[0]["word"], "km/h")
+        # sentence-initial discourse conjunction
+        self.assertEqual(hd[1]["mypos_hd"], "conj:disc")
+        # personal name PROPN
+        self.assertEqual(hd[2]["mypos_hd"], "n:prop")
+        # non-person nouns NOT corrupted to PROPN
+        self.assertEqual(hd[3]["mypos_hd"], "n")
+        self.assertEqual(hd[4]["mypos_hd"], "n")
+        self.assertEqual(hd[5]["mypos_hd"], "n")
+        # genuine royal title PROPN
+        self.assertEqual(hd[6]["mypos_hd"], "n:prop")
+
+    def test_f2_legal70k_audit_ws_pos_parity_malformed_token(self):
+        from legal70k_audit import _ws_pos_parity
+        res = _ws_pos_parity(["မြန်မာ နိုင်ငံ"], ["မြန်မာ/n နိုင်ငံ"])
+        self.assertTrue(any(i["type"] == "missing_pos_tag" for i in res))
+        self.assertFalse(any(i["type"] == "ws_pos_character_mismatch" for i in res))
+
+    def test_f6_validate_zawgyi_shan_karen_and_escaped_brackets(self):
+        from validate_nlp_corpus import ZAWGYI_INDICATORS, audit_line
+        # Shan/Karen false positive immunity
+        self.assertIsNone(ZAWGYI_INDICATORS.search("တႆး"))
+        self.assertIsNone(ZAWGYI_INDICATORS.search("ၡ"))
+        # Zawgyi indicators
+        self.assertIsNotNone(ZAWGYI_INDICATORS.search("(\u1031က)"))
+        self.assertIsNotNone(ZAWGYI_INDICATORS.search("လေးေသောင်း"))
+        # Escaped brackets in bracket mode
+        esc_line = r"\[/sb ဥပမာ/n \]/sb"
+        issues = audit_line(esc_line, 1, mode="bracket")
+        self.assertEqual(issues, [])
+
+    def test_f8_validate_u103f_classifiers_subsection_and_profiles(self):
+        from validate_nlp_corpus import audit_line
+        # U+103F starting char
+        t_103f = {i["type"] for i in audit_line("ဿာန်/n", 1, mode="pos")}
+        self.assertIn("illegal_word_start_dependent_sign", t_103f)
+        # 25 Classifiers: ၃/num အုပ်/n
+        t_clf = {i["type"] for i in audit_line("၃/num အုပ်/n", 2, mode="pos")}
+        self.assertIn("num_classifier_tagged_n", t_clf)
+        # Subsection marker in legal70k: ( က ) /n
+        t_sub = {i["type"] for i in audit_line("(/punc က/n )/punc", 3, mode="pos", profile="legal70k")}
+        self.assertIn("subsection_marker_pos_violation", t_sub)
+        # Split name prefix immunity on အဆောက်အဦး ကို
+        t_clean = {i["type"] for i in audit_line("အဆောက်အဦး/n ကို/n", 4, mode="pos", profile="legal70k")}
+        self.assertNotIn("split_name_prefix_violation", t_clean)
+
+    def test_f7_audit_ner_tsv_clitics_and_protected_nouns(self):
+        from validate_nlp_corpus import audit_ner_tsv
+        tsv = [
+            "line_number\ttoken_id\ttoken\tpos\tner_bio",
+            "1\t1\tဦးကိုကို\tn\tB-PER",
+            "1\t2\tအသောက\tn\tB-PER",
+            "1\t3\tသံဃာ့နာယက\tn\tB-ORG",
+            "1\t4\tများ\tpart\tB-ORG",
+            "1\t5\tနှင့်\tconj\tI-PER",
+        ]
+        issues = audit_ner_tsv(tsv)
+        types = {i["type"] for i in issues}
+        self.assertNotIn("clitic_bleed_in_token", types)
+        self.assertIn("clitic_bleed_part_tagged", types)
+        self.assertIn("clitic_bleed_conj_tagged", types)
+
+    def test_f9_remediate_ws_pos_alignment_and_sync_ws(self):
+        from corpus_chunk_and_remediate import remediate_single_line, stream_remediate_file
+        import tempfile
+        from pathlib import Path
+        # Shattered word in POS mode
+        rem_pos, _, _ = remediate_single_line("ဦး/n စီ/n ချုပ်/n ရုံး/n", 1, mode="pos")
+        self.assertIn("ဦးစီချုပ်/n", rem_pos)
+        # Stage 2 idiom in POS mode
+        rem_idiom, _, _ = remediate_single_line("တ/tn စုံ/n တ/tn ယောက်/n", 2, mode="pos")
+        self.assertIn("တစုံတယောက်/pron", rem_idiom)
+        # Verbal chains: သွား ခဲ့ နိုင် ခြင်း
+        rem_chain, _, _ = remediate_single_line("သွား/v ခဲ့/v နိုင်/v ခြင်း/n", 3, mode="pos")
+        self.assertIn("သွား/v ခဲ့/part နိုင်/part ခြင်း/part", rem_chain)
+        # Medial သည် conversion
+        rem_med, _, _ = remediate_single_line("သွား/v ခဲ့/part သည်/ppm ကို/ppm", 4, mode="pos")
+        self.assertIn("သည်/part ကို/ppm", rem_med)
+        # Profile-aware final သည် under legacy_mypos_alt
+        rem_leg, _, _ = remediate_single_line("သွား/v သည်/ppm ။/punc", 5, mode="pos", profile="legacy_mypos_alt")
+        self.assertIn("သည်/ppm ။/punc", rem_leg)
+        # Sync WS out check
+        with tempfile.TemporaryDirectory() as tmp:
+            p_in = Path(tmp) / "in.txt"
+            p_out = Path(tmp) / "out.txt"
+            p_sync = Path(tmp) / "sync.txt"
+            p_in.write_text("ဦး/n စီ/n ချုပ်/n က/ppm တ/tn စုံ/n တ/tn ယောက်/n\n", encoding="utf-8")
+            stream_remediate_file(p_in, p_out, mode="pos", sync_ws_path=p_sync)
+            self.assertEqual(p_sync.read_text(encoding="utf-8").strip(), "ဦးစီချုပ် က တစုံတယောက်")
+
+    def test_common_standards_single_source_and_parse_pos_token(self):
+        from common_standards import (
+            ALLOWED_15_TAGS, PROFILES, TITLES_AND_RANKS, CLASSIFIERS,
+            parse_pos_token, strip_ws, normalize_profile
+        )
+        self.assertEqual(len(ALLOWED_15_TAGS), 15)
+        self.assertEqual(PROFILES, ("general", "legal70k", "news_unified", "legacy_mypos_alt"))
+        self.assertEqual(len(TITLES_AND_RANKS), 49)
+        self.assertEqual(len(CLASSIFIERS), 25)
+        self.assertEqual(parse_pos_token(r"km\/h/n"), ("km/h", "n"))
+        self.assertEqual(parse_pos_token("မြန်မာ/n"), ("မြန်မာ", "n"))
+        self.assertIsNone(parse_pos_token("မြန်မာ/invalid_tag", allowed_tags=ALLOWED_15_TAGS))
+        self.assertIsNone(parse_pos_token("မြန်မာ"))
+        self.assertEqual(strip_ws(" မြန်မာ   နိုင်ငံ "), "မြန်မာနိုင်ငံ")
+        self.assertEqual(normalize_profile(None, default="general"), "general")
+        with self.assertRaises(ValueError):
+            normalize_profile("UNKNOWN")
+
+
 if __name__ == "__main__":
     unittest.main()
 

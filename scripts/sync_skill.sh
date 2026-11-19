@@ -10,6 +10,9 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
 SKILL_CONFIG_DIR="$HOME/.agents/skills/myanmar-grammar"
 SKILL_DOWNLOADS_DIR="$HOME/Downloads/myanmar-grammar"
 REMOTE_REPO="git@github.com:sithu015/myanmar-grammar.git"
@@ -24,13 +27,19 @@ function print_header() {
 }
 
 function verify_tests() {
-    echo "==> Running NLP unit test suite..."
-    python3 "$SKILL_CONFIG_DIR/scripts/test_nlp_tools.py"
-    python3 "$SKILL_CONFIG_DIR/scripts/decide.py" --self-test
-    python3 "$SKILL_CONFIG_DIR/scripts/project_mypos_hd.py" --self-test
-    python3 "$SKILL_CONFIG_DIR/scripts/validate_nlp_corpus.py" --self-test
-    python3 "$SKILL_CONFIG_DIR/scripts/nominal.py" --self-test
-    echo "==> All test suites passed cleanly."
+    local target_dir="${1:-$REPO_DIR}"
+    echo "==> Running NLP unit test suite and self-tests in $target_dir..."
+    PYTHONDONTWRITEBYTECODE=1 python3 -B "$target_dir/scripts/test_nlp_tools.py" -v
+    PYTHONDONTWRITEBYTECODE=1 python3 -B "$target_dir/scripts/confusable.py" --self-test
+    PYTHONDONTWRITEBYTECODE=1 python3 -B "$target_dir/scripts/decide.py" --self-test
+    PYTHONDONTWRITEBYTECODE=1 python3 -B "$target_dir/scripts/project_mypos_hd.py" --self-test
+    PYTHONDONTWRITEBYTECODE=1 python3 -B "$target_dir/scripts/nominal.py" --self-test
+    PYTHONDONTWRITEBYTECODE=1 python3 -B "$target_dir/scripts/register.py" --self-test
+    PYTHONDONTWRITEBYTECODE=1 python3 -B "$target_dir/scripts/verb_pair.py" --self-test
+    PYTHONDONTWRITEBYTECODE=1 python3 -B "$target_dir/scripts/validate_nlp_corpus.py" --self-test
+    PYTHONDONTWRITEBYTECODE=1 python3 -B "$target_dir/scripts/corpus_chunk_and_remediate.py" --self-test
+    PYTHONDONTWRITEBYTECODE=1 python3 -B "$target_dir/scripts/legal70k_audit.py" --self-test
+    echo "==> All 10 test suites passed cleanly."
 }
 
 function check_diff() {
@@ -97,7 +106,7 @@ case "$ACTION" in
     verify)
         print_header
         check_diff
-        verify_tests
+        verify_tests "$REPO_DIR"
         ;;
     *)
         echo "Usage: $0 {status|pull|sync [commit_message]|verify}"

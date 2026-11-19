@@ -31,18 +31,18 @@ from typing import Any
 _HERE = Path(__file__).parent
 sys.path.insert(0, str(_HERE.parent))
 
-from scripts.validate_nlp_corpus import audit_line, scan_token_consistency, parse_pos_token
-from scripts.corpus_chunk_and_remediate import (
+from scripts.common_standards import (
+    ALLOWED_15_TAGS,
+    PROFILES,
     RECORD_ONLY_LEADS,
-    stream_remediate_file,
+    normalize_profile,
+    parse_pos_token,
+    strip_ws,
 )
+from scripts.validate_nlp_corpus import audit_line, scan_token_consistency
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
-
-def _strip_ws(text: str) -> str:
-    return re.sub(r"\s+", "", text)
-
 
 def _ws_pos_parity(ws_lines: list[str], pos_lines: list[str]) -> list[dict[str, Any]]:
     """Check that every WS line's token count matches the POS line's token count."""
@@ -63,9 +63,26 @@ def _ws_pos_parity(ws_lines: list[str], pos_lines: list[str]) -> list[dict[str, 
                     ),
                 }
             )
-        # Also check codepoint conservation
-        ws_chars = _strip_ws("".join(ws_toks))
-        pos_chars = _strip_ws("".join(parse_pos_token(t)[0] for t in pos_toks))
+        # Also check codepoint conservation without crashing on malformed tokens
+        ws_chars = strip_ws("".join(ws_toks))
+        pos_surfaces: list[str] = []
+        for t in pos_toks:
+            parsed = parse_pos_token(t)
+            if parsed is None:
+                issues.append(
+                    {
+                        "line": idx,
+                        "type": "missing_pos_tag",
+                        "token": t,
+                        "message": (
+                            f"POS token {t!r} on line {idx} is malformed or missing a valid tag suffix."
+                        ),
+                    }
+                )
+                pos_surfaces.append(t.split("/")[0] if "/" in t else t)
+            else:
+                pos_surfaces.append(parsed[0])
+        pos_chars = strip_ws("".join(pos_surfaces))
         if ws_chars != pos_chars:
             issues.append(
                 {
@@ -120,8 +137,10 @@ def run_full_audit(
     pos_path: Path,
     out_dir: Path | None = None,
     emit_json: bool = False,
+    profile: str = "legal70k",
 ) -> dict[str, Any]:
     """Run all 5 audit stages and return a structured report dict."""
+    norm_profile = normalize_profile(profile, default="legal70k")
 
     ws_lines = ws_path.read_text(encoding="utf-8").splitlines()
     pos_lines = pos_path.read_text(encoding="utf-8").splitlines()
@@ -129,13 +148,13 @@ def run_full_audit(
     # ── Stage 1: WS line-by-line validation ──────────────────────────────────
     ws_issues: list[dict[str, Any]] = []
     for idx, line in enumerate(ws_lines, start=1):
-        ws_issues.extend(audit_line(line, idx, mode="ws"))
+        ws_issues.extend(audit_line(line, idx, mode="ws", profile=norm_profile))
 
     # ── Stage 2: POS line-by-line validation ─────────────────────────────────
     pos_issues: list[dict[str, Any]] = []
     if len(ws_lines) == len(pos_lines):
         for idx, (wl, pl) in enumerate(zip(ws_lines, pos_lines), start=1):
-            pos_issues.extend(audit_line(pl, idx, mode="pos", ref_line=wl))
+            pos_issues.extend(audit_line(pl, idx, mode="pos", ref_line=wl, profile=norm_profile))
     else:
         pos_issues.append(
             {
@@ -144,7 +163,7 @@ def run_full_audit(
             }
         )
         for idx, line in enumerate(pos_lines, start=1):
-            pos_issues.extend(audit_line(line, idx, mode="pos"))
+            pos_issues.extend(audit_line(line, idx, mode="pos", profile=norm_profile))
 
     # ── Stage 3: WS ↔ POS dual-stream parity ─────────────────────────────────
     parity_issues: list[dict[str, Any]] = []
@@ -167,6 +186,7 @@ def run_full_audit(
     report: dict[str, Any] = {
         "ws_file": str(ws_path),
         "pos_file": str(pos_path),
+        "profile": norm_profile,
         "lines_checked": len(ws_lines),
         "overall_status": "PASS" if overall_pass else "FAIL",
         "stages": {
@@ -322,6 +342,11 @@ def run_self_test() -> int:
         assert (tmpdir / "typo_leads.jsonl").is_file(), "typo_leads.jsonl not written"
         assert (tmpdir / "consistency_issues.json").is_file(), "consistency_issues.json not written"
 
+        # Test malformed token handling in _ws_pos_parity (F2 TypeError prevention)
+        parity_malformed = _ws_pos_parity(["မြန်မာ နိုင်ငံ"], ["မြန်မာ/n နိုင်ငံ"])
+        assert any(i["type"] == "missing_pos_tag" for i in parity_malformed), \
+            f"Expected missing_pos_tag for unslashed token, got: {parity_malformed}"
+
     print("SELF-TEST PASSED: All 5 audit stages verified, artefacts written.")
     return 0
 
@@ -355,6 +380,12 @@ Examples:
     parser.add_argument("--pos", type=Path, help="Explicit POS file path")
     parser.add_argument("--out-dir", type=Path, help="Directory to write audit artefacts (report, leads, consistency)")
     parser.add_argument("--json", action="store_true", help="Emit JSON report to stdout")
+    parser.add_argument(
+        "--profile",
+        choices=PROFILES,
+        default="legal70k",
+        help="Workflow profile for validation (default: legal70k)",
+    )
     parser.add_argument("--consistency-only", action="store_true", help="Run consistency scan only (fast)")
     parser.add_argument("--self-test", action="store_true", help="Run built-in self-test")
 
@@ -404,7 +435,13 @@ Examples:
         parser.print_help()
         return 1
 
-    report = run_full_audit(ws_path, pos_path, out_dir=args.out_dir, emit_json=args.json)
+    report = run_full_audit(
+        ws_path,
+        pos_path,
+        out_dir=args.out_dir,
+        emit_json=args.json,
+        profile=args.profile,
+    )
     _print_report(report, emit_json=args.json)
 
     return 0 if report["overall_status"] == "PASS" else 1
