@@ -1007,7 +1007,12 @@ def main() -> int:
         if is_jsonl:
             try:
                 rec = json.loads(line)
-                target_line = rec.get("pos_annotated" if audit_mode == "pos" else "segmented", line)
+                if audit_mode == "hd":
+                    target_line = rec.get("pos_hd_annotated") or rec.get("pos_annotated") or line
+                elif audit_mode == "pos":
+                    target_line = rec.get("pos_annotated", line)
+                else:
+                    target_line = rec.get("segmented", line)
                 ref_l = rec.get("sentence", None)
             except Exception:
                 target_line = line

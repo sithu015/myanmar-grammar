@@ -232,7 +232,8 @@ def _is_person_or_royal_propn(word: str, prop_set: set[str]) -> bool:
         return False
     if any(m in word for m in ROYAL_TITLE_MARKERS):
         return True
-    for p in STRICT_TITLE_PREFIXES:
+    HD_PROP_PREFIXES = STRICT_TITLE_PREFIXES + ("စိုင်း", "ခွန်", "နန်း", "မိုင်း", "နိုင်", "မန်း")
+    for p in HD_PROP_PREFIXES:
         if word.startswith(p) and len(word) > len(p):
             rest = word[len(p):]
             # Must begin a new syllable (consonant/independent vowel), not a combining mark
@@ -243,7 +244,7 @@ def _is_person_or_royal_propn(word: str, prop_set: set[str]) -> bool:
             # Reject bare kinship/adverbial prefix+ကြီး (ဦးကြီး, ဒေါ်ကြီး, စောကြီး)
             if rest == "ကြီး":
                 continue
-            if len(rest) > 1 or word in {"ဦးစ", "ဦးဘ", "ဦးဩ"}:
+            if len(rest) > 1 or word in {"ဦးစ", "ဦးဘ", "ဦးဩ", "ဒေါ်ဦး", "စောဘ"}:
                 return True
     return False
 
