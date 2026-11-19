@@ -225,18 +225,22 @@ def collapse_to_mypos15(hd_tag: str) -> str:
 
 
 def _is_person_or_royal_propn(word: str, prop_set: set[str]) -> bool:
-    if word in prop_set:
-        return True
     if word in NON_PERSON_LEXICAL or word in TITLES_AND_RANKS:
+        return False
+    if word.startswith(("ကိုင်", "ကိုက်", "ကိုယ်", "ကိုယ့်", "ကိုင်း")):
+        return False
+    if word.startswith(("ကိုင်", "ကိုက်", "ကိုယ်", "ကိုယ့်", "ကိုင်း")):
         return False
     if word.startswith(NON_PERSON_STEM_PREFIXES):
         return False
     if word.endswith(NON_PERSON_SUFFIXES):
         return False
+    if word.endswith(("သည်", "မှာ", "က", "ကို", "နှင့်", "နဲ့", "အား", "တွင်", "၌", "သို့", "ဖြင့်")):
+        return False
     if word.startswith("နိုင်") and word not in prop_set:
         return False
-    if word.startswith(("ကိုင်", "ကိုက်", "ကိုယ်", "ကိုယ့်")):
-        return False
+    if word in prop_set:
+        return True
     if any(m in word for m in ROYAL_TITLE_MARKERS):
         return True
     HD_PROP_PREFIXES = STRICT_TITLE_PREFIXES + ("စိုင်း", "ခွန်", "နန်း", "မိုင်း", "မန်း")
@@ -319,9 +323,12 @@ def project_sentence_to_mypos_hd(
             is_verbal_fin = (
                 profile == "legacy_mypos_alt"
                 or (profile == "auto" and prev_t in {"v", "part"} and (next_t in {"punc", ""} or next_w in QUOT_SET))
+                or (w == "၏" and (next_t in {"punc", ""} or next_w in {"။", "၊"}))
             )
-            if is_verbal_fin and w in FIN_PPM_COPULA_SET and prev_t in {"v", "part"}:
+            if is_verbal_fin and w in FIN_PPM_COPULA_SET and (prev_t in {"v", "part"} or w == "၏"):
                 hd_tag, core_tag, upos, feats = "ppm:fin", "sfp", "PART", "Mood=Ind"
+            elif w == "မူ" and (prev_w in {"မ", "တော်မ", "လိုက်မ", "မဖြစ်"} or (prev_t in {"part", "v"} and next_w == "မီ")):
+                hd_tag, core_tag, upos, feats = "part:aux", "part", "PART", "_"
             elif w in PPM_SUBJ:
                 hd_tag, core_tag, upos, feats = "ppm:subj", "ppm", "ADP", "Case=Nom"
             elif w in PPM_OBJ:
