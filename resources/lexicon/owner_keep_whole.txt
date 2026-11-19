@@ -25,6 +25,30 @@
 ထိုအရာ
 အဘယ်အရာ
 
+# question particles, one token
+သလား
+မလား
+မလဲ
+သနည်း
+
+# conjunctions and sequential connectives, one token
+ပြီးနောက်
+ပြီးတော့
+သော်လည်း
+သို့သော်
+သို့မဟုတ်
+ဒါမှမဟုတ်
+ဒါပေမဲ့
+ဒါကြောင့်
+လည်းကောင်း
+
+# postpositions, adverbs, interjections and compound verbs, one token
+ကဲ့သို့
+နောက်ဆုံး
+ဟုတ်ကဲ့
+အနေဖြင့်
+စောင့်ကြည့်
+
 # reduplicated property verbs, one token
 ကောင်းကောင်း
 ကြီးကြီး

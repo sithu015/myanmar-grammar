@@ -453,6 +453,33 @@
 ချေ	all:prev2:မ & prev_verb	part	CHAY_NEG	negative polarity after မ + V -> part:neg in HD
 ချေ	reading	part	CHAY_SFP_AUX	literary affirmative/euphonic particle -> part:sfp or part:aux in HD
 
+# Question particles
+သလား	always	part	THALAR_PART	question particle
+မလား	always	part	MALAR_PART	question particle
+မလဲ	always	part	MALE_PART	question particle
+သနည်း	always	part	THANEE_PART	formal question particle
+
+# Conjunctions & Sequential Connectives
+ပြီးနောက်	always	conj	PEE_NAUK_CONJ	sequential conjunction
+ပြီးတော့	always	conj	PEE_TAW_CONJ	sequential conjunction
+သော်လည်း	always	conj	THAW_LE_CONJ	concessive conjunction
+သို့သော်	always	conj	THO_THAW_CONJ	adversative conjunction
+သို့မဟုတ်	always	conj	THO_MA_HOT_CONJ	disjunctive conjunction
+ဒါမှမဟုတ်	always	conj	DA_MA_HOT_CONJ	colloquial disjunctive conjunction
+ဒါပေမဲ့	always	conj	DA_PE_ME_CONJ	colloquial adversative conjunction
+ဒါကြောင့်	always	conj	DA_GYAUNG_CONJ	causal conjunction
+လည်းကောင်း	always	conj	LE_GAUNG_CONJ	additive conjunction
+
+# Interjections & Compound Verbs
+ဟုတ်ကဲ့	always	int	HOT_KE_INT	polite affirmative interjection
+စောင့်ကြည့်	always	v	SAUNG_KYI_V	compound verb
+
+# Profile-scoped Comparative & Role Postpositions
+ကဲ့သို့	profile:news_unified	ppm	KE_THO_NEWS_PPM	news comparative postposition
+ကဲ့သို့	always	part	KE_THO_PART	general comparative particle
+အနေဖြင့်	profile:news_unified	ppm	A_NAY_PHYINT_NEWS_PPM	news role postposition
+အနေဖြင့်	always	part	A_NAY_PHYINT_PART	general role particle
+
 
 
 
