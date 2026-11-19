@@ -486,18 +486,29 @@ def audit_line(
                     }
                 )
             if surf == "ပေါင်း" and prv_s and nxt_s and re.search(r"[\d၀-၉]", nxt_s):
-                if re.search(r"[\u1000-\u102A]", prv_s) and prv_s not in ("စုစု", "ဓာတ်", "တပ်") and not re.search(r"^[A-Za-z\)\],.]+$", prv_s):
-                    issues.append(
-                        {
-                            "line": line_no,
-                            "token_index": i + 1,
-                            "type": "split_noun_paung_numeral_violation",
-                            "message": (
-                                f"Counting compound '{prv_s} {surf} {nxt_s}' must not split '{surf}'. "
-                                f"Unify into '{prv_s}ပေါင်း {nxt_s}'."
-                            ),
-                        }
-                    )
+                if (
+                    re.search(r"[\u1000-\u102A]", prv_s)
+                    and prv_s not in ("စုစု", "ဓာတ်", "တပ်", "မ", "ရ")
+                    and not re.search(r"^[A-Za-z\)\],.]+$", prv_s)
+                    and not (i >= 2 and surfaces[i - 2] in ("/", "၊", "။", "-"))
+                ):
+                    has_raw_space = False
+                    if ref_line:
+                        raw_clean_ws = re.sub(r"\s+", " ", ref_line)
+                        if f"{prv_s} {surf}" in raw_clean_ws:
+                            has_raw_space = True
+                    if not has_raw_space:
+                        issues.append(
+                            {
+                                "line": line_no,
+                                "token_index": i + 1,
+                                "type": "split_noun_paung_numeral_violation",
+                                "message": (
+                                    f"Counting compound '{prv_s} {surf} {nxt_s}' must not split '{surf}'. "
+                                    f"Unify into '{prv_s}ပေါင်း {nxt_s}'."
+                                ),
+                            }
+                        )
 
     # Contextual POS pattern checks (ဆိုသည်မှာ, post-verbal ရာ, quotative ဟု/ဟူ၍/ဟူသော/ဟူသည်, num+ဦး/n, split prefixes)
     if mode in ("pos", "bracket", "hd") and parsed_pairs:
