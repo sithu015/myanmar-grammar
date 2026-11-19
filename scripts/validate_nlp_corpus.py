@@ -244,6 +244,7 @@ def audit_line(
     mode: str = "ws",
     ref_line: str | None = None,
     profile: str = "general",
+    allow_legacy_encodings: bool = False,
 ) -> list[dict[str, Any]]:
     """Audit a single line for orthographic fidelity, Unicode/dependent signs, and POS rules."""
     norm_profile = normalize_profile(profile, default="general")
@@ -262,13 +263,17 @@ def audit_line(
 
     # 2. Zawgyi indicator check
     if ZAWGYI_INDICATORS.search(clean_line):
-        issues.append(
-            {
-                "line": line_no,
-                "type": "possible_zawgyi",
-                "message": "Line contains codepoints or sequences strongly indicative of Zawgyi encoding.",
-            }
-        )
+        is_preserved_legacy = False
+        if allow_legacy_encodings and ref_line and strip_ws(clean_line) == strip_ws(ref_line):
+            is_preserved_legacy = True
+        if not is_preserved_legacy:
+            issues.append(
+                {
+                    "line": line_no,
+                    "type": "possible_zawgyi",
+                    "message": "Line contains codepoints or sequences strongly indicative of Zawgyi encoding.",
+                }
+            )
 
     working_line = clean_line
     if mode == "bracket":
@@ -430,17 +435,23 @@ def audit_line(
 
         # Check illegal word-initial dependent signs
         if surf and surf[0] in ILLEGAL_WORD_START_CHARS:
-            issues.append(
-                {
-                    "line": line_no,
-                    "token_index": tok_idx,
-                    "type": "illegal_word_start_dependent_sign",
-                    "message": (
-                        f"Token '{surf}' begins with dependent sign U+{ord(surf[0]):04X}; "
-                        "indicates shattered syllable or broken boundary."
-                    ),
-                }
-            )
+            is_raw_space_artifact = False
+            if ref_line and surf[0] == "\u103f":
+                raw_ws_clean = re.sub(r"\s+", " ", ref_line)
+                if f" {surf}" in raw_ws_clean or any(raw_ws_clean.endswith(f" {surf[:k]}") for k in range(1, len(surf) + 1)):
+                    is_raw_space_artifact = True
+            if not is_raw_space_artifact:
+                issues.append(
+                    {
+                        "line": line_no,
+                        "token_index": tok_idx,
+                        "type": "illegal_word_start_dependent_sign",
+                        "message": (
+                            f"Token '{surf}' begins with dependent sign U+{ord(surf[0]):04X}; "
+                            "indicates shattered syllable or broken boundary."
+                        ),
+                    }
+                )
 
         # Check space-broken kinzi tail (\u1004\u103A\u1039 at end of token)
         if surf.endswith("\u1004\u103a\u1039") or surf.endswith("\u1039"):
@@ -493,7 +504,7 @@ def audit_line(
         n_pairs = len(parsed_pairs)
         COMMON_PREFIX_NOUN_FOLLOWERS = frozenset({
             "ရေ", "လာ", "နှမ", "တော်", "ကြီး", "လေး", "စွာ", "ဆောင်", "စီး", "တည်",
-            "ပိုင်", "ထုပ်", "နှောက်", "ခေါင်း", "ချို", "ဦး", "မြေ", "စကား",
+            "ပိုင်", "ထုပ်", "နှောက်", "ခေါင်း", "ချို", "ဦး", "မြေ", "စကား", "မဂ္ဂဇင်း",
         })
         for i, (surf, tag) in enumerate(parsed_pairs):
             prv_w, prv_t = parsed_pairs[i - 1] if i > 0 else ("", "")
@@ -579,6 +590,7 @@ def audit_line(
                 and tag in ("n", "part")
                 and nxt_t == "n"
                 and prv_t not in ("num", "tn")
+                and not (surf == "ဦး" and prv_t in ("v", "part", "ppm"))
             ):
                 base_cons = len(re.findall(r"[\u1000-\u102A\u103F]", nxt_w))
                 if (
@@ -952,6 +964,7 @@ def main() -> int:
         default="general",
         help="Corpus profile: general, legal70k, news_unified, legacy_mypos_alt (default: general)",
     )
+    parser.add_argument("--allow-legacy-encodings", action="store_true", help="Do not fail on historical/source-preserved Zawgyi codepoints when character-conserved")
     parser.add_argument("--self-test", action="store_true", help="Run built-in unit self-tests")
     args = parser.parse_args()
 
@@ -1030,7 +1043,16 @@ def main() -> int:
         else:
             target_line = line
             ref_l = ref_lines[idx - 1] if ref_lines is not None else None
-        all_issues.extend(audit_line(target_line, idx, mode=audit_mode, ref_line=ref_l, profile=args.profile))
+        all_issues.extend(
+            audit_line(
+                target_line,
+                idx,
+                mode=audit_mode,
+                ref_line=ref_l,
+                profile=args.profile,
+                allow_legacy_encodings=args.allow_legacy_encodings,
+            )
+        )
 
     report = {
         "file": str(args.input),

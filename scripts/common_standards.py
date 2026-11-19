@@ -153,6 +153,9 @@ TITLES_AND_RANKS: tuple[str, ...] = tuple(
             "ဗိုလ်",
             "မြို့ဝန်",
             "မြို့စား",
+            "မင်းကြီး",
+            "အိမ်ရှေ့မင်း",
+            "စစ်သူကြီး",
         },
         key=lambda s: (-len(s), s),
     )
@@ -287,8 +290,12 @@ def parse_pos_token(
         bs_count += 1
         j -= 1
     if bs_count % 2 == 1:
-        return None
-    surface = _UNESCAPE_RE.sub(r"\1", prefix)
+        if prefix == "\\":
+            surface = "\\"
+        else:
+            return None
+    else:
+        surface = _UNESCAPE_RE.sub(r"\1", prefix)
     if allowed_tags is not None and tag not in allowed_tags:
         return None
     return surface, tag
