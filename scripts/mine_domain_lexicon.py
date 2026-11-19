@@ -28,6 +28,30 @@ FUNCTION_TAGS = {"part", "ppm", "punc", "sb", "conj"}
 # Indefinite reduplications (တစ်နည်းနည်း = တစ် + နည်းနည်း) must stay 2 tokens.
 REDUP = re.compile(r"^(?:တစ်|တ)(.+?)\1$")
 
+# Patterns for multi-token clitic concatenations that should never enter the lexicon
+CLITIC_PATTERNS = [
+    # 1. Pronoun + Postposition (ဒီ, ဟို)
+    re.compile(r"^(?:ဒီ|ဟို)(?:ကို|မှာ|တွင်|သို့|မှ|အတွက်)$"),
+    # 2. Location / body noun + postposition
+    re.compile(r"^(?:ဆီ|လက်|ခြေ|နှုတ်|ပါးစပ်)(?:ကို|သို့|ဖြင့်|နဲ့)$"),
+    # 3. Stacked particles / postpositions
+    re.compile(r"^(?:အတွက်ကြောင့်|တောင်မှ|ကိုမှ|ကပင်|မှပင်|နှင့်ပင်|နဲ့ပင်|မှသာ|တွင်သာ)$"),
+    # 4. Adverb + နဲ့/နှင့်
+    re.compile(r"^(.+?စွာ)(?:နဲ့|နှင့်)$"),
+    # 5. Finite Verb + Aux / SFP
+    re.compile(r"^(.+?)(?:ခဲ့သော|ခဲ့သည်|ရမည်|နိုင်သည်|သွားသည်|လာသည်|ဖြစ်သည်|ပါသည်|ရပါမည်|လတ္တံ့|ကြသည်|ကြသော|ကြမည်)$"),
+    # 6. Verbal phrases ending in ရှိသည် / နှင့် (e.g. အစရှိသည်, သိနှင့်)
+    re.compile(r"^(?:အစရှိသည်|သိနှင့်|စတင်ခဲ့သော|ဖြစ်ပွားခဲ့သော|ရောက်ရှိခဲ့သော|ထွက်ခွာရမည်)$"),
+    # 7. Indefinite reduplications
+    re.compile(r"^(?:တစ်|တ)(?:နေ့နေ့|ရက်ရက်|ခါခါ|ချိန်ချိန်|ဦးဦး|ခုခု|ရပ်ရပ်|ယောက်ယောက်|မျိုးမျိုး|နည်းနည်း)$"),
+    # 8. Numeral (တ/တစ်) + Time measure noun (နေ့, ရက်, လ, နှစ်, နာရီ, မိနစ်, စက္ကန့်)
+    re.compile(r"^(?:တစ်|တ)(?:နေ့|ရက်|လ|နှစ်|နာရီ|မိနစ်|စက္ကန့်)$"),
+]
+
+
+def is_toxic_clitic(w: str) -> bool:
+    return any(p.match(w) for p in CLITIC_PATTERNS)
+
 
 def do_not_glue() -> set[str]:
     """Glued forms listed in references/agent-hard-cases.md 'Do not glue' table."""
@@ -96,7 +120,7 @@ def mine(
     candidates = {
         w for w, c in cnt.items()
         if c >= min_freq and w not in known and w not in TRAPS
-        and w not in glue and not REDUP.match(w)
+        and w not in glue and not REDUP.match(w) and not is_toxic_clitic(w)
     }
 
     if dominance_ratio > 0.0 and candidates:
