@@ -469,16 +469,36 @@
 ဒါပေမဲ့	always	conj	DA_PE_ME_CONJ	colloquial adversative conjunction
 ဒါကြောင့်	always	conj	DA_GYAUNG_CONJ	causal conjunction
 လည်းကောင်း	always	conj	LE_GAUNG_CONJ	additive conjunction
+သောကြောင့်	always	conj	THAW_GYAUNG_CONJ	causal conjunction
+ထို့ကြောင့်	always	conj	THO_GYAUNG_CONJ	consequential conjunction
+ထို့ပြင်	always	conj	THO_PYIN_CONJ	additive conjunction
+သို့ရာတွင်	always	conj	THO_YA_TWIN_CONJ	adversative conjunction
+ပေမယ့်	always	conj	PE_ME_CONJ	concessive conjunction
+သောအခါ	always	conj	THAW_AKHA_CONJ	temporal connective
+စသည်	always	part	SA_THI_PART	et cetera connective
+စသော	always	part	SA_THAW_PART	et cetera adnominal
+သမျှ	always	part	THA_HMYA_PART	extent/inclusive particle
 
-# Interjections & Compound Verbs
+# Interjections, Polite Particles & Compound Verbs
 ဟုတ်ကဲ့	always	int	HOT_KE_INT	polite affirmative interjection
+ခင်ဗျာ	always	part	KHIN_BYA_PART	polite sentence-final particle
 စောင့်ကြည့်	always	v	SAUNG_KYI_V	compound verb
+မုဒိမ်းကျင့်	always	v	MU_DEIN_KYINT_V	compound verb
+အလင်းဝင်	always	v	A_LIN_WIN_V	compound verb
 
-# Profile-scoped Comparative & Role Postpositions
+# Compound Nouns
+လက်နက်ခဲယမ်း	always	n	LET_NET_KHE_YAM_N	arms and ammunition compound noun
+ဒီးမော့ဆို	always	n	DEE_MAW_TSO_N	Demoso township proper noun
+ကိုယ်အလေးချိန်	always	n	KO_A_LAY_CHEIN_N	body weight compound noun
+တောင်သူ	always	n	TAUNG_THU_N	farmer compound noun
+
+# Profile-scoped Comparative, Comitative & Role Postpositions
 ကဲ့သို့	profile:news_unified	ppm	KE_THO_NEWS_PPM	news comparative postposition
 ကဲ့သို့	always	part	KE_THO_PART	general comparative particle
 အနေဖြင့်	profile:news_unified	ppm	A_NAY_PHYINT_NEWS_PPM	news role postposition
 အနေဖြင့်	always	part	A_NAY_PHYINT_PART	general role particle
+နှင့်အတူ	profile:news_unified	ppm	HNINT_ATU_NEWS_PPM	news comitative postposition
+နှင့်အတူ	always	part	HNINT_ATU_PART	general comitative particle
 
 
 

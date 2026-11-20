@@ -149,7 +149,6 @@ _EXACT_SPLITS = [
     ("ပေါ်ပေါက်လာ", ["ပေါ်ပေါက်", "လာ"]),
     ("ဦးစီးဌာန", ["ဦးစီး", "ဌာန"]),
     ("ရန်အခါ", ["ရန်", "အခါ"]),
-    ("ဒဏ်ရာရ", ["ဒဏ်ရာ", "ရ"]),
     # 2026-11-18 classical, honorific, alterity, and astrological splits
     ("တပါးသူဌေး", ["တပါး", "သူဌေး"]),
     ("တစ်ပါးသူဌေး", ["တစ်ပါး", "သူဌေး"]),
@@ -168,14 +167,44 @@ _EXACT_SPLITS = [
     ("ခံရ", ["ခံ", "ရ"]),
     ("ဒီနေ့", ["ဒီ", "နေ့"]),
     ("ကတော့", ["က", "တော့"]),
-    ("ဆိုတာ", ["ဆို", "တာ"]),
+    # 2026-11-20 verb auxiliaries, numeral classifiers, and interrogative clitics
+    ("ဖြစ်လာ", ["ဖြစ်", "လာ"]),
+    ("ရောက်လာ", ["ရောက်", "လာ"]),
+    ("ကူညီပေး", ["ကူညီ", "ပေး"]),
+    ("လိုချင်", ["လို", "ချင်"]),
+    ("ဘယ်မှာ", ["ဘယ်", "မှာ"]),
+    ("ဘယ်အချိန်", ["ဘယ်", "အချိန်"]),
+    ("နှစ်ခု", ["နှစ်", "ခု"]),
+    ("အလုပ်လုပ်", ["အလုပ်", "လုပ်"]),
+    ("ဘာဖြစ်", ["ဘာ", "ဖြစ်"]),
+    ("ရှိသေး", ["ရှိ", "သေး"]),
 ]
 _SPLIT_MAP = {src: parts for src, parts in _EXACT_SPLITS}
 _LEGAL70K_INSTITUTIONAL_SPLITS = frozenset(OWNER_COMPONENT_STANDARDS.keys())
 _GENERAL_SPLIT_MAP = {
     src: parts for src, parts in _EXACT_SPLITS if src not in _LEGAL70K_INSTITUTIONAL_SPLITS
 }
-_NEWS_KEEP_WHOLE = ("လေ့လာသုံးသပ်သူ",)
+_PROFILE_EXTRA_KEEP_WHOLE: Dict[str, Tuple[str, ...]] = {
+    "legal70k": (),
+    "news_unified": ("လေ့လာသုံးသပ်သူ", "နှင့်အတူ", "ဒဏ်ရာရ"),
+    "legacy_mypos_alt": ("နှင့်အတူ", "ဆိုတာ", "စသော"),
+    "general": ("နှင့်အတူ", "စသော"),
+}
+_PROFILE_EXTRA_SPLITS: Dict[str, List[Tuple[str, List[str]]]] = {
+    "legal70k": [
+        ("ဒဏ်ရာရ", ["ဒဏ်ရာ", "ရ"]),
+        ("နှင့်အတူ", ["နှင့်", "အတူ"]),
+        ("စသော", ["စ", "သော"]),
+    ],
+    "news_unified": [
+        ("ဆိုတာ", ["ဆို", "တာ"]),
+    ],
+    "legacy_mypos_alt": [
+        ("ဆီးချိုရောဂါ", ["ဆီးချို", "ရောဂါ"]),
+    ],
+    "general": [],
+}
+_NEWS_KEEP_WHOLE = _PROFILE_EXTRA_KEEP_WHOLE["news_unified"]
 # အရသာ ("taste") is a real word, but after a legal head it is the trap အရ + သာ.
 _AYAR_THA_HEADS = {"ဥပဒေ", "နည်းဥပဒေ", "အက်ဥပဒေ", "တည်ဆဲဥပဒေ", "ပုဒ်မ", "ချက်"}
 _SUBSECTION = set(SUBSECTION_CONSONANTS)
@@ -228,6 +257,10 @@ def _load_keep_whole():
 
 _KEEP_WHOLE = _load_keep_whole()
 _KNOWN_FORMS.update(_KEEP_WHOLE)
+for _plist in _PROFILE_EXTRA_SPLITS.values():
+    _KNOWN_FORMS.update(src for src, _ in _plist)
+for _wlist in _PROFILE_EXTRA_KEEP_WHOLE.values():
+    _KNOWN_FORMS.update(_wlist)
 
 
 def _rejoin_known_spans(
@@ -334,13 +367,20 @@ def _apply_owner_postpass_spans(
     extra_keep_whole: Tuple[str, ...] = (),
 ) -> List[Tuple[str, int, int]]:
     """Rejoin protected forms, then apply profile-scoped exact-token owner splits."""
+    profile_extra_splits = _PROFILE_EXTRA_SPLITS.get(profile, [])
+    profile_splits_dict = {src: parts for src, parts in profile_extra_splits}
+    profile_extra_keep = _PROFILE_EXTRA_KEEP_WHOLE.get(profile, ())
+    all_extra_keep = tuple(set(extra_keep_whole) | set(profile_extra_keep))
+
     if profile == "legal70k":
-        split_map = _SPLIT_MAP
+        split_map = dict(_SPLIT_MAP)
+        split_map.update(profile_splits_dict)
         known = set(_KNOWN_FORMS)
     else:
-        split_map = _GENERAL_SPLIT_MAP
-        known = (_KNOWN_FORMS - _LEGAL70K_INSTITUTIONAL_SPLITS) | set(extra_keep_whole)
-    protected = (_PROTECTED_WHOLE | set(_KEEP_WHOLE) | set(extra_keep_whole))
+        split_map = dict(_GENERAL_SPLIT_MAP)
+        split_map.update(profile_splits_dict)
+        known = (_KNOWN_FORMS - _LEGAL70K_INSTITUTIONAL_SPLITS) | set(all_extra_keep)
+    protected = (_PROTECTED_WHOLE | set(_KEEP_WHOLE) | set(all_extra_keep))
 
     rejoined = _rejoin_known_spans(token_spans, known)
     out: List[Tuple[str, int, int]] = []
@@ -445,11 +485,9 @@ class WordSegmenter:
                     self.load_lexicon(dom)
         for word in _KEEP_WHOLE:
             self.add_word(word, 10**9)
-        self._extra_keep_whole: Tuple[str, ...] = ()
-        if self.profile == "news_unified":
-            self._extra_keep_whole = _NEWS_KEEP_WHOLE
-            for word in self._extra_keep_whole:
-                self.add_word(word, 10**9)
+        self._extra_keep_whole: Tuple[str, ...] = _PROFILE_EXTRA_KEEP_WHOLE.get(self.profile, ())
+        for word in self._extra_keep_whole:
+            self.add_word(word, 10**9)
 
     def add_word(self, word: str, freq: int = 1):
         """Insert a word and its frequency into the trie."""

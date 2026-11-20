@@ -41,8 +41,24 @@
 ဒါပေမဲ့
 ဒါကြောင့်
 လည်းကောင်း
+ဟူ၍
+သောကြောင့်
+ထို့ကြောင့်
+ထို့ပြင်
+သို့ရာတွင်
+ပေမယ့်
+စသည်
+သောအခါ
+သမျှ
 
-# postpositions, adverbs, interjections and compound verbs, one token
+# polite particle, interjections, compound nouns and verbs, one token
+ခင်ဗျာ
+လက်နက်ခဲယမ်း
+ဒီးမော့ဆို
+ကိုယ်အလေးချိန်
+တောင်သူ
+မုဒိမ်းကျင့်
+အလင်းဝင်
 ကဲ့သို့
 နောက်ဆုံး
 ဟုတ်ကဲ့

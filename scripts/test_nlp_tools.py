@@ -440,6 +440,70 @@ class TestM1M2Hardening(unittest.TestCase):
                     f"Profile '{name}' failed to split clitic '{surface}': got {res}, expected {expected}",
                 )
 
+    def test_low_f1_lexicon_splits_and_merges(self):
+        """Verify low-F1 domain optimizations: verb auxiliaries, numeral classifiers, and connectives."""
+        # Universal splits across all profiles
+        universal_splits = [
+            ("ဖြစ်လာ", ["ဖြစ်", "လာ"]),
+            ("ရောက်လာ", ["ရောက်", "လာ"]),
+            ("ကူညီပေး", ["ကူညီ", "ပေး"]),
+            ("လိုချင်", ["လို", "ချင်"]),
+            ("ဘယ်မှာ", ["ဘယ်", "မှာ"]),
+            ("နှစ်ခု", ["နှစ်", "ခု"]),
+            ("အလုပ်လုပ်", ["အလုပ်", "လုပ်"]),
+            ("ဘာဖြစ်", ["ဘာ", "ဖြစ်"]),
+            ("ရှိသေး", ["ရှိ", "သေး"]),
+        ]
+        for name, seg in [
+            ("general", self.ws_general),
+            ("legal70k", self.ws_legal),
+            ("news_unified", self.ws_news),
+            ("legacy_mypos_alt", self.ws_legacy),
+        ]:
+            for surface, expected in universal_splits:
+                res = seg.segment(surface)
+                self.assertEqual(
+                    res, expected,
+                    f"Profile '{name}' failed universal split for '{surface}': got {res}, expected {expected}"
+                )
+
+        # Universal keep-whole connectives and particles
+        universal_merges = [
+            ("ခင်ဗျာ", ["ခင်ဗျာ"]),
+            ("ဟူ၍", ["ဟူ၍"]),
+            ("သောကြောင့်", ["သောကြောင့်"]),
+            ("ထို့ကြောင့်", ["ထို့ကြောင့်"]),
+            ("ပေမယ့်", ["ပေမယ့်"]),
+            ("စသည်", ["စသည်"]),
+            ("လက်နက်ခဲယမ်း", ["လက်နက်ခဲယမ်း"]),
+            ("ကိုယ်အလေးချိန်", ["ကိုယ်အလေးချိန်"]),
+        ]
+        for name, seg in [
+            ("general", self.ws_general),
+            ("news_unified", self.ws_news),
+            ("legacy_mypos_alt", self.ws_legacy),
+        ]:
+            for surface, expected in universal_merges:
+                res = seg.segment(surface)
+                self.assertEqual(
+                    res, expected,
+                    f"Profile '{name}' failed universal merge for '{surface}': got {res}, expected {expected}"
+                )
+
+        # Profile-scoped invariants
+        # 1. နှင့်အတူ: split in legal70k, whole in news & legacy
+        self.assertEqual(self.ws_legal.segment("နှင့်အတူ"), ["နှင့်", "အတူ"])
+        self.assertEqual(self.ws_news.segment("နှင့်အတူ"), ["နှင့်အတူ"])
+        self.assertEqual(self.ws_legacy.segment("နှင့်အတူ"), ["နှင့်အတူ"])
+
+        # 2. ဒဏ်ရာရ: split in legal70k, whole in news
+        self.assertEqual(self.ws_legal.segment("ဒဏ်ရာရ"), ["ဒဏ်ရာ", "ရ"])
+        self.assertEqual(self.ws_news.segment("ဒဏ်ရာရ"), ["ဒဏ်ရာရ"])
+
+        # 3. စသော: split in legal70k, whole in legacy_mypos_alt
+        self.assertEqual(self.ws_legal.segment("စသော"), ["စ", "သော"])
+        self.assertEqual(self.ws_legacy.segment("စသော"), ["စသော"])
+
 
 if __name__ == "__main__":
     unittest.main()
