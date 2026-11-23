@@ -13,7 +13,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TABLE = ROOT / "resources" / "decisions" / "nominals.tsv"
+_TABLE_TXT = ROOT / "resources" / "decisions" / "nominals.txt"
+_TABLE_TSV = ROOT / "resources" / "decisions" / "nominals.tsv"
+TABLE = _TABLE_TXT if _TABLE_TXT.exists() else _TABLE_TSV
 
 
 def load_rows(path: Path = TABLE) -> list[dict[str, str]]:

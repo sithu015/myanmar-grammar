@@ -18,7 +18,7 @@ python3 scripts/nlp_cli.py -c 'တရားလိုသည်လျှောက�
 | `review` | The `readings` array is the whole legal set. Pick the one whose `note` matches this frame. If none matches, stop and mark review. |
 | `catalog` | `--word` lookup. Same readings, no sentence frame yet. |
 
-`resources/decisions/homographs.tsv` is the rule table. First matching `when` wins. A `reading` row never fires by itself. `resources/lexicon/owner_keep_whole.txt` is the one-token vocabulary the segmenter rejoins. Do not add `အရသာ`, `သူမ`, `ကလေး`, `တရားမ`, or `ယူဆောင်` to that file: those concatenations are boundary traps.
+`resources/decisions/homographs.txt` is the rule table. First matching `when` wins. A `reading` row never fires by itself. `resources/lexicon/owner_keep_whole.txt` is the one-token vocabulary the segmenter rejoins. Do not add `အရသာ`, `သူမ`, `ကလေး`, `တရားမ`, or `ယူဆောင်` to that file: those concatenations are boundary traps.
 
 Owner fixed forms (`တပြိုင်နက်/adv`, `တကျွန်းပို့ဒဏ်/n`, and the other nine) are `always` rows. `သည်` after `ဆို` is `part`, clause-final `သည်` is `part`, medial `သည်` is `ppm`. `DET`, `AUX`, `SCONJ`, and `PROPN` are not output tags.
 

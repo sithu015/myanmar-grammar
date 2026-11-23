@@ -44,7 +44,9 @@ except ImportError:
     )
 
 ROOT = Path(__file__).resolve().parents[1]
-TABLE = ROOT / "resources" / "decisions" / "homographs.tsv"
+_TABLE_TXT = ROOT / "resources" / "decisions" / "homographs.txt"
+_TABLE_TSV = ROOT / "resources" / "decisions" / "homographs.tsv"
+TABLE = _TABLE_TXT if _TABLE_TXT.exists() else _TABLE_TSV
 
 PUNCT = set("။၊!?？！…-—–()[]{}「」『』\"'“”‘’,.:;/")
 SYMBOLS = set("%$£¥#&@+=×÷λ")

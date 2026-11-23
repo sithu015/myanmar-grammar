@@ -129,7 +129,7 @@ flowchart TD
 - **[Syllable Breaker Script](scripts/syllable_breaker.py)** - Pair-Rule အခြေခံ ဝဏ္ဏခွဲခြမ်းစနစ် (Kinzi, ဗျည်းဆင့်, သရ/အသတ် မပြိုကွဲစေသော အင်ဂျင်)။
 - **[Word Segmenter Script](scripts/word_segmenter.py)** - Syllable-constrained Bi-directional Maximum Matching, then the keep-whole list and the owner splits.
 - **[NLP CLI Tool](scripts/nlp_cli.py)** - `-s` syllables, `-w` words, `-c` decide tags. `-w` is still not Legal70k gold outside the closed lists.
-- **[Decision tool](scripts/decide.py)** - One-line myPOS decision. `closed` is final. `review` returns the legal readings from `resources/decisions/homographs.tsv`. Use this before the long POS guides.
+- **[Decision tool](scripts/decide.py)** - One-line myPOS decision. `closed` is final. `review` returns the legal readings from `resources/decisions/homographs.txt`. Use this before the long POS guides.
 - **[Keep-whole lexicon](resources/lexicon/owner_keep_whole.txt)** - Documented one-token vocabulary the segmenter rejoins. Trap concatenations are intentionally absent.
 - **[Fetch corpus script](scripts/fetch_corpus_v1_1_from_gdrive.py)** - Optional. Run only when the user explicitly asks to download the news-corpus release. Needs the `gdrive` CLI. The Extreme SSD path in that file is the author's machine, not a default you should look for.
 - **[Compound Builder Script](scripts/compound_builder.py)** - TTKeyboard Trie Node များမှ ပေါင်းစပ်စကားလုံးများ ပြန်လည်ထုတ်လုပ်သော Script။
