@@ -44,7 +44,7 @@ function verify_tests() {
 
 function check_diff() {
     echo "==> Checking diff between Config Skill and Downloads Skill..."
-    DIFF_OUT=$(diff -rq -x ".git" -x ".DS_Store" -x "__pycache__" -x "*.pyc" "$SKILL_CONFIG_DIR" "$SKILL_DOWNLOADS_DIR" || true)
+    DIFF_OUT=$(diff -rq -x ".git" -x ".DS_Store" -x "__pycache__" -x "*.pyc" -x "*.zip" "$SKILL_CONFIG_DIR" "$SKILL_DOWNLOADS_DIR" || true)
     if [ -z "$DIFF_OUT" ]; then
         echo "✓ Zero differences between Config Skill and Downloads Skill."
     else
@@ -80,10 +80,10 @@ function do_sync() {
     # Bidirectional propagation of uncommitted working tree changes
     if [ -n "$(git -C "$SKILL_DOWNLOADS_DIR" status -s)" ] && [ -z "$(git -C "$SKILL_CONFIG_DIR" status -s)" ]; then
         echo "==> Propagating changes from Downloads Skill to Config Skill..."
-        rsync -av --exclude=".git" --exclude="__pycache__" --exclude="*.pyc" "$SKILL_DOWNLOADS_DIR/" "$SKILL_CONFIG_DIR/"
+        rsync -av --exclude=".git" --exclude="__pycache__" --exclude="*.pyc" --exclude="*.zip" "$SKILL_DOWNLOADS_DIR/" "$SKILL_CONFIG_DIR/"
     elif [ -n "$(git -C "$SKILL_CONFIG_DIR" status -s)" ] && [ -z "$(git -C "$SKILL_DOWNLOADS_DIR" status -s)" ]; then
         echo "==> Propagating changes from Config Skill to Downloads Skill..."
-        rsync -av --exclude=".git" --exclude="__pycache__" --exclude="*.pyc" "$SKILL_CONFIG_DIR/" "$SKILL_DOWNLOADS_DIR/"
+        rsync -av --exclude=".git" --exclude="__pycache__" --exclude="*.pyc" --exclude="*.zip" "$SKILL_CONFIG_DIR/" "$SKILL_DOWNLOADS_DIR/"
     fi
 
     echo "==> Staging and committing in Config Skill..."
