@@ -516,6 +516,7 @@ def audit_line(
         COMMON_PREFIX_NOUN_FOLLOWERS = frozenset({
             "ရေ", "လာ", "နှမ", "တော်", "ကြီး", "လေး", "စွာ", "ဆောင်", "စီး", "တည်",
             "ပိုင်", "ထုပ်", "နှောက်", "ခေါင်း", "ချို", "ဦး", "မြေ", "စကား", "မဂ္ဂဇင်း",
+            "အရင်း", "ညီမ", "လက်", "စလင်းမင်းသားကြီး", "အနောက်",
         })
         for i, (surf, tag) in enumerate(parsed_pairs):
             prv_w, prv_t = parsed_pairs[i - 1] if i > 0 else ("", "")
@@ -583,7 +584,7 @@ def audit_line(
 
             # Check for prohibited split personal name prefix (Name prefixes must NOT be split from the name)
             KNOWN_NAMES_WITH_PREFIX = ("မင်းအောင်လှိုင်", "အောင်ဆန်းစုကြည်", "ကျော်မိုးထွန်း", "စံထွန်း", "မုတ်သုန်")
-            if surf in PERSON_PREFIXES and nxt_w in KNOWN_NAMES_WITH_PREFIX:
+            if surf in PERSON_PREFIXES and tag in ("n", "part") and nxt_w in KNOWN_NAMES_WITH_PREFIX:
                 if prv_t not in ("num", "tn") and prv_w not in ("တစ်", "နှစ်", "သုံး", "လေး", "ငါး", "အချို့", "အနည်းဆုံး", "အများဆုံး", "စုစုပေါင်း"):
                     issues.append(
                         {
@@ -601,7 +602,7 @@ def audit_line(
                 and tag in ("n", "part")
                 and nxt_t == "n"
                 and prv_t not in ("num", "tn")
-                and not (surf == "ဦး" and prv_t in ("v", "part", "ppm"))
+                and not (surf in ("ဦး", "နော်", "မောင်") and (prv_t in ("v", "part", "ppm") or prv_w in ("၏", "ရဲ့", "မင်း", "မိဖုရားခေါင်ကြီး", "ကတော်")))
             ):
                 base_cons = len(re.findall(r"[\u1000-\u102A\u103F]", nxt_w))
                 if (
@@ -1042,7 +1043,7 @@ def main() -> int:
             try:
                 rec = json.loads(line)
                 if audit_mode == "hd":
-                    target_line = rec.get("pos_hd_annotated") or rec.get("pos_annotated") or line
+                    target_line = rec.get("pos_hd_annotated", rec.get("pos_annotated", line))
                 elif audit_mode == "pos":
                     target_line = rec.get("pos_annotated", line)
                 else:
